@@ -1,52 +1,54 @@
-# checkpoint-control-frontend
+# React + TypeScript + Vite
 
-Фронтенд для системы контроля прохождения ТМЦ и транспорта через КПП. Проект разработан в рамках дипломной работы.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Описание
+Currently, two official plugins are available:
 
-Система предназначена для операторов КПП, которые регистрируют въезд/выезд транспорта и перемещение ТМЦ, проверяют накладные и управляют экспедициями. Основные функции:
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-- Регистрация экспедиций (въезд/выезд).
-- Управление накладными и ТМЦ (товарно-материальными ценностями).
-- Поддержка нескольких ролей пользователей (администратор АРМ, оператор КПП).
-- Генерация отчетов в PDF и Excel.
+## Expanding the ESLint configuration
 
-## Технологии
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-- **Frontend**: 
-  - React
-  - TypeScript
-  - Vite
-  - Redux Toolkit
-  - RTK Query
-  - react-hook-form
-  - Zod (валидация)
-  - v-uik (V UI kit - библиотека типовых UI-компонентов)
-- **Backend-заглушка (development env)**: 
-  - Mirage.js (для симуляции API)
- 
-## Структура проекта
+```js
+export default tseslint.config({
+  extends: [
+    // Remove ...tseslint.configs.recommended and replace with this
+    ...tseslint.configs.recommendedTypeChecked,
+    // Alternatively, use this for stricter rules
+    ...tseslint.configs.strictTypeChecked,
+    // Optionally, add this for stylistic rules
+    ...tseslint.configs.stylisticTypeChecked,
+  ],
+  languageOptions: {
+    // other options...
+    parserOptions: {
+      project: ['./tsconfig.node.json', './tsconfig.app.json'],
+      tsconfigRootDir: import.meta.dirname,
+    },
+  },
+})
+```
 
-Проект организован в соответствии с методологией **FSD (Feature-Sliced Design)** и её вариантом **ФАСАД** (также включает элементы **Atomic Design**).
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-### **Atomic Design**
-- **Atoms**: Минимальные UI-компоненты (например, кнопки, инпуты).
-- **Molecules**: Комбинации атомов (например, форма поиска).
-- **Organisms**: Более сложные компоненты (например, шапка страницы).
-- **Pages**: Страницы и экранные формы.
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-## Установка и запуск
-
-1. Клонируйте репозиторий:
-   ```bash
-   git clone https://github.com/insomenya/checkpoint-control-frontend.git
-   cd checkpoint-control-frontend
-2. Установите зависимости:
-   ```node
-   npm install
-3. Запустите проект:
-   ```node
-   npm run dev
-4. Откройте браузер и перейдите по адресу:
-   ```
-   http://localhost:3000
+export default tseslint.config({
+  plugins: {
+    // Add the react-x and react-dom plugins
+    'react-x': reactX,
+    'react-dom': reactDom,
+  },
+  rules: {
+    // other rules...
+    // Enable its recommended typescript rules
+    ...reactX.configs['recommended-typescript'].rules,
+    ...reactDom.configs.recommended.rules,
+  },
+})
+```
