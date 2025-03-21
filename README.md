@@ -49,4 +49,4 @@
    npm run dev
 4. Откройте браузер и перейдите по адресу:
    ```
-   http://localhost:3000
+   http://localhost:5173/
