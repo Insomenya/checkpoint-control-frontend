@@ -32,26 +32,11 @@
    git clone https://github.com/insomenya/checkpoint-control-frontend.git
    cd checkpoint-control-frontend
 2. Установите зависимости:
-   ```bash
+   ```node
    npm install
 3. Запустите проект:
-   ```bash
+   ```node
    npm run dev
 4. Откройте браузер и перейдите по адресу:
    ```
    http://localhost:3000
-
-## Структура проекта
-src/
-├── api/                # Заглушки API (Mirage.js)
-├── components/         # Компоненты
-│   ├── forms/         # Формы
-│   └── ...
-├── features/           # Логика Redux Toolkit
-├── hooks/              # Кастомные хуки
-├── pages/              # Страницы
-├── schemas/            # Схемы валидации (Zod)
-├── types/              # Типы TypeScript
-├── utils/              # Вспомагательные функции
-├── App.tsx
-└── main.tsx
