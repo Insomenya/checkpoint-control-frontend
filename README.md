@@ -41,12 +41,15 @@
    ```bash
    git clone https://github.com/insomenya/checkpoint-control-frontend.git
    cd checkpoint-control-frontend
-2. Установите зависимости:
+2. Добавьте реестр npm для v-uik:
+   ```node
+   npm config --local set @v-uik:registry https://gitverse.ru/api/packages/sbertech/npm/
+3. Установите зависимости:
    ```node
    npm install
-3. Запустите проект:
+4. Запустите проект:
    ```node
    npm run dev
-4. Откройте браузер и перейдите по адресу:
+5. Откройте браузер и перейдите по адресу:
    ```
    http://localhost:5173/
