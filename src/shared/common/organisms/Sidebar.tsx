@@ -1,7 +1,7 @@
 import { Bar, BarDivider, BarDropdown, BarDropdownItem, BarMenuItem, Box, createUseStyles, Text, useTheme } from "@v-uik/base";
-import React, { JSX, memo, ReactNode, useMemo, useState } from "react";
+import { JSX, memo, ReactNode, useMemo, useState } from "react";
 import { TooltipWrapper } from "./TooltipWrapper";
-import { Archive, ChevronLeft, ChevronRight, DeviceDesktop, ThumbUp, Truck, UserPlus } from "@v-uik/icons";
+import { Archive, ChevronLeft, ChevronRight, DeviceDesktop, InfoCircle, Truck, UserPlus, ZoomCheck } from "@v-uik/icons";
 import { Outlet } from "react-router-dom";
 
 const useStyles = createUseStyles((theme) => ({
@@ -67,7 +67,7 @@ export const Sidebar = memo(({ children }: Props): JSX.Element => {
                     <BarMenuItem icon={<Truck />}>
                         Создать экспедицию
                     </BarMenuItem>
-                    <BarMenuItem icon={<ThumbUp />}>
+                    <BarMenuItem icon={<ZoomCheck />}>
                         Подтверждение
                     </BarMenuItem>
                     <BarDropdown icon={<Archive />} dropdownMenuProps={dropdownMenuProps}>
@@ -80,6 +80,9 @@ export const Sidebar = memo(({ children }: Props): JSX.Element => {
                         Настройка АРМ
                     </BarMenuItem>
                     <BarDivider />
+                    <BarMenuItem icon={<InfoCircle />} selected>
+                        О приложении
+                    </BarMenuItem>
                     <TooltipWrapper tooltip="Развернуть" tooltipNeeded={!isSidebarExpanded}>
                         <BarMenuItem
                             icon={isSidebarExpanded ? <ChevronLeft /> : <ChevronRight />}
