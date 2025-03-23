@@ -1,13 +1,55 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Harness } from "../Harness/Harness";
-import { About } from "@/pages";
+import { About, AddUser, CheckpointZoneLink, Confirmation, ExpeditionStatus, FilteredReport, Login, RegisterExpedition } from "@/pages";
+import { ROUTER_PATHS } from "@shared/constants";
+import ProtectedRoute from "./ProtectedRoute";
 
 export const Router = () => {
     return (
         <BrowserRouter>
             <Routes>
-                <Route element={<Harness />} path="/">
-                    <Route path="/" element={<About />} />
+                <Route path={ROUTER_PATHS.LOGIN} element={<Login />} />
+                <Route element={<ProtectedRoute />}>
+                    <Route element={<Harness />} path={ROUTER_PATHS.ROOT}>
+                        <Route
+                            path={ROUTER_PATHS.REGISTER_EXPEDITION}
+                            element={<ProtectedRoute roles={['operator']} />}
+                        >
+                            <Route index element={<RegisterExpedition />} />
+                        </Route>
+                        <Route
+                            path={ROUTER_PATHS.CONFIRMATION}
+                            element={<ProtectedRoute roles={['operator']} />}
+                        >
+                            <Route index element={<Confirmation />} />
+                        </Route>
+                        <Route
+                            path={ROUTER_PATHS.REPORTS.ROOT + ROUTER_PATHS.REPORTS.SINGLE}
+                            element={<ProtectedRoute roles={['admin', 'operator']} />}
+                        >
+                            <Route index element={<ExpeditionStatus />} />
+                        </Route>
+                        <Route
+                            path={ROUTER_PATHS.REPORTS.ROOT + ROUTER_PATHS.REPORTS.FILTER}
+                            element={<ProtectedRoute roles={['admin', 'operator']} />}
+                        >
+                            <Route index element={<FilteredReport />} />
+                        </Route>
+                        <Route
+                            path={ROUTER_PATHS.ADD_USER}
+                            element={<ProtectedRoute roles={['admin']} />}
+                        >
+                            <Route index element={<AddUser />} />
+                        </Route>
+                        <Route
+                            path={ROUTER_PATHS.CHECKPOINT_ZONE_LINK}
+                            element={<ProtectedRoute roles={['admin']} />}
+                        >
+                            <Route index element={<CheckpointZoneLink />} />
+                        </Route>
+                        <Route index element={<About />} />
+                        <Route path="/*" element={<About />} />
+                    </Route>
                 </Route>
             </Routes>
         </BrowserRouter>

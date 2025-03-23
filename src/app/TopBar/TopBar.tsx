@@ -1,3 +1,5 @@
+import { selectUser } from "@store/auth/auth.selectors";
+import { useAppSelector } from "@store/store";
 import { Avatar, Bar, BarDate, BarDivider, BarMenuItem, Box, clsx, createUseStyles, Text, useTheme } from "@v-uik/base";
 import { CalendarTime, Logout } from "@v-uik/icons";
 
@@ -32,6 +34,7 @@ const useStyles = createUseStyles((theme) => ({
 }));
 
 export const TopBar = () => {
+    const user = useAppSelector(selectUser);
     const classes = useStyles();
     const theme = useTheme();
 
@@ -48,8 +51,12 @@ export const TopBar = () => {
             <BarDate icon={<CalendarTime width={20} height={20} color={theme.sys.color.onPrimaryMedium} />} />
             <Box style={{ marginLeft: 'auto' }} className={clsx(classes.avatarGroupContainer, classes.containerRow)}>
                 <Box className={clsx(classes.textWrapper, classes.textWrapperRight)}>
-                    <Text kind="subtitle1" className={classes.usernameBase}>Username</Text>
-                    <Text kind="caption" className={classes.captionBase}>user role</Text>
+                    <Text kind="subtitle1" className={classes.usernameBase}>
+                        {user?.name ?? 'Username'}
+                    </Text>
+                    <Text kind="caption" className={classes.captionBase}>
+                        {user?.role ?? 'user role'}
+                    </Text>
                 </Box>
                 <Box>
                     <Avatar color="linear-gradient(227deg, #053DA3 13.15%, #0796F5 84.48%)" size="sm"><Text kind="titleSm">ОП</Text></Avatar>

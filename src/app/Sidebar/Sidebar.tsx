@@ -1,8 +1,11 @@
-import { Bar, BarDivider, BarDropdown, BarDropdownItem, BarMenuItem, Box, createUseStyles, Text, useTheme } from "@v-uik/base";
+import { Bar, BarDivider, BarDropdown, BarDropdownItem, BarMenuItem, Box, createUseStyles, Link, Text, useTheme } from "@v-uik/base";
 import { JSX, memo, ReactNode, useMemo, useState } from "react";
 import { TooltipWrapper } from "@shared/common/organisms/TooltipWrapper";
 import { Archive, ChevronLeft, ChevronRight, DeviceDesktop, InfoCircle, Truck, UserPlus, ZoomCheck } from "@v-uik/icons";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { ROUTER_PATHS } from "@/shared/constants";
+import { useAppSelector } from "@store/store";
+import { selectToken, selectUserRole } from "@store/auth/auth.selectors";
 
 const useStyles = createUseStyles((theme) => ({
     container: {
@@ -36,15 +39,32 @@ type Props = {
 };
 
 export const Sidebar = memo(({ children }: Props): JSX.Element => {
+    const token = useAppSelector(selectToken);
+    const userRole = useAppSelector(selectUserRole);
     const [isSidebarExpanded, setIsSideparExpanded] = useState(false);
     const theme = useTheme();
     const classes = useStyles();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const navigateTo = (path: string) => () => navigate(ROUTER_PATHS.ROOT + path);
+
+    const isUserAdmin = userRole === 'admin';
+    const isUserOperator = userRole === 'operator';
+
+    const isSamePath = (path: string) => location.pathname === ROUTER_PATHS.ROOT + path;
+
+    const hasPath = (path:string) => location.pathname.includes(path);
 
     const dropdownMenuProps = useMemo(() => ({
         content: (
             <>
-                <BarDropdownItem>Статус экспедиции</BarDropdownItem>
-                <BarDropdownItem>Сводка с фильтрами</BarDropdownItem>
+                <BarDropdownItem onClick={ navigateTo(ROUTER_PATHS.REPORTS.ROOT + ROUTER_PATHS.REPORTS.SINGLE) }>
+                    Статус экспедиции
+                </BarDropdownItem>
+                <BarDropdownItem onClick={ navigateTo(ROUTER_PATHS.REPORTS.ROOT + ROUTER_PATHS.REPORTS.FILTER) }>
+                    Сводка с фильтрами
+                </BarDropdownItem>
             </>
         ),
     }), []);
@@ -64,23 +84,51 @@ export const Sidebar = memo(({ children }: Props): JSX.Element => {
                     direction="vertical"
                     expanded={isSidebarExpanded}
                 >
-                    <BarMenuItem icon={<Truck />}>
+                    <BarMenuItem
+                        icon={<Truck />}
+                        onClick={navigateTo(ROUTER_PATHS.REGISTER_EXPEDITION)}
+                        disabled={isUserAdmin}
+                        selected={isSamePath(ROUTER_PATHS.REGISTER_EXPEDITION)}
+                    >
                         Регистрация эксп.
                     </BarMenuItem>
-                    <BarMenuItem icon={<ZoomCheck />}>
+                    <BarMenuItem
+                        icon={<ZoomCheck />}
+                        onClick={navigateTo(ROUTER_PATHS.CONFIRMATION)}
+                        disabled={isUserAdmin}
+                        selected={isSamePath(ROUTER_PATHS.CONFIRMATION)}
+                    >
                         Подтверждение
                     </BarMenuItem>
-                    <BarDropdown icon={<Archive />} dropdownMenuProps={dropdownMenuProps}>
+                    <BarDropdown
+                        icon={<Archive />}
+                        dropdownMenuProps={dropdownMenuProps}
+                        selected={hasPath(ROUTER_PATHS.REPORTS.ROOT)}
+                    >
                         Сводки
                     </BarDropdown>
-                    <BarMenuItem icon={<UserPlus />} disabled>
+                    <BarMenuItem
+                        icon={<UserPlus />}
+                        onClick={navigateTo(ROUTER_PATHS.ADD_USER)}
+                        disabled={isUserOperator}
+                        selected={isSamePath(ROUTER_PATHS.ADD_USER)}
+                    >
                         Добавить пользователя
                     </BarMenuItem>
-                    <BarMenuItem icon={<DeviceDesktop />} disabled>
+                    <BarMenuItem
+                        icon={<DeviceDesktop />}
+                        onClick={navigateTo(ROUTER_PATHS.CHECKPOINT_ZONE_LINK)}
+                        disabled={isUserOperator}
+                        selected={isSamePath(ROUTER_PATHS.CHECKPOINT_ZONE_LINK)}
+                    >
                         Настройка АРМ
                     </BarMenuItem>
                     <BarDivider />
-                    <BarMenuItem icon={<InfoCircle />} selected>
+                    <BarMenuItem
+                        icon={<InfoCircle />}
+                        onClick={navigateTo(ROUTER_PATHS.ABOUT)}
+                        selected={isSamePath(ROUTER_PATHS.ABOUT)}
+                    >
                         О приложении
                     </BarMenuItem>
                     <TooltipWrapper tooltip="Развернуть" tooltipNeeded={!isSidebarExpanded}>

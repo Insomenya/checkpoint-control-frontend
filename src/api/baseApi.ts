@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query";
-import { API_PATHS } from "./paths";
+import { API_PATHS } from "@shared/constants";
 
 export const baseApi = createApi({
     reducerPath: 'baseApi',
