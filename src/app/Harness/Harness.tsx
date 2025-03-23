@@ -1,5 +1,6 @@
-import { Sidebar, TopBar } from "@/shared/common/organisms";
 import { Box, createUseStyles } from "@v-uik/base";
+import { TopBar } from "../TopBar/TopBar";
+import { Sidebar } from "../Sidebar/Sidebar";
 
 const useStyles = createUseStyles((theme) => ({
     harnessContainer: {
@@ -7,11 +8,12 @@ const useStyles = createUseStyles((theme) => ({
         paddingTop: theme.spacing(12)
     },
     workAreaWrapper: {
+        position: 'relative',
         overflow: 'auto',
         display: 'flex',
         flexDirection: 'column',
         flexGrow: 1,
-        minHeight: 500,
+        height: 'calc(100vh - 48px)',
         padding: theme.spacing(6)
     }
 }));

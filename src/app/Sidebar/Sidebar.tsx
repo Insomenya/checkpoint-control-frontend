@@ -1,6 +1,6 @@
 import { Bar, BarDivider, BarDropdown, BarDropdownItem, BarMenuItem, Box, createUseStyles, Text, useTheme } from "@v-uik/base";
 import { JSX, memo, ReactNode, useMemo, useState } from "react";
-import { TooltipWrapper } from "./TooltipWrapper";
+import { TooltipWrapper } from "@shared/common/organisms/TooltipWrapper";
 import { Archive, ChevronLeft, ChevronRight, DeviceDesktop, InfoCircle, Truck, UserPlus, ZoomCheck } from "@v-uik/icons";
 import { Outlet } from "react-router-dom";
 
