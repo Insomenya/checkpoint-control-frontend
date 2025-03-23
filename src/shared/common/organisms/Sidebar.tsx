@@ -65,7 +65,7 @@ export const Sidebar = memo(({ children }: Props): JSX.Element => {
                     expanded={isSidebarExpanded}
                 >
                     <BarMenuItem icon={<Truck />}>
-                        Создать экспедицию
+                        Регистрация эксп.
                     </BarMenuItem>
                     <BarMenuItem icon={<ZoomCheck />}>
                         Подтверждение
