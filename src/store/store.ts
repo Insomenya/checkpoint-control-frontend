@@ -1,4 +1,4 @@
-import { baseApi } from "@/api/baseApi";
+import { baseApi } from "@api/baseApi";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { commonSlice } from "./common/common.slice";
@@ -16,8 +16,8 @@ const createRootReducer = () =>
 
 export const store = configureStore({
     reducer: createRootReducer(),
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
-    devTools: process.env.NODE_ENV === 'development',
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(baseApi.middleware),
+    devTools: import.meta.env.DEV,
 });
 
 export type RootState = ReturnType<typeof store.getState>;

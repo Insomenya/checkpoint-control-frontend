@@ -1,11 +1,12 @@
-import { Bar, BarDivider, BarDropdown, BarDropdownItem, BarMenuItem, Box, createUseStyles, Link, Text, useTheme } from "@v-uik/base";
+import { Bar, BarDivider, BarDropdown, BarDropdownItem, BarMenuItem, Box, createUseStyles, Text, useTheme } from "@v-uik/base";
 import { JSX, memo, ReactNode, useMemo, useState } from "react";
 import { TooltipWrapper } from "@shared/common/organisms/TooltipWrapper";
 import { Archive, ChevronLeft, ChevronRight, DeviceDesktop, InfoCircle, Truck, UserPlus, ZoomCheck } from "@v-uik/icons";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { ROUTER_PATHS } from "@/shared/constants";
 import { useAppSelector } from "@store/store";
 import { selectToken, selectUserRole } from "@store/auth/auth.selectors";
+import { useNavigateHandler } from "@shared/hooks";
 
 const useStyles = createUseStyles((theme) => ({
     container: {
@@ -31,6 +32,9 @@ const useStyles = createUseStyles((theme) => ({
     },
     barMenuItem: {
         marginBottom: 10
+    },
+    dropdownRoot: {
+        overflow: 'hidden'
     }
 }));
 
@@ -44,13 +48,12 @@ export const Sidebar = memo(({ children }: Props): JSX.Element => {
     const [isSidebarExpanded, setIsSideparExpanded] = useState(false);
     const theme = useTheme();
     const classes = useStyles();
-    const navigate = useNavigate();
+    const navigateHandler = useNavigateHandler();
     const location = useLocation();
-
-    const navigateTo = (path: string) => () => navigate(ROUTER_PATHS.ROOT + path);
 
     const isUserAdmin = userRole === 'admin';
     const isUserOperator = userRole === 'operator';
+    const notLoggedIn = !token;
 
     const isSamePath = (path: string) => location.pathname === ROUTER_PATHS.ROOT + path;
 
@@ -59,10 +62,10 @@ export const Sidebar = memo(({ children }: Props): JSX.Element => {
     const dropdownMenuProps = useMemo(() => ({
         content: (
             <>
-                <BarDropdownItem onClick={ navigateTo(ROUTER_PATHS.REPORTS.ROOT + ROUTER_PATHS.REPORTS.SINGLE) }>
+                <BarDropdownItem onClick={ navigateHandler(ROUTER_PATHS.REPORTS.ROOT + ROUTER_PATHS.REPORTS.SINGLE) }>
                     Статус экспедиции
                 </BarDropdownItem>
-                <BarDropdownItem onClick={ navigateTo(ROUTER_PATHS.REPORTS.ROOT + ROUTER_PATHS.REPORTS.FILTER) }>
+                <BarDropdownItem onClick={ navigateHandler(ROUTER_PATHS.REPORTS.ROOT + ROUTER_PATHS.REPORTS.FILTER) }>
                     Сводка с фильтрами
                 </BarDropdownItem>
             </>
@@ -86,16 +89,16 @@ export const Sidebar = memo(({ children }: Props): JSX.Element => {
                 >
                     <BarMenuItem
                         icon={<Truck />}
-                        onClick={navigateTo(ROUTER_PATHS.REGISTER_EXPEDITION)}
-                        disabled={isUserAdmin}
+                        onClick={navigateHandler(ROUTER_PATHS.REGISTER_EXPEDITION)}
+                        disabled={isUserAdmin || notLoggedIn}
                         selected={isSamePath(ROUTER_PATHS.REGISTER_EXPEDITION)}
                     >
                         Регистрация эксп.
                     </BarMenuItem>
                     <BarMenuItem
                         icon={<ZoomCheck />}
-                        onClick={navigateTo(ROUTER_PATHS.CONFIRMATION)}
-                        disabled={isUserAdmin}
+                        onClick={navigateHandler(ROUTER_PATHS.CONFIRMATION)}
+                        disabled={isUserAdmin || notLoggedIn}
                         selected={isSamePath(ROUTER_PATHS.CONFIRMATION)}
                     >
                         Подтверждение
@@ -103,22 +106,26 @@ export const Sidebar = memo(({ children }: Props): JSX.Element => {
                     <BarDropdown
                         icon={<Archive />}
                         dropdownMenuProps={dropdownMenuProps}
+                        disabled={notLoggedIn}
                         selected={hasPath(ROUTER_PATHS.REPORTS.ROOT)}
+                        classes={{
+                            root: classes.dropdownRoot
+                        }}
                     >
                         Сводки
                     </BarDropdown>
                     <BarMenuItem
                         icon={<UserPlus />}
-                        onClick={navigateTo(ROUTER_PATHS.ADD_USER)}
-                        disabled={isUserOperator}
+                        onClick={navigateHandler(ROUTER_PATHS.ADD_USER)}
+                        disabled={isUserOperator || notLoggedIn}
                         selected={isSamePath(ROUTER_PATHS.ADD_USER)}
                     >
                         Добавить пользователя
                     </BarMenuItem>
                     <BarMenuItem
                         icon={<DeviceDesktop />}
-                        onClick={navigateTo(ROUTER_PATHS.CHECKPOINT_ZONE_LINK)}
-                        disabled={isUserOperator}
+                        onClick={navigateHandler(ROUTER_PATHS.CHECKPOINT_ZONE_LINK)}
+                        disabled={isUserOperator || notLoggedIn}
                         selected={isSamePath(ROUTER_PATHS.CHECKPOINT_ZONE_LINK)}
                     >
                         Настройка АРМ
@@ -126,7 +133,7 @@ export const Sidebar = memo(({ children }: Props): JSX.Element => {
                     <BarDivider />
                     <BarMenuItem
                         icon={<InfoCircle />}
-                        onClick={navigateTo(ROUTER_PATHS.ABOUT)}
+                        onClick={navigateHandler(ROUTER_PATHS.ABOUT)}
                         selected={isSamePath(ROUTER_PATHS.ABOUT)}
                     >
                         О приложении

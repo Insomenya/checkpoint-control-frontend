@@ -1,0 +1,1 @@
+export { useNavigateHandler } from './useNavigateHandler';

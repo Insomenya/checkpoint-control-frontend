@@ -1,7 +1,11 @@
+import { logout } from "@store/auth/auth.slice";
+import { getNameInitials } from "@shared/utils";
 import { selectUser } from "@store/auth/auth.selectors";
-import { useAppSelector } from "@store/store";
+import { useAppDispatch, useAppSelector } from "@store/store";
 import { Avatar, Bar, BarDate, BarDivider, BarMenuItem, Box, clsx, createUseStyles, Text, useTheme } from "@v-uik/base";
 import { CalendarTime, Logout } from "@v-uik/icons";
+import { useNavigate } from "react-router-dom";
+import { ROUTER_PATHS } from "@shared/constants";
 
 const useStyles = createUseStyles((theme) => ({
     avatarGroupContainer: {
@@ -35,8 +39,15 @@ const useStyles = createUseStyles((theme) => ({
 
 export const TopBar = () => {
     const user = useAppSelector(selectUser);
+    const navigate = useNavigate();
     const classes = useStyles();
     const theme = useTheme();
+    const dispatch = useAppDispatch();
+
+    const logoutHandler = () => {
+        navigate(ROUTER_PATHS.ROOT + ROUTER_PATHS.LOGIN);
+        dispatch(logout());
+    };
 
     // todo можно добавить аватарки с картинками
     // если есть картинка - src, если нет - color
@@ -52,18 +63,21 @@ export const TopBar = () => {
             <Box style={{ marginLeft: 'auto' }} className={clsx(classes.avatarGroupContainer, classes.containerRow)}>
                 <Box className={clsx(classes.textWrapper, classes.textWrapperRight)}>
                     <Text kind="subtitle1" className={classes.usernameBase}>
-                        {user?.name ?? 'Username'}
+                        {user?.username ?? 'Username'}
                     </Text>
                     <Text kind="caption" className={classes.captionBase}>
                         {user?.role ?? 'user role'}
                     </Text>
                 </Box>
                 <Box>
-                    <Avatar color="linear-gradient(227deg, #053DA3 13.15%, #0796F5 84.48%)" size="sm"><Text kind="titleSm">ОП</Text></Avatar>
+                    <Avatar color="linear-gradient(227deg, #053DA3 13.15%, #0796F5 84.48%)" size="sm"><Text kind="titleSm">{getNameInitials(user?.username)}</Text></Avatar>
                 </Box>
             </Box>
             <BarDivider />
-            <BarMenuItem icon={<Logout />}>
+            <BarMenuItem
+                icon={<Logout />}
+                onClick={logoutHandler}
+            >
                 Выйти
             </BarMenuItem>
         </Bar>
