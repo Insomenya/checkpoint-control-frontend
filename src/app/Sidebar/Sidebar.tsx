@@ -45,7 +45,7 @@ type Props = {
 export const Sidebar = memo(({ children }: Props): JSX.Element => {
     const token = useAppSelector(selectToken);
     const userRole = useAppSelector(selectUserRole);
-    const [isSidebarExpanded, setIsSideparExpanded] = useState(false);
+    const [isSidebarExpanded, setIsSideparExpanded] = useState(true);
     const theme = useTheme();
     const classes = useStyles();
     const navigateHandler = useNavigateHandler();

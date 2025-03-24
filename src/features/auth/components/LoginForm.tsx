@@ -2,13 +2,14 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, LoginFormData } from '../schemas/loginSchema';
 import { useLoginMutation } from '@api/auth/authApi';
-import { Box, Button, CircularProgress, createUseStyles, notification } from '@v-uik/base';
+import { Box, Button, createUseStyles, notification } from '@v-uik/base';
 import { ErrorDescription, InputField } from '@shared/common/atoms';
 import { useNavigate } from 'react-router-dom';
 import { ROUTER_PATHS } from '@shared/constants';
 import { useAppDispatch } from '@store/store';
 import { loginSuccess } from '@store/auth/auth.slice';
 import { isErrorResponse } from '@shared/utils';
+import { PasswordField } from '@shared/common/atoms/form';
 
 const useStyles = createUseStyles((theme) => ({
   loginForm: {
@@ -68,7 +69,7 @@ export const LoginForm = () => {
             name="username"
             placeholder="Введите логин"
           />
-          <InputField 
+          <PasswordField 
             label="Пароль"
             name="password"
             placeholder="Введите пароль"
