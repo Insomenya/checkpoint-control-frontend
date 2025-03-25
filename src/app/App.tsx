@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import { Router } from "./Router/Router";
 import { theme } from "@/styles/theme";
 import '@/styles/index.css';
+import { Verify } from "./Verify/Verify";
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
       <ErrorBoundary fallback={<div>Карамба, всё упало!</div>}>
         <Provider store={store}>
           <DateLibAdapterProvider dateAdapter={DateFnsAdapter} options={{ locale: ru }}>
+            <Verify />
             <Router />
             <NotificationContainer />
           </DateLibAdapterProvider>
