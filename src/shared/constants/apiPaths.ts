@@ -5,5 +5,9 @@ export const API_PATHS = {
         REFRESH_TOKEN: '/auth/jwt/refresh',
         VERIFY_TOKEN: '/auth/jwt/verify',
         GET_USER_DATA: '/auth/details'
+    },
+    GOODS: {
+        ROOT: '/goods',
+        
     }
 };
