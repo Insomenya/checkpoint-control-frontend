@@ -2,7 +2,8 @@ export const ROUTER_PATHS = {
     ROOT: '/',
     ABOUT: '',
     LOGIN: 'login',
-    REGISTER_EXPEDITION: 'register',
+    REGISTER_EXPEDITION: 'expedition',
+    REGISTER_GOODS: 'goods',
     CONFIRMATION: 'confirmation',
     REPORTS: {
         ROOT: 'reports/',

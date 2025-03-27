@@ -1,7 +1,7 @@
-import { Bar, BarDivider, BarDropdown, BarDropdownItem, BarMenuItem, Box, createUseStyles, Text, useTheme } from "@v-uik/base";
+import { Bar, BarDivider, BarDropdown, BarDropdownItem, BarMenuItem, Box, clsx, createUseStyles, Text, useTheme } from "@v-uik/base";
 import { JSX, memo, ReactNode, useMemo, useState } from "react";
 import { TooltipWrapper } from "@shared/common/organisms/TooltipWrapper";
-import { Archive, ChevronLeft, ChevronRight, DeviceDesktop, InfoCircle, Truck, UserPlus, ZoomCheck } from "@v-uik/icons";
+import { Archive, ChevronLeft, ChevronRight, DeviceDesktop, InfoCircle, Truck, UserPlus, ZoomCheck, Box as IconBox } from "@v-uik/icons";
 import { Outlet, useLocation } from "react-router-dom";
 import { ROUTER_PATHS } from "@/shared/constants";
 import { useAppSelector } from "@store/store";
@@ -35,6 +35,9 @@ const useStyles = createUseStyles((theme) => ({
     },
     dropdownRoot: {
         overflow: 'hidden'
+    },
+    dropdownDisabled: {
+        pointerEvents: 'none'
     }
 }));
 
@@ -51,8 +54,9 @@ export const Sidebar = memo(({ children }: Props): JSX.Element => {
     const navigateHandler = useNavigateHandler();
     const location = useLocation();
 
-    const isUserAdmin = userRole === 'admin';
-    const isUserOperator = userRole === 'operator';
+    const isNotAdmin = userRole !== 'admin';
+    const isNotOperator = userRole !== 'operator';
+    const isNotLogistician = userRole !== 'logistician';
     const notLoggedIn = !token;
 
     const isSamePath = (path: string) => location.pathname === ROUTER_PATHS.ROOT + path;
@@ -90,15 +94,23 @@ export const Sidebar = memo(({ children }: Props): JSX.Element => {
                     <BarMenuItem
                         icon={<Truck />}
                         onClick={navigateHandler(ROUTER_PATHS.REGISTER_EXPEDITION)}
-                        disabled={isUserAdmin || notLoggedIn}
+                        disabled={isNotLogistician}
                         selected={isSamePath(ROUTER_PATHS.REGISTER_EXPEDITION)}
                     >
                         Регистрация эксп.
                     </BarMenuItem>
                     <BarMenuItem
+                        icon={<IconBox />}
+                        onClick={navigateHandler(ROUTER_PATHS.REGISTER_EXPEDITION)}
+                        disabled={isNotLogistician}
+                        selected={isSamePath(ROUTER_PATHS.REGISTER_GOODS)}
+                    >
+                        Регистрация ТМЦ
+                    </BarMenuItem>
+                    <BarMenuItem
                         icon={<ZoomCheck />}
                         onClick={navigateHandler(ROUTER_PATHS.CONFIRMATION)}
-                        disabled={isUserAdmin || notLoggedIn}
+                        disabled={isNotOperator}
                         selected={isSamePath(ROUTER_PATHS.CONFIRMATION)}
                     >
                         Подтверждение
@@ -106,7 +118,8 @@ export const Sidebar = memo(({ children }: Props): JSX.Element => {
                     <BarDropdown
                         icon={<Archive />}
                         dropdownMenuProps={dropdownMenuProps}
-                        disabled={notLoggedIn}
+                        disabled={isNotOperator}
+                        className={clsx(classes.dropdownDisabled, isNotOperator)}
                         selected={hasPath(ROUTER_PATHS.REPORTS.ROOT)}
                         classes={{
                             root: classes.dropdownRoot
@@ -117,7 +130,7 @@ export const Sidebar = memo(({ children }: Props): JSX.Element => {
                     <BarMenuItem
                         icon={<UserPlus />}
                         onClick={navigateHandler(ROUTER_PATHS.ADD_USER)}
-                        disabled={isUserOperator || notLoggedIn}
+                        disabled={isNotAdmin}
                         selected={isSamePath(ROUTER_PATHS.ADD_USER)}
                     >
                         Добавить пользователя
@@ -125,7 +138,7 @@ export const Sidebar = memo(({ children }: Props): JSX.Element => {
                     <BarMenuItem
                         icon={<DeviceDesktop />}
                         onClick={navigateHandler(ROUTER_PATHS.CHECKPOINT_ZONE_LINK)}
-                        disabled={isUserOperator || notLoggedIn}
+                        disabled={isNotAdmin}
                         selected={isSamePath(ROUTER_PATHS.CHECKPOINT_ZONE_LINK)}
                     >
                         Настройка АРМ
