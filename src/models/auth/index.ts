@@ -1,6 +1,6 @@
 export type User = {
     id: number;
-    role: 'admin' | 'operator';
+    role: 'admin' | 'operator' | 'logistician';
     username: string;
 };
 
@@ -27,3 +27,5 @@ export type PostRefreshTokenResponseDTO = {
 export type PostVerifyTokenDTO = {
     token: string;
 }
+
+export type GetUserDataResponseDTO = Pick<PostLoginResponseDTO, 'user'>;

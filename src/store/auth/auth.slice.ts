@@ -1,4 +1,4 @@
-import { PostLoginResponseDTO, PostRefreshTokenResponseDTO, User } from "@/models/auth";
+import { PostLoginResponseDTO, User } from "@/models/auth";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type AuthState = {
@@ -10,29 +10,36 @@ export type AuthState = {
 const initialState: AuthState = {
     token: localStorage.getItem('token'),
     refreshToken: localStorage.getItem('refreshToken'),
-    user: localStorage.getItem('user') ?? JSON.parse(localStorage.getItem('user') ?? '{}'),
+    user: null,
 };
 
+type TokenUpdatedDTO = Omit<AuthState, 'user'>;
+type UserDataSetDTO = Pick<AuthState, 'user'>;
+
 type LoginSuccessAction = PayloadAction<PostLoginResponseDTO>;
-type TokenUpdatedAction = PayloadAction<PostRefreshTokenResponseDTO>;
+type TokenUpdatedAction = PayloadAction<TokenUpdatedDTO>;
+type UserDataSetAction = PayloadAction<UserDataSetDTO>;
 
 export const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
         loginSuccess(state, action: LoginSuccessAction) {
-            state.user = action.payload.user;
             state.token = action.payload.token;
             state.refreshToken = action.payload.refreshToken;
             localStorage.setItem('token', action.payload.token);
             localStorage.setItem('refreshToken', action.payload.refreshToken);
-            localStorage.setItem('user', JSON.stringify(action.payload.user));
         },
         tokenUpdated(state, action: TokenUpdatedAction) {
-            state.token = action.payload.token;
-            state.refreshToken = action.payload.refreshToken;
-            localStorage.setItem('token', action.payload.token);
-            localStorage.setItem('refreshToken', action.payload.refreshToken);
+            if (action.payload.token && action.payload.refreshToken) {
+                state.token = action.payload.token;
+                state.refreshToken = action.payload.refreshToken;
+                localStorage.setItem('token', action.payload.token);
+                localStorage.setItem('refreshToken', action.payload.refreshToken);
+            }
+        },
+        userDataSet(state, action: UserDataSetAction) {
+            state.user = action.payload.user;
         },
         logout(state) {
             state.user = null;
@@ -45,4 +52,4 @@ export const authSlice = createSlice({
     },
 });
 
-export const { loginSuccess, tokenUpdated, logout } = authSlice.actions;
+export const { loginSuccess, tokenUpdated, logout, userDataSet } = authSlice.actions;

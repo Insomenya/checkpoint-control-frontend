@@ -3,6 +3,7 @@ export const API_PATHS = {
     AUTH: {
         LOGIN: '/auth/jwt/create',
         REFRESH_TOKEN: '/auth/jwt/refresh',
-        VERIFY_TOKEN: '/auth/jwt/verify'
+        VERIFY_TOKEN: '/auth/jwt/verify',
+        GET_USER_DATA: '/auth/details'
     }
 };

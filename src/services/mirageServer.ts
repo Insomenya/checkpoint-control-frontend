@@ -47,6 +47,13 @@ export function makeServer({ environment = 'development' } = {}) {
       
         return new Response(401, {}, { error: 'Недействительный refresh-токен' });
       });
+
+      // узнать почему не работает verify -> getuserdata
+      this.get(API_PATHS.AUTH.GET_USER_DATA, () => {
+        return {
+          user: { id: 1, username: 'admin', role: 'admin' },
+        };
+      });
     },
   });
 }

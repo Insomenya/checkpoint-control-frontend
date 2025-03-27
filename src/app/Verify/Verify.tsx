@@ -1,18 +1,29 @@
-import { useVerifyTokenMutation } from "@api/auth/authApi";
-import { selectToken } from "@store/auth/auth.selectors";
-import { useAppSelector } from "@store/store";
+import { useGetUserDataQuery } from "@api/auth/authApi";
+import { FullscreenLoader } from "@shared/common/molecules";
+import { logout, userDataSet } from "@store/auth/auth.slice";
+import { useAppDispatch } from "@store/store";
 import { useEffect } from "react";
-
+import { Outlet } from "react-router-dom";
 
 export const Verify = () => {
-    const token = useAppSelector(selectToken);
-    const [verifyToken] = useVerifyTokenMutation();
+    const dispatch = useAppDispatch();
+    const {data: userData, isUninitialized, isLoading, isError} = useGetUserDataQuery(null);
 
     useEffect(() => {
-        if (token) {
-            verifyToken({ token });
+        if (!isLoading && !isError && !isUninitialized) {
+            dispatch(userDataSet(userData));
         }
-    }, []);
+    }, [isLoading]);
 
-    return null;
+    useEffect(() => {
+        if (isError) {
+            dispatch(logout());
+        }
+    }, [isError]);
+
+    if (isLoading || isUninitialized || isError) {
+        return <FullscreenLoader />;
+    } else {
+        return <Outlet />;
+    }
 };

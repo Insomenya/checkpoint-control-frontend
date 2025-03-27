@@ -1,5 +1,5 @@
 import { baseApi } from '../baseApi';
-import { PostLoginRequestDTO, PostLoginResponseDTO, PostRefreshTokenRequestDTO, PostRefreshTokenResponseDTO, PostVerifyTokenDTO } from '@/models/auth';
+import { GetUserDataResponseDTO, PostLoginRequestDTO, PostLoginResponseDTO, PostRefreshTokenRequestDTO, PostRefreshTokenResponseDTO, PostVerifyTokenDTO } from '@/models/auth';
 import { API_PATHS } from '@shared/constants';
 
 const authApiSlice = baseApi.injectEndpoints({
@@ -25,7 +25,13 @@ const authApiSlice = baseApi.injectEndpoints({
         body,
       }),
     }),
+    getUserData: builder.query<GetUserDataResponseDTO, null>({
+      query: () => ({
+        url: API_PATHS.AUTH.GET_USER_DATA,
+        method: 'GET'
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useRefreshTokenMutation, useVerifyTokenMutation } = authApiSlice;
+export const { useLoginMutation, useRefreshTokenMutation, useVerifyTokenMutation, useGetUserDataQuery } = authApiSlice;

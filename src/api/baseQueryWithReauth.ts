@@ -1,7 +1,7 @@
 import { BaseQueryFn, FetchArgs, FetchBaseQueryError, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '@store/store';
-import { logout, tokenUpdated } from '@store/auth/auth.slice';
-import { PostRefreshTokenRequestDTO, PostRefreshTokenResponseDTO } from '@/models/auth';
+import { logout, tokenUpdated, userDataSet } from '@store/auth/auth.slice';
+import { GetUserDataResponseDTO, PostRefreshTokenRequestDTO, PostRefreshTokenResponseDTO, User } from '@/models/auth';
 import { API_PATHS } from '@shared/constants';
 
 const baseQuery = fetchBaseQuery({
