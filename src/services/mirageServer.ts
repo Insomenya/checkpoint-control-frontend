@@ -1,6 +1,5 @@
-import { GetGoodsRequestDTO, Good } from '@/models/goods';
+import { Good } from '@/models/goods';
 import { API_PATHS } from '@shared/constants';
-import { isArray } from '@v-uik/base';
 import { createServer, Model, Factory, Response } from 'miragejs';
 
 export function makeServer({ environment = 'development' } = {}) {
@@ -86,50 +85,10 @@ export function makeServer({ environment = 'development' } = {}) {
       });
 
       // GET /api/goods
-      this.get(API_PATHS.GOODS.ROOT, (schema, request) => {
-        const queryParams = request.queryParams;
-        const queryParamPage = isArray(queryParams.page) ? queryParams.page?.toString() : queryParams.page;
-        const queryParamLimit = isArray(queryParams.limit) ? queryParams.limit?.toString() : queryParams.limit;
-        const queryParamSort = isArray(queryParams.sort) ? queryParams.sort?.toString() : queryParams.sort;
-        const page = parseInt(queryParamPage || '1', 10);
-        const limit = parseInt(queryParamLimit || '10', 10);
-        const sort = (queryParamSort || 'name') as keyof Good;
-        const order = queryParams.order === 'desc' ? 'desc' : 'asc';
-        const filters = queryParams.filters ? JSON.parse(isArray(queryParams.filters) ? queryParams.filters.toString() : queryParams.filters) : {};
-
+      this.get(API_PATHS.GOODS.ROOT, (schema) => {
         let goods = schema.all('good').models as Good[];
 
-        // Фильтрация
-        if (filters) {
-          const parsedFilters = JSON.parse(filters);
-          if (parsedFilters.name) {
-            goods = goods.filter((good) =>
-              good.name.toLowerCase().includes(parsedFilters.name.toLowerCase())
-            );
-          }
-        }
-
-        // Сортировка
-        goods.sort((a, b) => {
-          const fieldA = a[sort];
-          const fieldB = b[sort];
-
-          if (typeof fieldA === 'number' && typeof fieldB === 'number') {
-            return order === 'asc' ? fieldA - fieldB : fieldB - fieldA;
-          } else if (typeof fieldA === 'string' && typeof fieldB === 'string') {
-            return order === 'asc' ? fieldA.localeCompare(fieldB) : fieldB.localeCompare(fieldA);
-          } else {
-            return 0;
-          }
-        });
-
-        // Пагинация
-        const total = goods.length;
-        const start = (page - 1) * limit;
-        const end = page * limit;
-        const paginatedGoods = goods.slice(start, end);
-
-        return new Response(200, {}, { data: paginatedGoods, pagination: { total, page, limit } });
+        return new Response(200, {}, { goods });
       });
 
       // POST /api/goods
