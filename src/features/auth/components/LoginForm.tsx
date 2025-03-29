@@ -4,12 +4,14 @@ import { loginSchema, LoginFormData } from '../schemas/loginSchema';
 import { useLoginMutation } from '@api/auth/authApi';
 import { Box, Button, createUseStyles, notification } from '@v-uik/base';
 import { ErrorDescription, InputField } from '@shared/common/atoms';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ROUTER_PATHS } from '@shared/constants';
-import { useAppDispatch } from '@store/store';
+import { useAppDispatch, useAppSelector } from '@store/store';
 import { loginSuccess } from '@store/auth/auth.slice';
 import { isErrorResponse } from '@shared/utils';
 import { PasswordField } from '@shared/common/atoms/form';
+import { verifyKeySet } from '@store/common/common.slice';
+import { selectVerifyKey } from '@store/common/common.selectors';
 
 const useStyles = createUseStyles((theme) => ({
   loginForm: {
@@ -35,6 +37,7 @@ export const LoginForm = () => {
   const { handleSubmit } = form;
   const classes = useStyles();
   const [login, { isLoading }] = useLoginMutation();
+  const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -43,7 +46,8 @@ export const LoginForm = () => {
       .unwrap()
       .then((payload) => {
         dispatch(loginSuccess(payload));
-        navigate(ROUTER_PATHS.ROOT);
+        window.location.replace(ROUTER_PATHS.ROOT);
+        // navigate(ROUTER_PATHS.ROOT);
       })
       .catch((error) => {
         if (isErrorResponse(error)) {

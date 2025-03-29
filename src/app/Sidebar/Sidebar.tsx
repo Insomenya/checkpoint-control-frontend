@@ -101,7 +101,7 @@ export const Sidebar = memo(({ children }: Props): JSX.Element => {
                     </BarMenuItem>
                     <BarMenuItem
                         icon={<IconBox />}
-                        onClick={navigateHandler(ROUTER_PATHS.REGISTER_EXPEDITION)}
+                        onClick={navigateHandler(ROUTER_PATHS.REGISTER_GOODS)}
                         disabled={isNotLogistician}
                         selected={isSamePath(ROUTER_PATHS.REGISTER_GOODS)}
                     >
@@ -119,7 +119,7 @@ export const Sidebar = memo(({ children }: Props): JSX.Element => {
                         icon={<Archive />}
                         dropdownMenuProps={dropdownMenuProps}
                         disabled={isNotOperator}
-                        className={clsx(classes.dropdownDisabled, isNotOperator)}
+                        className={clsx(isNotOperator ? classes.dropdownDisabled : null)}
                         selected={hasPath(ROUTER_PATHS.REPORTS.ROOT)}
                         classes={{
                             root: classes.dropdownRoot

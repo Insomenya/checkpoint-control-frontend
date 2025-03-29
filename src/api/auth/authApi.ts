@@ -2,7 +2,7 @@ import { baseApi } from '../baseApi';
 import { GetUserDataResponseDTO, PostLoginRequestDTO, PostLoginResponseDTO, PostRefreshTokenRequestDTO, PostRefreshTokenResponseDTO, PostVerifyTokenDTO } from '@/models/auth';
 import { API_PATHS } from '@shared/constants';
 
-const authApiSlice = baseApi.injectEndpoints({
+const authApiSlice = baseApi.enhanceEndpoints({addTagTypes: ['User']}).injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<PostLoginResponseDTO, PostLoginRequestDTO>({
       query: (credentials) => ({
@@ -10,6 +10,7 @@ const authApiSlice = baseApi.injectEndpoints({
         method: 'POST',
         body: credentials,
       }),
+      invalidatesTags: ['User']
     }),
     refreshToken: builder.mutation<PostRefreshTokenResponseDTO, PostRefreshTokenRequestDTO>({
       query: (body) => ({
@@ -17,6 +18,7 @@ const authApiSlice = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
+      invalidatesTags: ['User']
     }),
     verifyToken: builder.mutation<PostVerifyTokenDTO, PostVerifyTokenDTO>({
       query: (body) => ({
@@ -30,6 +32,7 @@ const authApiSlice = baseApi.injectEndpoints({
         url: API_PATHS.AUTH.GET_USER_DATA,
         method: 'GET'
       }),
+      providesTags: ['User']
     }),
   }),
 });

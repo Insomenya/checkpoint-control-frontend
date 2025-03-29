@@ -4,14 +4,18 @@ import { About, AddUser, CheckpointZoneLink, Confirmation, ExpeditionStatus, Fil
 import { ROUTER_PATHS } from "@shared/constants";
 import ProtectedRoute from "./ProtectedRoute";
 import { Verify } from "../Verify/Verify";
+import { useAppSelector } from "@store/store";
+import { selectVerifyKey } from "@store/common/common.selectors";
 
 export const Router = () => {
+    const verifyKey = useAppSelector(selectVerifyKey);
+
     return (
         <BrowserRouter>
             <Routes>
                 <Route path={ROUTER_PATHS.LOGIN} element={<Login />} />
                 <Route element={<ProtectedRoute />}>
-                    <Route element={<Verify />} >
+                    <Route element={<Verify key={verifyKey} />} >
                         <Route element={<Harness />} path={ROUTER_PATHS.ROOT}>
                             <Route
                                 path={ROUTER_PATHS.REGISTER_EXPEDITION}
@@ -20,7 +24,7 @@ export const Router = () => {
                                 <Route index element={<RegisterExpedition />} />
                             </Route>
                             <Route
-                                path={ROUTER_PATHS.REGISTER_EXPEDITION}
+                                path={ROUTER_PATHS.REGISTER_GOODS}
                                 element={<ProtectedRoute roles={['logistician']} />}
                             >
                                 <Route index element={<RegisterGoods />} />

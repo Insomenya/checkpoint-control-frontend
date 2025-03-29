@@ -39,12 +39,21 @@ export function makeServer({ environment = 'development' } = {}) {
       this.post(API_PATHS.AUTH.LOGIN, (_schema, request) => {
         const { username, password } = JSON.parse(request.requestBody);
 
-        if (username === 'admin' && password === 'password') {
-          return {
-            token: 'fake-jwt-token',
-            refreshToken: 'fake-refresh-token',
-            user: { id: 1, username: 'admin', role: 'admin' },
-          };
+        if (password === 'password') {
+          switch(username) {
+            case 'admin':
+            case 'operator':
+            case 'logistician':
+              return {
+                user: {
+                  id: 3,
+                  username: username,
+                  role: username
+                },
+                token: `fake-${username}-token`,
+                refreshToken: `fake-${username}-refresh-token`
+              };
+          }
         }
 
         return new Response(401, {}, { message: 'Неверный логин или пароль' });
@@ -53,11 +62,14 @@ export function makeServer({ environment = 'development' } = {}) {
       // Обновить jwt токен
       this.post(API_PATHS.AUTH.REFRESH_TOKEN, (_schema, request) => {
         const { refreshToken } = JSON.parse(request.requestBody);
-      
-        if (refreshToken === 'fake-refresh-token') {
+        const result = refreshToken.match(/fake-(.*)-refresh-token/);
+
+        if (result) {
+          let username = result[1];
+
           return {
-            token: 'new-fake-jwt-token',
-            refreshToken: 'new-fake-refresh-token',
+            token: `fake-${username}-token`,
+            refreshToken: `fake-${username}-refresh-token`,
           };
         }
       
@@ -68,9 +80,9 @@ export function makeServer({ environment = 'development' } = {}) {
       this.post(API_PATHS.AUTH.VERIFY_TOKEN, (_schema, request) => {
         const { token } = JSON.parse(request.requestBody);
       
-        if (token === 'new-fake-jwt-token') {
+        if (token.test(/fake-(.*)-token/)) {
           return {
-            token: 'new-fake-jwt-token',
+            token: token,
           };
         }
       
@@ -78,10 +90,19 @@ export function makeServer({ environment = 'development' } = {}) {
       });
 
       // Получение данных пользователя
-      this.get(API_PATHS.AUTH.GET_USER_DATA, () => {
-        return {
-          user: { id: 1, username: 'admin', role: 'admin' },
-        };
+      this.get(API_PATHS.AUTH.GET_USER_DATA, (_schema, request) => {
+        const authorization = request.requestHeaders.authorization;
+        const result = authorization.match(/fake-(.*)-token/);
+
+        if (result) {
+          let user = result[1];
+
+          return {
+            user: { id: 1, username: user, role: user },
+          };
+        }
+
+        return new Response(401, {}, { error: 'Недействительный токен' });
       });
 
       // GET /api/goods
