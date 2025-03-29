@@ -2,6 +2,7 @@ export type User = {
     id: number;
     role: 'admin' | 'operator' | 'logistician';
     username: string;
+    fullName?: string;
 };
 
 export type PostLoginResponseDTO = {

@@ -63,14 +63,14 @@ export const TopBar = () => {
             <Box style={{ marginLeft: 'auto' }} className={clsx(classes.avatarGroupContainer, classes.containerRow)}>
                 <Box className={clsx(classes.textWrapper, classes.textWrapperRight)}>
                     <Text kind="subtitle1" className={classes.usernameBase}>
-                        {user?.username ?? 'Username'}
+                        {user?.fullName ?? user?.username ?? 'Username'}
                     </Text>
                     <Text kind="caption" className={classes.captionBase}>
                         {user?.role ?? 'user role'}
                     </Text>
                 </Box>
                 <Box>
-                    <Avatar color="linear-gradient(227deg, #053DA3 13.15%, #0796F5 84.48%)" size="sm"><Text kind="titleSm">{getNameInitials(user?.username)}</Text></Avatar>
+                    <Avatar color="linear-gradient(227deg, #053DA3 13.15%, #0796F5 84.48%)" size="sm"><Text kind="titleSm">{getNameInitials(user?.fullName ?? user?.username)}</Text></Avatar>
                 </Box>
             </Box>
             <BarDivider />
