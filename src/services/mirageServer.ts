@@ -94,11 +94,17 @@ export function makeServer({ environment = 'development' } = {}) {
         const authorization = request.requestHeaders.authorization;
         const result = authorization.match(/fake-(.*)-token/);
 
+        const fullNames = {
+          admin: 'Аркадий Доступов',
+          operator: 'Светлана Быстрорук',
+          logistician: 'Виктория Накладнова',
+        };
+
         if (result) {
-          let user = result[1];
+          let user = result[1] as 'admin' | 'operator' | 'logistician';
 
           return {
-            user: { id: 1, username: user, role: user },
+            user: { id: 1, username: user, role: user, fullName: fullNames[user] },
           };
         }
 
