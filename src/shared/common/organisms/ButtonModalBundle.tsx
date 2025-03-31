@@ -1,4 +1,4 @@
-import { Button, createUseStyles } from "@v-uik/base";
+import { Button, ButtonProps, createUseStyles } from "@v-uik/base";
 import { FC, useState } from "react";
 
 export type ButtonModalProps<T extends object, O extends object = {}> = {
@@ -14,6 +14,7 @@ export type ModalProps<T extends object, O extends object = {}> = ButtonModalPro
 type Props<T extends object, O extends object> = ButtonModalProps<T, O> & {
     ModalComponent: FC<ModalProps<T, O>>;
     labelShowButton?: string;
+    buttonProps?: ButtonProps;
 }
 
 const useStyles = createUseStyles({
@@ -26,6 +27,7 @@ export const ButtonModalBundle = <T extends object = {}, O extends object = {}>(
     onAccept,
     onReject,
     labelShowButton = 'Открыть',
+    buttonProps,
     ModalComponent,
     options
 }: Props<T, O>) => {
@@ -48,7 +50,7 @@ export const ButtonModalBundle = <T extends object = {}, O extends object = {}>(
 
     return (
         <>
-            <Button className={classes.button} color="secondary" kind="outlined" onClick={handleOpen} size="sm">
+            <Button {...buttonProps} className={classes.button} color="secondary" kind="outlined" onClick={handleOpen} size="sm">
                 {labelShowButton}
             </Button>
             <ModalComponent isOpen={isOpen} onAccept={handleAccept} onReject={handleClose} options={options} />

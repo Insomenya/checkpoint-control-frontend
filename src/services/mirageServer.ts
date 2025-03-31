@@ -1,5 +1,6 @@
 import { Good } from '@/models/goods';
 import { API_PATHS } from '@shared/constants';
+import { faker } from '@faker-js/faker';
 import { createServer, Model, Factory, Response } from 'miragejs';
 
 export function makeServer({ environment = 'development' } = {}) {
@@ -13,17 +14,16 @@ export function makeServer({ environment = 'development' } = {}) {
     factories: {
       good: Factory.extend<Partial<Good>>({
         name(i: number) {
-          return `Товар ${i + 1}`;
+          return faker.commerce.productName();
         },
         description() {
-          return `Описание товара`;
+          return faker.commerce.productDescription();
         },
         quantity() {
-          return Math.floor(Math.random() * 1000);
+          return faker.number.float({ min: 1, max: 1000, fractionDigits: 2});
         },
-        unit_of_measurement() {
-          const units = ['шт', 'кг', 'л', 'м'];
-          return units[Math.floor(Math.random() * units.length)];
+        unitOfMeasurement() {
+          return faker.helpers.arrayElement(['шт', 'кг', 'л', 'м']);
         },
       }),
     },

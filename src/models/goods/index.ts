@@ -3,7 +3,7 @@ export type Good = {
     name: string;
     description?: string;
     quantity: number;
-    unit_of_measurement: string;
+    unitOfMeasurement: string;
 }
 
 export type GetGoodsPaginatedRequestDTO = {
