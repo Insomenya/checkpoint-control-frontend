@@ -8,6 +8,9 @@ import { ErrorDescription } from '../atoms';
 import { ICON_SIZE, Messages, MESSAGES } from '@shared/constants';
 import { ButtonModalBundle, ModalProps } from './ButtonModalBundle';
 import { Edit, Filter, PlaylistAdd, Printer, TableExport, Trash } from '@v-uik/icons';
+import { format } from 'date-fns';
+import { DateFormat } from '@/models/common';
+import { Alignment } from 'pdfmake/interfaces';
 
 const useStyles = createUseStyles((theme) => ({
   container: {
@@ -135,6 +138,18 @@ export const AppTable = <T extends object> ({ messages = MESSAGES, fileName, col
 
     const docDefinition = {
       content: [
+        {
+          alignment: 'right' as Alignment,
+          columns: [
+            {
+              text: ''
+            },
+            {
+              text: format(new Date(), DateFormat.RuDateOnly)
+            },
+          ]
+        },
+        '\n\n',
         {
           text: fileName,
           style: 'header',
