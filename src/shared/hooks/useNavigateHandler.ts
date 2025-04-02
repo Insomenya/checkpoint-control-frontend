@@ -7,3 +7,5 @@ export const useNavigateHandler = () => {
 
     return (path: string) => () => navigate(ROUTER_PATHS.ROOT + path);
 };
+
+export type NavigateHandler = ReturnType<typeof useNavigateHandler>;

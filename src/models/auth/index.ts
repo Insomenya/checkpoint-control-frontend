@@ -1,6 +1,8 @@
+import { UserRoles } from "../common";
+
 export type User = {
     id: number;
-    role: 'admin' | 'operator' | 'logistician';
+    role: UserRoles;
     username: string;
     fullName?: string;
 };

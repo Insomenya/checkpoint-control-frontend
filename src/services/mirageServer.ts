@@ -2,6 +2,7 @@ import { Good } from '@/models/goods';
 import { API_PATHS } from '@shared/constants';
 import { faker } from '@faker-js/faker';
 import { createServer, Model, Factory, Response } from 'miragejs';
+import { UserRoles } from '@/models/common';
 
 export function makeServer({ environment = 'development' } = {}) {
   return createServer({
@@ -101,7 +102,7 @@ export function makeServer({ environment = 'development' } = {}) {
         };
 
         if (result) {
-          let user = result[1] as 'admin' | 'operator' | 'logistician';
+          let user = result[1] as UserRoles;
 
           return {
             user: { id: 1, username: user, role: user, fullName: fullNames[user] },

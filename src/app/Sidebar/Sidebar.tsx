@@ -7,6 +7,8 @@ import { ROUTER_PATHS } from "@/shared/constants";
 import { useAppSelector } from "@store/store";
 import { selectToken, selectUserRole } from "@store/auth/auth.selectors";
 import { useNavigateHandler } from "@shared/hooks";
+import { MenuItem } from "./MenuItem";
+import { MENU } from "./menu";
 
 const useStyles = createUseStyles((theme) => ({
     container: {
@@ -30,15 +32,6 @@ const useStyles = createUseStyles((theme) => ({
     background: {
         background: theme.sys.color.primaryAlpha
     },
-    barMenuItem: {
-        marginBottom: 10
-    },
-    dropdownRoot: {
-        overflow: 'hidden'
-    },
-    dropdownDisabled: {
-        pointerEvents: 'none'
-    }
 }));
 
 type Props = {
@@ -46,39 +39,29 @@ type Props = {
 };
 
 export const Sidebar = memo(({ children }: Props): JSX.Element => {
-    const token = useAppSelector(selectToken);
     const userRole = useAppSelector(selectUserRole);
     const [isSidebarExpanded, setIsSideparExpanded] = useState(true);
     const theme = useTheme();
     const classes = useStyles();
     const navigateHandler = useNavigateHandler();
-    const location = useLocation();
-
-    const isNotAdmin = userRole !== 'admin';
-    const isNotOperator = userRole !== 'operator';
-    const isNotLogistician = userRole !== 'logistician';
-    const notLoggedIn = !token;
-
-    const isSamePath = (path: string) => location.pathname === ROUTER_PATHS.ROOT + path;
-
-    const hasPath = (path:string) => location.pathname.includes(path);
-
-    const dropdownMenuProps = useMemo(() => ({
-        content: (
-            <>
-                <BarDropdownItem onClick={ navigateHandler(ROUTER_PATHS.REPORTS.ROOT + ROUTER_PATHS.REPORTS.SINGLE) }>
-                    Статус экспедиции
-                </BarDropdownItem>
-                <BarDropdownItem onClick={ navigateHandler(ROUTER_PATHS.REPORTS.ROOT + ROUTER_PATHS.REPORTS.FILTER) }>
-                    Сводка с фильтрами
-                </BarDropdownItem>
-            </>
-        ),
-    }), []);
 
     const handleToggleExpanded = () => {
         setIsSideparExpanded(!isSidebarExpanded);
     };
+
+    const menuItems = useMemo(() => (userRole && MENU[userRole].map(({ type, icon, label, path, options }) => (
+        <MenuItem
+            key={`menu_item_${path}`}
+            type={type}
+            icon={icon}
+            path={path}
+            navigateHandler={navigateHandler}
+            isDisabled={false}
+            options={options}
+        >
+            {label}
+        </MenuItem>
+    ))), [userRole]);
 
     return (
         <Box className={classes.container} style={{ paddingLeft: isSidebarExpanded ? theme.spacing(64) : theme.spacing(16) }}>
@@ -91,66 +74,16 @@ export const Sidebar = memo(({ children }: Props): JSX.Element => {
                     direction="vertical"
                     expanded={isSidebarExpanded}
                 >
-                    <BarMenuItem
-                        icon={<Truck />}
-                        onClick={navigateHandler(ROUTER_PATHS.REGISTER_EXPEDITION)}
-                        disabled={isNotLogistician}
-                        selected={isSamePath(ROUTER_PATHS.REGISTER_EXPEDITION)}
-                    >
-                        Регистрация эксп.
-                    </BarMenuItem>
-                    <BarMenuItem
-                        icon={<IconBox />}
-                        onClick={navigateHandler(ROUTER_PATHS.REGISTER_GOODS)}
-                        disabled={isNotLogistician}
-                        selected={isSamePath(ROUTER_PATHS.REGISTER_GOODS)}
-                    >
-                        Регистрация ТМЦ
-                    </BarMenuItem>
-                    <BarMenuItem
-                        icon={<ZoomCheck />}
-                        onClick={navigateHandler(ROUTER_PATHS.CONFIRMATION)}
-                        disabled={isNotOperator}
-                        selected={isSamePath(ROUTER_PATHS.CONFIRMATION)}
-                    >
-                        Подтверждение
-                    </BarMenuItem>
-                    <BarDropdown
-                        icon={<Archive />}
-                        dropdownMenuProps={dropdownMenuProps}
-                        disabled={isNotOperator}
-                        className={clsx(isNotOperator ? classes.dropdownDisabled : null)}
-                        selected={hasPath(ROUTER_PATHS.REPORTS.ROOT)}
-                        classes={{
-                            root: classes.dropdownRoot
-                        }}
-                    >
-                        Сводки
-                    </BarDropdown>
-                    <BarMenuItem
-                        icon={<UserPlus />}
-                        onClick={navigateHandler(ROUTER_PATHS.ADD_USER)}
-                        disabled={isNotAdmin}
-                        selected={isSamePath(ROUTER_PATHS.ADD_USER)}
-                    >
-                        Добавить пользователя
-                    </BarMenuItem>
-                    <BarMenuItem
-                        icon={<DeviceDesktop />}
-                        onClick={navigateHandler(ROUTER_PATHS.CHECKPOINT_ZONE_LINK)}
-                        disabled={isNotAdmin}
-                        selected={isSamePath(ROUTER_PATHS.CHECKPOINT_ZONE_LINK)}
-                    >
-                        Настройка АРМ
-                    </BarMenuItem>
+                    {menuItems}
                     <BarDivider />
-                    <BarMenuItem
+                    <MenuItem
                         icon={<InfoCircle />}
-                        onClick={navigateHandler(ROUTER_PATHS.ABOUT)}
-                        selected={isSamePath(ROUTER_PATHS.ABOUT)}
-                    >
-                        О приложении
-                    </BarMenuItem>
+                        label="О приложении"
+                        path={ROUTER_PATHS.ABOUT}
+                        type="regular"
+                        isDisabled={false}
+                        navigateHandler={navigateHandler}
+                    />
                     <TooltipWrapper tooltip="Развернуть" tooltipNeeded={!isSidebarExpanded}>
                         <BarMenuItem
                             icon={isSidebarExpanded ? <ChevronLeft /> : <ChevronRight />}
