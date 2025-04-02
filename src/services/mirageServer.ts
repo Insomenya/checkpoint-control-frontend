@@ -14,7 +14,7 @@ export function makeServer({ environment = 'development' } = {}) {
 
     factories: {
       good: Factory.extend<Partial<Good>>({
-        name(i: number) {
+        name() {
           return faker.commerce.productName();
         },
         description() {
@@ -30,7 +30,7 @@ export function makeServer({ environment = 'development' } = {}) {
     },
 
     seeds(server) {
-      server.createList('good', 50); // Создаем 50 тестовых записей
+      server.createList('good', 50);
     },
 
     routes() {

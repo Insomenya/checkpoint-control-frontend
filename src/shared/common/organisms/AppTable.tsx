@@ -267,14 +267,14 @@ export const AppTable = <T extends object> ({ messages = MESSAGES, fileName, col
     }
 
     return filteredItems;
-  }, [sortOrder, orderBy, filter]);
+  }, [sortOrder, orderBy, filter, items]);
 
   const currentTableData = useMemo(() => {
     const firstPageIndex = (currentPage - 1) * itemsPerPage;
     const lastPageIndex = firstPageIndex + itemsPerPage;
 
     return sortedItems.slice(firstPageIndex, lastPageIndex)
-  }, [sortOrder, orderBy, filter, currentPage, itemsPerPage]);
+  }, [sortOrder, orderBy, filter, currentPage, itemsPerPage, items]);
 
   const handleChangeTable = useCallback<(params: TableEventType<RecordDataSource<T>>) => void> ((params) => {
     switch (params.type) {

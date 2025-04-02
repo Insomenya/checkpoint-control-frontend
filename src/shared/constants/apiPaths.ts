@@ -8,6 +8,5 @@ export const API_PATHS = {
     },
     GOODS: {
         ROOT: '/goods',
-        
     }
 };
