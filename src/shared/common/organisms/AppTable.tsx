@@ -71,7 +71,11 @@ export const AppTable = <T extends object> ({ messages = MESSAGES, fileName, col
   const [editing, setEditing] = useState<T | null>(null);
 
   const handleFilterChange = (value: string) => {
+    const maxPages = Math.floor(filteredItems.length / itemsPerPage) || 1;
     setFilter(value);
+    if (currentPage > maxPages) {
+      setCurrentPage(maxPages);
+    }
   };
 
   const handleOpenModal = () => {
@@ -217,18 +221,16 @@ export const AppTable = <T extends object> ({ messages = MESSAGES, fileName, col
     }
 
     return filteredItems;
-  }, [sortOrder, orderBy, filteredItems]);
+  }, [sortOrder, orderBy, filter]);
 
   const currentTableData = useMemo(() => {
     const firstPageIndex = (currentPage - 1) * itemsPerPage;
     const lastPageIndex = firstPageIndex + itemsPerPage;
 
     return sortedItems.slice(firstPageIndex, lastPageIndex)
-  }, [sortedItems, currentPage, itemsPerPage]);
+  }, [sortOrder, orderBy, filter, currentPage, itemsPerPage]);
 
-  const handleChangeTable = useCallback<
-    (params: TableEventType<RecordDataSource<T>>) => void
-  >((params) => {
+  const handleChangeTable = useCallback<(params: TableEventType<RecordDataSource<T>>) => void> ((params) => {
     switch (params.type) {
       case 'sort': {
         setOrderBy(params.dataIndex as keyof T);
@@ -308,20 +310,22 @@ export const AppTable = <T extends object> ({ messages = MESSAGES, fileName, col
         dataSource={currentTableData}
         onChange={handleChangeTable}
       />
-      <TablePagination
-        size="sm"
-        currentPage={currentPage}
-        pageSize={itemsPerPage}
-        totalCount={sortedItems.length}
-        onChange={setCurrentPage}
-        onPageSizeChange={setItemsPerPage}
-        pageSizesArray={[5, 10, 15]}
-        paginationType={TablePaginationType.advanced}
-        itemsPerPageText="Элементов на странице"
-        classes={{
-          dividerTop: classes.paginationDivider
-        }}
-      />
+      {Math.floor(filteredItems.length / itemsPerPage) ? 
+        <TablePagination
+          size="sm"
+          currentPage={currentPage}
+          pageSize={itemsPerPage}
+          totalCount={sortedItems.length}
+          onChange={setCurrentPage}
+          onPageSizeChange={setItemsPerPage}
+          pageSizesArray={[5, 10, 15]}
+          paginationType={TablePaginationType.advanced}
+          itemsPerPageText="Элементов на странице"
+          classes={{
+            dividerTop: classes.paginationDivider
+          }}
+        /> : null
+      }
     </Box>
   );
 };

@@ -4,7 +4,7 @@ export enum UnitOfMeasurement {
     litre = 'LITRE',
     meter = 'METER'
 }
-//'шт', 'кг', 'л', 'м'
+
 export const UNITS_OF_MEASUREMENT: Record<UnitOfMeasurement, string> = {
     [UnitOfMeasurement.piece]: 'шт',
     [UnitOfMeasurement.kilo]: 'кг',
