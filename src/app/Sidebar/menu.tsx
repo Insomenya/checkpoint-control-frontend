@@ -1,6 +1,6 @@
 import { MenuItemInfo, UserRoles } from "@/models/common";
 import { ROUTER_PATHS } from "@shared/constants";
-import { Archive, Box, BuildingFactory2, DeviceDesktop, Truck, UserPlus, ZoomCheck } from "@v-uik/icons";
+import { Archive, Box, BuildingFactory2, DeviceDesktop, Truck, UserPlus, Users, ZoomCheck } from "@v-uik/icons";
 
 export const MENU: Record<UserRoles, MenuItemInfo[]> = {
     operator: [
@@ -55,6 +55,12 @@ export const MENU: Record<UserRoles, MenuItemInfo[]> = {
             icon: <UserPlus />,
             label: 'Добавить пользователя',
             path: ROUTER_PATHS.ADD_USER,
+        },
+        {
+            type: 'regular',
+            icon: <Users />,
+            label: 'Пользователи',
+            path: ROUTER_PATHS.USERS,
         },
         {
             type: 'regular',

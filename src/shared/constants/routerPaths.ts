@@ -12,5 +12,6 @@ export const ROUTER_PATHS = {
         FILTER: 'filter'
     },
     ADD_USER: 'user',
+    USERS: 'users',
     CHECKPOINT_ZONE_LINK: 'checkpoints'
 };
