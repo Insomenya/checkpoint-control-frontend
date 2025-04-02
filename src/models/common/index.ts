@@ -32,3 +32,5 @@ export type MenuItemInfo = {
     path: string;
     options?: MenuDropdownOptionInfo[];
 };
+
+export type TableEditabilityOptions = 'c' | 'e' | 'd' | 'ce' | 'cd' | 'ed' | 'ced';

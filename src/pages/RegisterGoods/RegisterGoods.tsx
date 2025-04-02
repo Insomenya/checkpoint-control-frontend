@@ -1,10 +1,12 @@
 import { useGetGoodsQuery, useAddGoodMutation, useUpdateGoodMutation, useDeleteGoodMutation } from '@api/goods/goodsApi';
 import { Good } from '../../models/goods';
-import { CircularProgress, Container, createUseStyles, Text } from '@v-uik/base';
+import { CircularProgress, Container, createUseStyles, notification, Text } from '@v-uik/base';
 import { PageFallback } from '@shared/common/molecules';
-import { FAILED_TO_LOAD_MESSAGE } from '@/features/goods/constants';
+import { FAILED_TO_LOAD_MESSAGE, MESSAGES } from '@/features/goods/constants';
 import { AppTable } from '@shared/common/organisms';
 import { FakeGoodModal, getColumns } from '@/features/goods/components';
+import { ErrorDescription } from '@shared/common/atoms';
+import { isErrorResponse } from '@shared/utils';
 
 const useStyles = createUseStyles((theme) => ({
   container: {
@@ -22,15 +24,90 @@ export const RegisterGoods = () => {
   const [deleteGood] = useDeleteGoodMutation();
 
   const handleAddGood = (good: Good) => {
-    addGood(good);
+    addGood(good)
+      .unwrap()
+      .then(() => {
+        notification.success(
+          <ErrorDescription>{MESSAGES.ADDED}</ErrorDescription>,
+          {
+            direction: 'vertical',
+            title: 'Операция успешна'
+          }
+        );
+      })
+      .catch((error) => {
+        if (import.meta.env.DEV) {
+          console.log(error.error);
+        }
+
+        if (isErrorResponse(error)) {
+          notification.error(
+            <ErrorDescription>{error.data.message}</ErrorDescription>,
+            {
+              direction: 'vertical',
+              title: 'Ошибка операции'
+            }
+          )
+        }
+      });
   };
 
   const handleUpdateGood = (good: Good) => {
-    updateGood(good);
+    updateGood(good)
+      .unwrap()
+      .then(() => {
+        notification.success(
+          <ErrorDescription>{MESSAGES.UPDATED}</ErrorDescription>,
+          {
+            direction: 'vertical',
+            title: 'Операция успешна'
+          }
+        );
+      })
+      .catch((error) => {
+        if (import.meta.env.DEV) {
+          console.log(error.error);
+        }
+
+        if (isErrorResponse(error)) {
+          notification.error(
+            <ErrorDescription>{error.data.message}</ErrorDescription>,
+            {
+              direction: 'vertical',
+              title: 'Ошибка операции'
+            }
+          )
+        }
+      });
   };
 
   const handleDeleteGood = (good: Good) => {
-    deleteGood({ id: good.id });
+    deleteGood({ id: good.id })
+      .unwrap()
+      .then(() => {
+        notification.success(
+          <ErrorDescription>{MESSAGES.DELETED}</ErrorDescription>,
+          {
+            direction: 'vertical',
+            title: 'Операция успешна'
+          }
+        );
+      })
+      .catch((error) => {
+        if (import.meta.env.DEV) {
+          console.log(error.error);
+        }
+
+        if (isErrorResponse(error)) {
+          notification.error(
+            <ErrorDescription>{error.data.message}</ErrorDescription>,
+            {
+              direction: 'vertical',
+              title: 'Ошибка операции'
+            }
+          )
+        }
+      });
   };
 
   const getPageCommon = () => {
@@ -72,6 +149,10 @@ export const RegisterGoods = () => {
         onAdd={handleAddGood}
         onDelete={handleDeleteGood}
         onUpdate={handleUpdateGood}
+        messages={MESSAGES}
+        pdfExportable
+        excelExportable
+        editable="ced"
       />
     </>
   );

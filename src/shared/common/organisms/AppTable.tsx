@@ -9,7 +9,7 @@ import { ICON_SIZE, Messages, MESSAGES } from '@shared/constants';
 import { ButtonModalBundle, ModalProps } from './ButtonModalBundle';
 import { Edit, Filter, PlaylistAdd, Printer, TableExport, Trash } from '@v-uik/icons';
 import { format } from 'date-fns';
-import { DateFormat } from '@/models/common';
+import { DateFormat, TableEditabilityOptions } from '@/models/common';
 import { Alignment } from 'pdfmake/interfaces';
 
 const useStyles = createUseStyles((theme) => ({
@@ -52,18 +52,21 @@ export type ModalOptions<T extends object> = {
   item: T | null;
 }
 
-type GoodsTableProps<T extends object> = {
+type AppTableProps<T extends object> = {
     messages?: Messages;
     fileName: string;
     columns: ColumnProps<T>[];
     items: T[];
-    ModalComponent: FC<ModalProps<T, ModalOptions<T>>>;
+    ModalComponent?: FC<ModalProps<T, ModalOptions<T>>>;
     onAdd: (item: T) => void;
     onDelete: (item: T) => void;
     onUpdate: (item: T) => void;
+    pdfExportable?: boolean;
+    excelExportable?: boolean;
+    editable?: TableEditabilityOptions;
 }
 
-export const AppTable = <T extends object> ({ messages = MESSAGES, fileName, columns, items, ModalComponent, onAdd, onDelete, onUpdate }: GoodsTableProps<T>) => {
+export const AppTable = <T extends object> ({ messages = MESSAGES, fileName, columns, items, ModalComponent, onAdd, onDelete, onUpdate, pdfExportable, excelExportable, editable }: AppTableProps<T>) => {
   const classes = useStyles();
   const [orderBy, setOrderBy] = useState<keyof T | undefined>();
   const [sortOrder, setSortOrder] = useState<SortOrderProp>('none')
@@ -92,35 +95,14 @@ export const AppTable = <T extends object> ({ messages = MESSAGES, fileName, col
 
   const handleAdd = (item: T) => {
     onAdd(item);
-    notification.success(
-      <ErrorDescription>{messages.ADDED}</ErrorDescription>,
-      {
-        direction: 'vertical',
-        title: 'Операция успешна'
-      }
-    );
   };
 
   const handleEdit = (item: T) => {
     onUpdate(item);
-    notification.success(
-      <ErrorDescription>{messages.UPDATED}</ErrorDescription>,
-      {
-        direction: 'vertical',
-        title: 'Операция успешна'
-      }
-    );
   };
 
   const handleDelete = (item: T) => {
     onDelete(item);
-    notification.success(
-      <ErrorDescription>{messages.DELETED}</ErrorDescription>,
-      {
-        direction: 'vertical',
-        title: 'Операция успешна'
-      }
-    );
   };
 
   const handleExportToPDF = () => {
@@ -202,6 +184,55 @@ export const AppTable = <T extends object> ({ messages = MESSAGES, fileName, col
     }
   };
 
+  const enchancedColumns = useMemo(() => {
+    const hasEdit = editable && editable.indexOf('e') > -1;
+    const hasDelete = editable && editable.indexOf('d') > -1;
+
+    if (hasEdit || hasDelete) {
+      return columns.concat([
+        {
+          key: 'actions',
+          dataIndex: 'actions',
+          width: 60,
+          renderCellContent: ({ row }) => {
+            const editButton = (ModalComponent != null && hasEdit ? (
+              <ButtonModalBundle
+                ModalComponent={ModalComponent}
+                buttonContent={<Edit width={ICON_SIZE} height={ICON_SIZE} />}
+                buttonProps={{
+                  kind: 'outlined',
+                  color: 'secondary',
+                  size: 'sm',
+                  className: classes.iconButton
+                }}
+                options={{ item: editing }}
+              />
+            ) : null);
+  
+            const deleteButton = (hasDelete ? (
+              <Button onClick={() => { handleDelete(row) }} className={classes.iconButton} kind="outlined" size="sm" color="secondary">
+                <Trash width={ICON_SIZE} height={ICON_SIZE} />
+              </Button>
+            ) : null);
+  
+            if (hasEdit || hasDelete) {
+              return (
+                <Box className={classes.actionsRightSide}>
+                  {editButton}
+                  {deleteButton}
+                </Box>
+              );
+            }
+  
+            return null;
+          }
+        }
+      ]);
+    }
+
+    return columns;
+  }, [columns, editable]);
+
   const filteredItems = useMemo(() => items.filter((item) =>
     Object.values(item).some((value) =>
       value.toString().toLowerCase().includes(filter.toLowerCase())
@@ -259,7 +290,6 @@ export const AppTable = <T extends object> ({ messages = MESSAGES, fileName, col
     }
   }, []);
 
-  // todo сделать добавление
   return (
     <Box className={classes.container}>
       <Box className={classes.actions}>
@@ -271,54 +301,45 @@ export const AppTable = <T extends object> ({ messages = MESSAGES, fileName, col
           suffix={<Filter />}
         />
         <Box className={classes.actionsRightSide}>
-          <ButtonModalBundle
-            ModalComponent={ModalComponent}
-            labelShowButton='Добавить'
-            buttonProps={{
-              kind: "contained",
-              color: "primary",
-              prefixIcon: <PlaylistAdd />
-            }}
-            options={{ item: editing }}
-          />
-          <Button
-            kind="outlined"
-            color="primary"
-            size="sm"
-            prefixIcon={<Printer />}
-            onClick={handleExportToPDF}
-          >
-            Экспорт в PDF
-          </Button>
-          <Button
-            kind="outlined"
-            color="primary"
-            size="sm"
-            prefixIcon={<TableExport />}
-            onClick={handleExportToExcel}
-          >
-            Экспорт в Excel
-          </Button>
+          {ModalComponent != null && editable && editable.indexOf('c') > -1 ? (
+            <ButtonModalBundle
+              ModalComponent={ModalComponent}
+              buttonContent='Добавить'
+              buttonProps={{
+                kind: 'contained',
+                color: 'primary',
+                prefixIcon: <PlaylistAdd />
+              }}
+              options={{ item: editing }}
+            />
+          ) : null}
+          {pdfExportable ? (
+            <Button
+              kind="outlined"
+              color="primary"
+              size="sm"
+              prefixIcon={<Printer />}
+              onClick={handleExportToPDF}
+            >
+              Экспорт в PDF
+            </Button>
+          ) : null}
+          {excelExportable ? (
+            <Button
+              kind="outlined"
+              color="primary"
+              size="sm"
+              prefixIcon={<TableExport />}
+              onClick={handleExportToExcel}
+            >
+              Экспорт в Excel
+            </Button>
+          ) : null}
         </Box>
       </Box>
       <Table
         size="sm"
-        columns={columns.concat([
-          {
-            key: 'actions',
-            dataIndex: 'actions',
-            width: 60,
-            renderCellContent: ({ row }) => {
-              // todo сделать редактирование
-              return (
-                <Box className={classes.actionsRightSide}>
-                  <Button className={classes.iconButton} kind="outlined" size="sm" color="secondary"><Edit width={ICON_SIZE} height={ICON_SIZE} /></Button>
-                  <Button onClick={() => { handleDelete(row) }} className={classes.iconButton} kind="outlined" size="sm" color="secondary"><Trash width={ICON_SIZE} height={ICON_SIZE} /></Button>
-                </Box>
-              );
-            }
-          }
-        ])}
+        columns={enchancedColumns}
         classes={{
           headCell: classes.tableHeader
         }}
