@@ -4,7 +4,7 @@ import { CircularProgress, Container, createUseStyles, Text } from '@v-uik/base'
 import { PageFallback } from '@shared/common/molecules';
 import { FAILED_TO_LOAD_MESSAGE } from '@/features/goods/constants';
 import { AppTable } from '@shared/common/organisms';
-import { FakeGoodModal, getColumns } from '@/features/goods/components';
+import { getColumns } from '@/features/goods/components';
 
 const useStyles = createUseStyles((theme) => ({
   container: {
@@ -68,7 +68,6 @@ export const RegisterOrganization = () => {
         items={data.goods}
         columns={getColumns()}
         fileName="Goods"
-        ModalComponent={FakeGoodModal}
         onAdd={handleAddGood}
         onDelete={handleDeleteGood}
         onUpdate={handleUpdateGood}

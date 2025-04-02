@@ -73,8 +73,6 @@ export const AppTable = <T extends object> ({ messages = MESSAGES, fileName, col
   const [filter, setFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState<T | null>(null);
 
   const handleFilterChange = (value: string) => {
     const maxPages = Math.floor(filteredItems.length / itemsPerPage) || 1;
@@ -82,15 +80,6 @@ export const AppTable = <T extends object> ({ messages = MESSAGES, fileName, col
     if (currentPage > maxPages) {
       setCurrentPage(maxPages);
     }
-  };
-
-  const handleOpenModal = () => {
-    setEditing(null);
-    setModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setModalOpen(false);
   };
 
   const handleAdd = (item: T) => {
@@ -199,13 +188,14 @@ export const AppTable = <T extends object> ({ messages = MESSAGES, fileName, col
               <ButtonModalBundle
                 ModalComponent={ModalComponent}
                 buttonContent={<Edit width={ICON_SIZE} height={ICON_SIZE} />}
+                onAccept={handleEdit}
                 buttonProps={{
                   kind: 'outlined',
                   color: 'secondary',
                   size: 'sm',
                   className: classes.iconButton
                 }}
-                options={{ item: editing }}
+                options={{ item: row }}
               />
             ) : null);
   
@@ -305,12 +295,12 @@ export const AppTable = <T extends object> ({ messages = MESSAGES, fileName, col
             <ButtonModalBundle
               ModalComponent={ModalComponent}
               buttonContent='Добавить'
+              onAccept={handleAdd}
               buttonProps={{
                 kind: 'contained',
                 color: 'primary',
                 prefixIcon: <PlaylistAdd />
               }}
-              options={{ item: editing }}
             />
           ) : null}
           {pdfExportable ? (

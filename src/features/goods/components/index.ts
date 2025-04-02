@@ -1,3 +1,2 @@
-// export { GoodModal } from './GoodModal';
-export { FakeGoodModal } from './FakeGoodModal';
+export { GoodModal } from './GoodModal';
 export { getColumns } from './getColumns';

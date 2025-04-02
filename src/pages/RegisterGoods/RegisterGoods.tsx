@@ -4,7 +4,7 @@ import { CircularProgress, Container, createUseStyles, notification, Text } from
 import { PageFallback } from '@shared/common/molecules';
 import { FAILED_TO_LOAD_MESSAGE, MESSAGES } from '@/features/goods/constants';
 import { AppTable } from '@shared/common/organisms';
-import { FakeGoodModal, getColumns } from '@/features/goods/components';
+import { GoodModal, getColumns } from '@/features/goods/components';
 import { ErrorDescription } from '@shared/common/atoms';
 import { isErrorResponse } from '@shared/utils';
 
@@ -145,7 +145,7 @@ export const RegisterGoods = () => {
         items={data.goods}
         columns={getColumns()}
         fileName="Goods"
-        ModalComponent={FakeGoodModal}
+        ModalComponent={GoodModal}
         onAdd={handleAddGood}
         onDelete={handleDeleteGood}
         onUpdate={handleUpdateGood}
