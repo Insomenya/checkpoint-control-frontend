@@ -2,7 +2,7 @@ import { BaseQueryFn, FetchArgs, FetchBaseQueryError, fetchBaseQuery } from '@re
 import { RootState } from '@store/store';
 import { logout, tokenUpdated, userDataSet } from '@store/auth/auth.slice';
 import { GetUserDataResponseDTO, PostRefreshTokenRequestDTO, PostRefreshTokenResponseDTO, User } from '@/models/auth';
-import { API_PATHS } from '@shared/constants';
+import { API_PATHS } from '@shared/common/constants';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_PATHS.ROOT,

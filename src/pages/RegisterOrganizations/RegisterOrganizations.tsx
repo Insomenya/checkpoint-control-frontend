@@ -2,7 +2,7 @@ import { CircularProgress, Container, createUseStyles, notification, Text } from
 import { PageFallback } from '@shared/common/molecules';
 import { AppTable } from '@shared/common/organisms';
 import { ErrorDescription } from '@shared/common/atoms';
-import { isErrorResponse } from '@shared/utils';
+import { isErrorResponse } from '@shared/common/utils';
 import { useAddOrganizationMutation, useDeleteOrganizationMutation, useGetOrganizationsQuery, useUpdateOrganizationMutation } from '@api/organizations/organizationsApi';
 import { Organization } from '@/models/organizations';
 import { FAILED_TO_LOAD_MESSAGE, MESSAGES } from '@/features/organizations/constants';

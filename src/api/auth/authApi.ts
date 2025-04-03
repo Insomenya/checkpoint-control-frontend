@@ -1,6 +1,6 @@
 import { baseApi } from '../baseApi';
 import { GetUserDataResponseDTO, PostLoginRequestDTO, PostLoginResponseDTO, PostRefreshTokenRequestDTO, PostRefreshTokenResponseDTO, PostVerifyTokenDTO } from '@/models/auth';
-import { API_PATHS } from '@shared/constants';
+import { API_PATHS } from '@shared/common/constants';
 
 const authApiSlice = baseApi.enhanceEndpoints({addTagTypes: ['User']}).injectEndpoints({
   endpoints: (builder) => ({

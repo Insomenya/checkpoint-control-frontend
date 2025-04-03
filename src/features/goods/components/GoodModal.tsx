@@ -8,7 +8,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { ComboBoxField, InputField, InputNumberField } from "@shared/common/atoms";
 import { LabelValue } from "@/models/common";
 import { UnitOfMeasurement, UNITS_OF_MEASUREMENT } from "../constants";
-import { getDefaultValues } from "@shared/utils";
+import { getDefaultValues } from "@shared/common/utils";
 import { useEffect } from "react";
 
 type Props = ModalProps<Good, ModalOptions<Good>>;

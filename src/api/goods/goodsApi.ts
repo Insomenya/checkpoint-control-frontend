@@ -1,6 +1,6 @@
 import { baseApi } from '../baseApi';
 import { DeleteGoodRequestDTO, GetGoodsResponseDTO, PostAddGoodRequestDTO, PutEditGoodRequestDTO } from '@/models/goods';
-import { API_PATHS } from '@shared/constants';
+import { API_PATHS } from '@shared/common/constants';
 
 const goodsApiSlice = baseApi.enhanceEndpoints({addTagTypes: ['Goods']}).injectEndpoints({
   endpoints: (builder) => ({

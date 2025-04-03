@@ -4,7 +4,7 @@ import { ModalProps } from "@shared/common/organisms/ButtonModalBundle";
 import { Box, Button, createUseStyles, Modal, ModalBody, ModalFooter, ModalHeader } from "@v-uik/base";
 import { FormProvider, useForm } from "react-hook-form";
 import { InputField } from "@shared/common/atoms";
-import { getDefaultValues } from "@shared/utils";
+import { getDefaultValues } from "@shared/common/utils";
 import { useEffect } from "react";
 import { Organization } from "@/models/organizations";
 import { OrganizationFormData, organizationSchema } from "../schemas/organizationSchema";

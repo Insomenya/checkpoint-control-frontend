@@ -1,4 +1,4 @@
-import { ROUTER_PATHS } from "@shared/constants";
+import { ROUTER_PATHS } from "@shared/common/constants";
 import { useNavigate } from "react-router-dom";
 
 

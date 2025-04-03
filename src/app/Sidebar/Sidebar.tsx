@@ -3,10 +3,10 @@ import { JSX, memo, ReactNode, useMemo, useState } from "react";
 import { TooltipWrapper } from "@shared/common/organisms/TooltipWrapper";
 import { Archive, ChevronLeft, ChevronRight, DeviceDesktop, InfoCircle, Truck, UserPlus, ZoomCheck, Box as IconBox } from "@v-uik/icons";
 import { Outlet, useLocation } from "react-router-dom";
-import { ROUTER_PATHS } from "@/shared/constants";
+import { ROUTER_PATHS } from "@shared/common/constants";
 import { useAppSelector } from "@store/store";
 import { selectToken, selectUserRole } from "@store/auth/auth.selectors";
-import { useNavigateHandler } from "@shared/hooks";
+import { useNavigateHandler } from "@shared/common/hooks";
 import { MenuItem } from "./MenuItem";
 import { MENU } from "./menu";
 

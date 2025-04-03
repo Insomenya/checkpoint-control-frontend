@@ -1,5 +1,5 @@
 import { Good } from '@/models/goods';
-import { API_PATHS } from '@shared/constants';
+import { API_PATHS } from '@shared/common/constants';
 import { faker } from '@faker-js/faker';
 import { createServer, Model, Factory, Response } from 'miragejs';
 import { UserRoles } from '@/models/common';

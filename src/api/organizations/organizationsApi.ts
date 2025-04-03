@@ -1,6 +1,6 @@
 import { baseApi } from '../baseApi';
 import { DeleteOrganizationRequestDTO, GetOrganizationsResponseDTO, PostAddOrganizationRequestDTO, PutEditOrganizationRequestDTO } from '@/models/organizations';
-import { API_PATHS } from '@shared/constants';
+import { API_PATHS } from '@shared/common/constants';
 
 const organizationsApiSlice = baseApi.enhanceEndpoints({addTagTypes: ['Organizations']}).injectEndpoints({
   endpoints: (builder) => ({

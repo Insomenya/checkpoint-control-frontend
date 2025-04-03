@@ -1,11 +1,11 @@
 import { logout } from "@store/auth/auth.slice";
-import { getNameInitials } from "@shared/utils";
+import { getNameInitials } from "@shared/common/utils";
 import { selectUser } from "@store/auth/auth.selectors";
 import { useAppDispatch, useAppSelector } from "@store/store";
 import { Avatar, Bar, BarDate, BarDivider, BarMenuItem, Box, clsx, createUseStyles, Text, useTheme } from "@v-uik/base";
 import { CalendarTime, Logout } from "@v-uik/icons";
 import { useNavigate } from "react-router-dom";
-import { ROUTER_PATHS } from "@shared/constants";
+import { ROUTER_PATHS } from "@shared/common/constants";
 
 const useStyles = createUseStyles((theme) => ({
     avatarGroupContainer: {

@@ -5,7 +5,7 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { utils as XLSXUtils, writeFile as XLSXWriteFile } from 'xlsx';
 import { Box, Button, ColumnProps, createUseStyles, Input, notification, RecordDataSource, SortOrderProp, Table, TableEventType, TablePagination, TablePaginationType } from '@v-uik/base';
 import { ErrorDescription } from '../atoms';
-import { ICON_SIZE, Messages, MESSAGES } from '@shared/constants';
+import { ICON_SIZE, Messages, MESSAGES } from '@shared/common/constants';
 import { ButtonModalBundle, ModalProps } from './ButtonModalBundle';
 import { Edit, Filter, PlaylistAdd, Printer, TableExport, Trash } from '@v-uik/icons';
 import { format } from 'date-fns';

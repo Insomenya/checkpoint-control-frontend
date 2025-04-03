@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { RootState } from '@store/store';
-import { ROUTER_PATHS } from '@shared/constants';
+import { ROUTER_PATHS } from '@shared/common/constants';
 
 interface ProtectedRouteProps {
   roles?: string[];  // Роли, которые имеют доступ к маршруту

@@ -1,6 +1,6 @@
 import { MenuItemInfo } from "@/models/common";
-import { NavigateHandler } from "@shared/hooks/useNavigateHandler";
-import { hasPath, isSamePath } from "@shared/utils";
+import { NavigateHandler } from "@shared/common/hooks/useNavigateHandler";
+import { hasPath, isSamePath } from "@shared/common/utils";
 import { BarDropdown, BarDropdownItem, BarMenuItem, clsx, createUseStyles } from "@v-uik/base";
 import { PropsWithChildren } from "react";
 import { useLocation } from "react-router-dom";

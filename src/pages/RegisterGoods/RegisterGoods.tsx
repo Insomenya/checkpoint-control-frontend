@@ -6,7 +6,7 @@ import { FAILED_TO_LOAD_MESSAGE, MESSAGES } from '@/features/goods/constants';
 import { AppTable } from '@shared/common/organisms';
 import { GoodModal, getColumns } from '@/features/goods/components';
 import { ErrorDescription } from '@shared/common/atoms';
-import { isErrorResponse } from '@shared/utils';
+import { isErrorResponse } from '@shared/common/utils';
 
 const useStyles = createUseStyles((theme) => ({
   container: {
