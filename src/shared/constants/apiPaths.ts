@@ -8,5 +8,8 @@ export const API_PATHS = {
     },
     GOODS: {
         ROOT: '/goods',
+    },
+    ORGANIZATIONS: {
+        ROOT: '/org'
     }
 };

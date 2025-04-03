@@ -6,7 +6,7 @@ export {
 } from './Reports';
 export { RegisterExpedition } from './RegisterExpedition/RegisterExpedition';
 export { RegisterGoods } from './RegisterGoods/RegisterGoods';
-export { RegisterOrganization } from './RegisterOrganization/RegisterOrganization';
+export { RegisterOrganizations } from './RegisterOrganizations/RegisterOrganizations';
 export { Confirmation } from './Confirmation/Confirmation';
 export { CheckpointZoneLink } from './CheckpointZoneLink/CheckpointZoneLink';
 export { AddUser } from './AddUser/AddUser';

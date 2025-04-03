@@ -1,12 +1,12 @@
-import { useGetGoodsQuery, useAddGoodMutation, useUpdateGoodMutation, useDeleteGoodMutation } from '@api/goods/goodsApi';
-import { Good } from '../../models/goods';
 import { CircularProgress, Container, createUseStyles, notification, Text } from '@v-uik/base';
 import { PageFallback } from '@shared/common/molecules';
-import { FAILED_TO_LOAD_MESSAGE, MESSAGES } from '@/features/goods/constants';
 import { AppTable } from '@shared/common/organisms';
-import { GoodModal, getColumns } from '@/features/goods/components';
 import { ErrorDescription } from '@shared/common/atoms';
 import { isErrorResponse } from '@shared/utils';
+import { useAddOrganizationMutation, useDeleteOrganizationMutation, useGetOrganizationsQuery, useUpdateOrganizationMutation } from '@api/organizations/organizationsApi';
+import { Organization } from '@/models/organizations';
+import { FAILED_TO_LOAD_MESSAGE, MESSAGES } from '@/features/organizations/constants';
+import { getColumns, OrganizationModal } from '@/features/organizations/components';
 
 const useStyles = createUseStyles((theme) => ({
   container: {
@@ -16,15 +16,15 @@ const useStyles = createUseStyles((theme) => ({
   }
 }));
 
-export const RegisterGoods = () => {
-  const { data, isLoading, isUninitialized, isError, refetch } = useGetGoodsQuery();
+export const RegisterOrganizations = () => {
+  const { data, isLoading, isUninitialized, isError, refetch } = useGetOrganizationsQuery();
   const classes = useStyles();
-  const [addGood] = useAddGoodMutation();
-  const [updateGood] = useUpdateGoodMutation();
-  const [deleteGood] = useDeleteGoodMutation();
+  const [addOrganization] = useAddOrganizationMutation();
+  const [updateOrganization] = useUpdateOrganizationMutation();
+  const [deleteOrganization] = useDeleteOrganizationMutation();
 
-  const handleAddGood = (good: Good) => {
-    addGood(good)
+  const handleAddOrganization = (organization: Organization) => {
+    addOrganization(organization)
       .unwrap()
       .then(() => {
         notification.success(
@@ -52,8 +52,8 @@ export const RegisterGoods = () => {
       });
   };
 
-  const handleUpdateGood = (good: Good) => {
-    updateGood(good)
+  const handleUpdateOrganization = (organization: Organization) => {
+    updateOrganization(organization)
       .unwrap()
       .then(() => {
         notification.success(
@@ -81,8 +81,8 @@ export const RegisterGoods = () => {
       });
   };
 
-  const handleDeleteGood = (good: Good) => {
-    deleteGood({ id: good.id })
+  const handleDeleteOrganization = (organization: Organization) => {
+    deleteOrganization({ id: organization.id })
       .unwrap()
       .then(() => {
         notification.success(
@@ -113,7 +113,7 @@ export const RegisterGoods = () => {
   const getPageCommon = () => {
     return (
       <Text kind="h4" gutterBottom>
-        Регистрирровать ТМЦ
+        Регистрирровать организации
       </Text>
     );
   };
@@ -127,7 +127,7 @@ export const RegisterGoods = () => {
         </Container>
       </>
     );
-  } else if (isError || data?.goods == null) {
+  } else if (isError || data?.organizations == null) {
     return (
       <>
         {getPageCommon()}
@@ -139,14 +139,14 @@ export const RegisterGoods = () => {
   return (
     <>
       {getPageCommon()}
-      <AppTable<Good>
-        items={data.goods}
+      <AppTable<Organization>
+        items={data.organizations}
         columns={getColumns()}
-        fileName="Goods"
-        ModalComponent={GoodModal}
-        onAdd={handleAddGood}
-        onDelete={handleDeleteGood}
-        onUpdate={handleUpdateGood}
+        fileName="Organizations"
+        ModalComponent={OrganizationModal}
+        onAdd={handleAddOrganization}
+        onDelete={handleDeleteOrganization}
+        onUpdate={handleUpdateOrganization}
         messages={MESSAGES}
         pdfExportable
         excelExportable

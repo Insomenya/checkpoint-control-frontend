@@ -1,20 +1,18 @@
-import { Good } from "@/models/goods";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ModalOptions } from "@shared/common/organisms/AppTable";
 import { ModalProps } from "@shared/common/organisms/ButtonModalBundle";
 import { Box, Button, createUseStyles, Modal, ModalBody, ModalFooter, ModalHeader } from "@v-uik/base";
-import { GoodFormData, goodSchema } from "../schemas";
 import { FormProvider, useForm } from "react-hook-form";
-import { ComboBoxField, InputField, InputNumberField } from "@shared/common/atoms";
-import { LabelValue } from "@/models/common";
-import { UnitOfMeasurement, UNITS_OF_MEASUREMENT } from "../constants";
+import { InputField } from "@shared/common/atoms";
 import { getDefaultValues } from "@shared/utils";
 import { useEffect } from "react";
+import { Organization } from "@/models/organizations";
+import { OrganizationFormData, organizationSchema } from "../schemas/organizationSchema";
 
-type Props = ModalProps<Good, ModalOptions<Good>>;
+type Props = ModalProps<Organization, ModalOptions<Organization>>;
 
 const useStyles = createUseStyles((theme) => ({
-    goodForm: {
+    form: {
         display: 'flex',
         flexDirection: 'column',
         gap: theme.spacing(2)
@@ -26,18 +24,11 @@ const useStyles = createUseStyles((theme) => ({
     }
 }));
 
-const UNITS_OF_MEASUREMENT_OPTIONS: LabelValue[] = [
-    { label: 'Килограммы', value: UNITS_OF_MEASUREMENT[UnitOfMeasurement.kilo] },
-    { label: 'Литры', value: UNITS_OF_MEASUREMENT[UnitOfMeasurement.litre] },
-    { label: 'Метры', value: UNITS_OF_MEASUREMENT[UnitOfMeasurement.meter] },
-    { label: 'Штуки', value: UNITS_OF_MEASUREMENT[UnitOfMeasurement.piece] },
-];
-
-export const GoodModal = ({ options, isOpen, onAccept, onReject }: Props) => {
+export const OrganizationModal = ({ options, isOpen, onAccept, onReject }: Props) => {
     const isEditing = options != null && options.item != null;
-    const initialValues = getDefaultValues(goodSchema);
-    const form = useForm<GoodFormData>({
-        resolver: zodResolver(goodSchema),
+    const initialValues = getDefaultValues(organizationSchema);
+    const form = useForm<OrganizationFormData>({
+        resolver: zodResolver(organizationSchema),
         defaultValues: isEditing ? options.item ?? initialValues : initialValues,
     });
     const { handleSubmit, reset } = form;
@@ -49,46 +40,46 @@ export const GoodModal = ({ options, isOpen, onAccept, onReject }: Props) => {
         }
     }, [isOpen]);
 
-    const handleFormSubmit = handleSubmit((data: GoodFormData) => {
+    const handleFormSubmit = handleSubmit((data: OrganizationFormData) => {
         if (isEditing) {
             onAccept?.({
                 ...data,
-                id: options.item?.id
+                id: options.item?.id,
+                isOwn: options.item?.isOwn ?? false,
             });
         } else {
-            onAccept?.(data);
+            onAccept?.({
+                ...data,
+                isOwn: false,
+            });
         }
 
         reset();
     });
-
+    
+    // todo можно сделать CommonModal и передавать туда только form
     return (
         <Modal onClose={onReject} open={isOpen} keepMounted={false} width={640}>
             <FormProvider {...form} >
                 <ModalHeader>
-                    {options?.item ? 'Изменение' : 'Регистрация'} ТМЦ
+                    {options?.item ? 'Изменение' : 'Регистрация'} организации
                 </ModalHeader>
                 <ModalBody>
-                    <Box className={classes.goodForm}>
+                    <Box className={classes.form}>
                         <InputField
                             label="Название"
                             name="name"
                             placeholder="Введите название"
                         />
                         <InputField
-                            label="Описание"
-                            name="description"
-                            placeholder="Введите описание"
+                            label="Адрес"
+                            name="address"
+                            placeholder="Введите адрес"
                         />
-                        <InputNumberField
-                            label="Количество"
-                            name="quantity"
-                            placeholder="Введите количество"
-                        />
-                        <ComboBoxField
-                            label="Единица измерения"
-                            name="unitOfMeasurement"
-                            options={UNITS_OF_MEASUREMENT_OPTIONS}
+                        <InputField
+                            label="Контактный номер"
+                            name="contactPhone"
+                            placeholder="Введите контактный номер"
                         />
                     </Box>
                 </ModalBody>

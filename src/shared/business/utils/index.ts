@@ -1,0 +1,1 @@
+export { phoneRegex } from './phoneRegex';

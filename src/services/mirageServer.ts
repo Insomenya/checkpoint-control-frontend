@@ -3,6 +3,9 @@ import { API_PATHS } from '@shared/constants';
 import { faker } from '@faker-js/faker';
 import { createServer, Model, Factory, Response } from 'miragejs';
 import { UserRoles } from '@/models/common';
+import { Organization } from '@/models/organizations';
+import { randexp } from 'randexp';
+import { phoneRegex } from '@shared/business/utils';
 
 export function makeServer({ environment = 'development' } = {}) {
   return createServer({
@@ -10,6 +13,7 @@ export function makeServer({ environment = 'development' } = {}) {
 
     models: {
       good: Model.extend<Partial<Good>>({}),
+      organization: Model.extend<Partial<Organization>>({}),
     },
 
     factories: {
@@ -27,10 +31,26 @@ export function makeServer({ environment = 'development' } = {}) {
           return faker.helpers.arrayElement(['шт', 'кг', 'л', 'м']);
         },
       }),
+
+      organization: Factory.extend<Partial<Organization>>({
+        name() {
+          return faker.company.name();
+        },
+        address() {
+          return faker.location.streetAddress({ useFullAddress: true })
+        },
+        contactPhone() {
+          return randexp(phoneRegex)
+        },
+        isOwn() {
+          return false
+        },
+      }),
     },
 
     seeds(server) {
       server.createList('good', 50);
+      server.createList('organization', 20);
     },
 
     routes() {
@@ -144,6 +164,41 @@ export function makeServer({ environment = 'development' } = {}) {
         const id = request.params.id;
         const good = schema.find('good', id);
         good?.destroy();
+        return new Response(204);
+      });
+
+      // GET /api/org
+      this.get(API_PATHS.ORGANIZATIONS.ROOT, (schema) => {
+        let organizations = schema.all('organization').models as Organization[];
+
+        return new Response(200, {}, { organizations });
+      });
+
+      // POST /api/org
+      this.post(API_PATHS.ORGANIZATIONS.ROOT, (schema, request) => {
+        const attrs = JSON.parse(request.requestBody);
+        return schema.create('organization', attrs);
+      });
+
+      // PUT /api/org/:id
+      this.put(`${API_PATHS.ORGANIZATIONS.ROOT}/:id`, (schema, request) => {
+        const id = request.params.id;
+        const attrs = JSON.parse(request.requestBody) as Partial<Organization>;
+        const organization = schema.find('organization', id);
+
+        if (!organization) {
+          return new Response(404, {}, { error: 'Organization not found' });
+        }
+
+        organization.update(attrs);
+        return new Response(200, {}, organization.attrs);
+      });
+
+      // DELETE /api/org/:id
+      this.del(`${API_PATHS.ORGANIZATIONS.ROOT}/:id`, (schema, request) => {
+        const id = request.params.id;
+        const organization = schema.find('organization', id);
+        organization?.destroy();
         return new Response(204);
       });
     },

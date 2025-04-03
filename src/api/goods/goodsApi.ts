@@ -2,7 +2,7 @@ import { baseApi } from '../baseApi';
 import { DeleteGoodRequestDTO, GetGoodsResponseDTO, PostAddGoodRequestDTO, PutEditGoodRequestDTO } from '@/models/goods';
 import { API_PATHS } from '@shared/constants';
 
-const authApiSlice = baseApi.enhanceEndpoints({addTagTypes: ['Goods']}).injectEndpoints({
+const goodsApiSlice = baseApi.enhanceEndpoints({addTagTypes: ['Goods']}).injectEndpoints({
   endpoints: (builder) => ({
     getGoods: builder.query<GetGoodsResponseDTO, void>({
       query: () => API_PATHS.GOODS.ROOT,
@@ -34,4 +34,4 @@ const authApiSlice = baseApi.enhanceEndpoints({addTagTypes: ['Goods']}).injectEn
   }),
 });
 
-export const { useAddGoodMutation, useDeleteGoodMutation, useGetGoodsQuery, useUpdateGoodMutation } = authApiSlice;
+export const { useAddGoodMutation, useDeleteGoodMutation, useGetGoodsQuery, useUpdateGoodMutation } = goodsApiSlice;
