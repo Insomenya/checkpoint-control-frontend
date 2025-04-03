@@ -36,7 +36,7 @@ export const RegisterGoods = () => {
         );
       })
       .catch((error) => {
-        if (import.meta.env.DEV) {
+        if (import.meta.env.VITE_NEEDS_MIRAGE) {
           console.log(error.error);
         }
 
@@ -65,7 +65,7 @@ export const RegisterGoods = () => {
         );
       })
       .catch((error) => {
-        if (import.meta.env.DEV) {
+        if (import.meta.env.VITE_NEEDS_MIRAGE) {
           console.log(error.error);
         }
 
@@ -94,7 +94,7 @@ export const RegisterGoods = () => {
         );
       })
       .catch((error) => {
-        if (import.meta.env.DEV) {
+        if (import.meta.env.VITE_NEEDS_MIRAGE) {
           console.log(error.error);
         }
 
