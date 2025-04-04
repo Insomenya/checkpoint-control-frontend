@@ -34,3 +34,7 @@ export type MenuItemInfo = {
 };
 
 export type TableEditabilityOptions = 'c' | 'e' | 'd' | 'ce' | 'cd' | 'ed' | 'ced';
+
+export type GetResponseDTO<T> = {
+    data: T[];
+};

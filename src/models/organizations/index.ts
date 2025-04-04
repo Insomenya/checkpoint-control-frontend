@@ -1,3 +1,5 @@
+import { GetResponseDTO } from "../common";
+
 export type Organization = {
     id?: number;
     name: string;
@@ -6,9 +8,7 @@ export type Organization = {
     isOwn: boolean;
 }
 
-export type GetOrganizationsResponseDTO = {
-    organizations: Organization[],
-};
+export type GetOrganizationsResponseDTO = GetResponseDTO<Organization>;
 
 export type PostAddOrganizationRequestDTO = Omit<Organization, 'id'>;
 

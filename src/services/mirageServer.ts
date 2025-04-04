@@ -134,9 +134,9 @@ export function makeServer({ environment = 'development' } = {}) {
 
       // GET /api/goods
       this.get(API_PATHS.GOODS.ROOT, (schema) => {
-        let goods = schema.all('good').models as Good[];
+        let data = schema.all('good').models as Good[];
 
-        return new Response(200, {}, { goods });
+        return new Response(200, {}, { data });
       });
 
       // POST /api/goods
@@ -169,9 +169,9 @@ export function makeServer({ environment = 'development' } = {}) {
 
       // GET /api/org
       this.get(API_PATHS.ORGANIZATIONS.ROOT, (schema) => {
-        let organizations = schema.all('organization').models as Organization[];
+        let data = schema.all('organization').models as Organization[];
 
-        return new Response(200, {}, { organizations });
+        return new Response(200, {}, { data });
       });
 
       // POST /api/org

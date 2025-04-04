@@ -1,3 +1,5 @@
+import { GetResponseDTO } from "../common";
+
 export type Good = {
     id?: number;
     name: string;
@@ -14,9 +16,7 @@ export type GetGoodsPaginatedRequestDTO = {
     filters: object;
 };
 
-export type GetGoodsResponseDTO = {
-    goods: Good[],
-};
+export type GetGoodsResponseDTO = GetResponseDTO<Good>;
 
 export type PostAddGoodRequestDTO = Omit<Good, 'id'>;
 

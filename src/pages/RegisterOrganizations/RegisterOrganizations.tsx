@@ -127,7 +127,7 @@ export const RegisterOrganizations = () => {
         </Container>
       </>
     );
-  } else if (isError || data?.organizations == null) {
+  } else if (isError || data?.data == null) {
     return (
       <>
         {getPageCommon()}
@@ -140,7 +140,7 @@ export const RegisterOrganizations = () => {
     <>
       {getPageCommon()}
       <AppTable<Organization>
-        items={data.organizations}
+        items={data.data}
         columns={getColumns()}
         fileName="Organizations"
         ModalComponent={OrganizationModal}

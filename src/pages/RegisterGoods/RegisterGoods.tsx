@@ -127,7 +127,7 @@ export const RegisterGoods = () => {
         </Container>
       </>
     );
-  } else if (isError || data?.goods == null) {
+  } else if (isError || data?.data == null) {
     return (
       <>
         {getPageCommon()}
@@ -140,7 +140,7 @@ export const RegisterGoods = () => {
     <>
       {getPageCommon()}
       <AppTable<Good>
-        items={data.goods}
+        items={data.data}
         columns={getColumns()}
         fileName="Goods"
         ModalComponent={GoodModal}
