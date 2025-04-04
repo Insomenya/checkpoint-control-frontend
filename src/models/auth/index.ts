@@ -5,6 +5,7 @@ export type User = {
     role: UserRoles;
     username: string;
     fullName?: string;
+    checkpoint_id?: number;
 };
 
 export type PostLoginResponseDTO = {

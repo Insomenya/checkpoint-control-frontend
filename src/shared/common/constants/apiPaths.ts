@@ -10,6 +10,12 @@ export const API_PATHS = {
         ROOT: '/goods',
     },
     ORGANIZATIONS: {
-        ROOT: '/org'
-    }
+        ROOT: '/orgs'
+    },
+    USERS: {
+        ROOT: '/users',
+    },
+    CHECKPOINTS: {
+        ROOT: '/checkpoints',
+    },
 };
