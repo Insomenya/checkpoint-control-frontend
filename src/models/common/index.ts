@@ -19,6 +19,8 @@ export type ErrorResponse = {
 
 export type UserRoles = 'operator' | 'logistician' | 'admin';
 
+export type ZoneValues = 1 | 2 | 3;
+
 type MenuDropdownOptionInfo = {
     key: string;
     label: string;

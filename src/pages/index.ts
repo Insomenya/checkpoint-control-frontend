@@ -8,6 +8,6 @@ export { RegisterExpedition } from './RegisterExpedition/RegisterExpedition';
 export { RegisterGoods } from './RegisterGoods/RegisterGoods';
 export { RegisterOrganizations } from './RegisterOrganizations/RegisterOrganizations';
 export { Confirmation } from './Confirmation/Confirmation';
-export { CheckpointZoneLink } from './CheckpointZoneLink/CheckpointZoneLink';
+export { Checkpoints } from './Checkpoints/Checkpoints';
 export { AddUser } from './AddUser/AddUser';
 export { Users } from './Users/Users';

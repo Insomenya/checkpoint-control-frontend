@@ -6,6 +6,7 @@ import { UserRoles } from '@/models/common';
 import { Organization } from '@/models/organizations';
 import { randexp } from 'randexp';
 import { phoneRegex } from '@shared/business/utils';
+import { Checkpoint } from '@/models/checkpoints';
 
 export function makeServer({ environment = 'development' } = {}) {
   return createServer({
@@ -14,6 +15,7 @@ export function makeServer({ environment = 'development' } = {}) {
     models: {
       good: Model.extend<Partial<Good>>({}),
       organization: Model.extend<Partial<Organization>>({}),
+      checkpoint: Model.extend<Partial<Checkpoint>>({}),
     },
 
     factories: {
@@ -46,11 +48,21 @@ export function makeServer({ environment = 'development' } = {}) {
           return false
         },
       }),
+
+      checkpoint: Factory.extend<Partial<Checkpoint>>({
+        name() {
+          return faker.hacker.abbreviation() + faker.number.int({ min: 1, max: 20 });
+        },
+        zone() {
+          return faker.helpers.arrayElement([1, 2, 3]);
+        },
+      }),
     },
 
     seeds(server) {
       server.createList('good', 50);
       server.createList('organization', 20);
+      server.createList('checkpoint', 10);
     },
 
     routes() {
@@ -167,20 +179,20 @@ export function makeServer({ environment = 'development' } = {}) {
         return new Response(204);
       });
 
-      // GET /api/org
+      // GET /api/orgs
       this.get(API_PATHS.ORGANIZATIONS.ROOT, (schema) => {
         let data = schema.all('organization').models as Organization[];
 
         return new Response(200, {}, { data });
       });
 
-      // POST /api/org
+      // POST /api/orgs
       this.post(API_PATHS.ORGANIZATIONS.ROOT, (schema, request) => {
         const attrs = JSON.parse(request.requestBody);
         return schema.create('organization', attrs);
       });
 
-      // PUT /api/org/:id
+      // PUT /api/orgs/:id
       this.put(`${API_PATHS.ORGANIZATIONS.ROOT}/:id`, (schema, request) => {
         const id = request.params.id;
         const attrs = JSON.parse(request.requestBody) as Partial<Organization>;
@@ -194,11 +206,46 @@ export function makeServer({ environment = 'development' } = {}) {
         return new Response(200, {}, organization.attrs);
       });
 
-      // DELETE /api/org/:id
+      // DELETE /api/orgs/:id
       this.del(`${API_PATHS.ORGANIZATIONS.ROOT}/:id`, (schema, request) => {
         const id = request.params.id;
         const organization = schema.find('organization', id);
         organization?.destroy();
+        return new Response(204);
+      });
+
+      // GET /api/checkpoints
+      this.get(API_PATHS.CHECKPOINTS.ROOT, (schema) => {
+        let data = schema.all('checkpoint').models as Checkpoint[];
+
+        return new Response(200, {}, { data });
+      });
+
+      // POST /api/checkpoints
+      this.post(API_PATHS.CHECKPOINTS.ROOT, (schema, request) => {
+        const attrs = JSON.parse(request.requestBody);
+        return schema.create('checkpoint', attrs);
+      });
+
+      // PUT /api/checkpoints/:id
+      this.put(`${API_PATHS.CHECKPOINTS.ROOT}/:id`, (schema, request) => {
+        const id = request.params.id;
+        const attrs = JSON.parse(request.requestBody) as Partial<Checkpoint>;
+        const checkpoint = schema.find('checkpoint', id);
+
+        if (!checkpoint) {
+          return new Response(404, {}, { error: 'Checkpoint not found' });
+        }
+
+        checkpoint.update(attrs);
+        return new Response(200, {}, checkpoint.attrs);
+      });
+
+      // DELETE /api/checkpoints/:id
+      this.del(`${API_PATHS.CHECKPOINTS.ROOT}/:id`, (schema, request) => {
+        const id = request.params.id;
+        const checkpoint = schema.find('checkpoint', id);
+        checkpoint?.destroy();
         return new Response(204);
       });
     },

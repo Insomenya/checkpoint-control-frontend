@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Harness } from "../Harness/Harness";
-import { About, AddUser, CheckpointZoneLink, Confirmation, ExpeditionStatus, FilteredReport, Login, RegisterExpedition, RegisterGoods, RegisterOrganizations, Users } from "@/pages";
+import { About, AddUser, Checkpoints, Confirmation, ExpeditionStatus, FilteredReport, Login, RegisterExpedition, RegisterGoods, RegisterOrganizations, Users } from "@/pages";
 import { ROUTER_PATHS } from "@shared/common/constants";
 import ProtectedRoute from "./ProtectedRoute";
 import { Verify } from "../Verify/Verify";
@@ -69,7 +69,7 @@ export const Router = () => {
                                 path={ROUTER_PATHS.CHECKPOINT_ZONE_LINK}
                                 element={<ProtectedRoute roles={['admin']} />}
                             >
-                                <Route index element={<CheckpointZoneLink />} />
+                                <Route index element={<Checkpoints />} />
                             </Route>
                             <Route index element={<About />} />
                             <Route path="/*" element={<About />} />

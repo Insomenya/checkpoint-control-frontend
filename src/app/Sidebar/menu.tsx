@@ -65,7 +65,7 @@ export const MENU: Record<UserRoles, MenuItemInfo[]> = {
         {
             type: 'regular',
             icon: <DeviceDesktop />,
-            label: 'Настройка АРМ',
+            label: 'Настройка КПП',
             path: ROUTER_PATHS.CHECKPOINT_ZONE_LINK,
         },
     ],
