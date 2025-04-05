@@ -58,9 +58,9 @@ type AppTableProps<T extends object> = {
     columns: ColumnProps<T>[];
     items: T[];
     ModalComponent?: FC<ModalProps<T, ModalOptions<T>>>;
-    onAdd: (item: T) => void;
-    onDelete: (item: T) => void;
-    onUpdate: (item: T) => void;
+    onAdd?: (item: T) => void;
+    onDelete?: (item: T) => void;
+    onUpdate?: (item: T) => void;
     pdfExportable?: boolean;
     excelExportable?: boolean;
     editable?: TableEditabilityOptions;
@@ -83,15 +83,15 @@ export const AppTable = <T extends object> ({ messages = MESSAGES, fileName, col
   };
 
   const handleAdd = (item: T) => {
-    onAdd(item);
+    onAdd?.(item);
   };
 
   const handleEdit = (item: T) => {
-    onUpdate(item);
+    onUpdate?.(item);
   };
 
   const handleDelete = (item: T) => {
-    onDelete(item);
+    onDelete?.(item);
   };
 
   const handleExportToPDF = () => {

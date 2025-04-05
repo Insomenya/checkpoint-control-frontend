@@ -5,4 +5,4 @@ export const MESSAGES = {
     NO_DATA: 'Нет данных для составления отчета.'
 };
 
-export type Messages = Record<keyof typeof MESSAGES, string>;
+export type Messages = Partial<Record<keyof typeof MESSAGES, string>>;

@@ -7,6 +7,7 @@ import { Organization } from '@/models/organizations';
 import { randexp } from 'randexp';
 import { phoneRegex } from '@shared/business/utils';
 import { Checkpoint } from '@/models/checkpoints';
+import { User } from '@/models/auth';
 
 export function makeServer({ environment = 'development' } = {}) {
   return createServer({
@@ -16,6 +17,7 @@ export function makeServer({ environment = 'development' } = {}) {
       good: Model.extend<Partial<Good>>({}),
       organization: Model.extend<Partial<Organization>>({}),
       checkpoint: Model.extend<Partial<Checkpoint>>({}),
+      user: Model.extend<Partial<User>>({}),
     },
 
     factories: {
@@ -63,6 +65,25 @@ export function makeServer({ environment = 'development' } = {}) {
       server.createList('good', 50);
       server.createList('organization', 20);
       server.createList('checkpoint', 10);
+
+      server.create('user', {
+        username: 'admin',
+        role: 'admin',
+        fullName: 'Аркадий Доступов',
+      });
+
+      server.create('user', {
+        username: 'operator',
+        role: 'operator',
+        fullName: 'Светлана Быстрорук',
+        checkpoint_id: 1,
+      });
+
+      server.create('user', {
+        username: 'logistician',
+        role: 'logistician',
+        fullName: 'Виктория Накладнова',
+      });
     },
 
     routes() {
@@ -246,6 +267,27 @@ export function makeServer({ environment = 'development' } = {}) {
         const id = request.params.id;
         const checkpoint = schema.find('checkpoint', id);
         checkpoint?.destroy();
+        return new Response(204);
+      });
+
+      // GET /api/users
+      this.get(API_PATHS.USERS.ROOT, (schema) => {
+        let data = schema.all('user').models as User[];
+
+        return new Response(200, {}, { data });
+      });
+
+      // POST /api/users
+      this.post(API_PATHS.USERS.ROOT, (schema, request) => {
+        const attrs = JSON.parse(request.requestBody);
+        return schema.create('user', attrs);
+      });
+
+      // DELETE /api/users/:id
+      this.del(`${API_PATHS.USERS.ROOT}/:id`, (schema, request) => {
+        const id = request.params.id;
+        const user = schema.find('user', id);
+        user?.destroy();
         return new Response(204);
       });
     },

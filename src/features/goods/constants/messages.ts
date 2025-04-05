@@ -5,4 +5,4 @@ export const MESSAGES = {
     NO_DATA: 'Нет данных для составления отчета.'
 };
 
-export const FAILED_TO_LOAD_MESSAGE = 'Не удалось загрузить список ТМЦ';
+export const FAILED_TO_LOAD_MESSAGE = 'Не удалось загрузить список ТМЦ.';
