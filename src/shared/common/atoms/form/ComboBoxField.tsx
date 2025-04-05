@@ -7,11 +7,12 @@ export type Props<T extends FieldValues> = {
     name: Path<T>;
     options: LabelValue[];
     placeholder?: string;
+    onChange?: (v: string) => void;
 };
 
-export const ComboBoxField = <T extends FieldValues>({ label, name, options, placeholder = 'Выберите' }: Props<T>) => {
+export const ComboBoxField = <T extends FieldValues>({ label, name, options, onChange, placeholder = 'Выберите' }: Props<T>) => {
     const {
-        field: { onChange, value },
+        field: { onChange: onFormChange, value },
         fieldState: { error }
     } = useController({ name });
 
@@ -23,7 +24,8 @@ export const ComboBoxField = <T extends FieldValues>({ label, name, options, pla
             helperText={message || ''}
             label={label}
             onChange={(v: string) => {
-                onChange({ target: { value: v } });
+                onFormChange({ target: { value: v } });
+                onChange?.(v);
             }}
             options={options}
             placeholder={placeholder}

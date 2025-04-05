@@ -8,7 +8,7 @@
 
 export const getNameInitials = (username: string | undefined) => {
     if (username?.length && username?.length > 0) {
-        return username?.split(' ').reduce((str, word) => str + word[0].toLocaleUpperCase(), '').slice(0, 2);
+        return username?.trim().split(' ').reduce((str, word) => str + word[0].toLocaleUpperCase(), '').slice(0, 2);
     }
     
     return '';
