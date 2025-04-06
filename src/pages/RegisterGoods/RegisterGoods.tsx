@@ -113,7 +113,7 @@ export const RegisterGoods = () => {
   const getPageCommon = () => {
     return (
       <Text kind="h4" gutterBottom>
-        Регистрирровать ТМЦ
+        Регистрировать ТМЦ
       </Text>
     );
   };

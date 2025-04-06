@@ -116,7 +116,7 @@ export const Checkpoints = () => {
   const getPageCommon = () => {
     return (
       <Text kind="h4" gutterBottom>
-        Регистрирровать КПП
+        Регистрировать КПП
       </Text>
     );
   };

@@ -19,7 +19,11 @@ export type ErrorResponse = {
 
 export type UserRoles = 'operator' | 'logistician' | 'admin';
 
-export type ZoneValues = 1 | 2 | 3;
+type OneThroughThree = 1 | 2 | 3;
+
+type ZeroThroughTwo = 0 | 1 | 2;
+
+export type ZoneValues = OneThroughThree;
 
 type MenuDropdownOptionInfo = {
     key: string;
@@ -40,3 +44,17 @@ export type TableEditabilityOptions = 'c' | 'e' | 'd' | 'ce' | 'cd' | 'ed' | 'ce
 export type GetResponseDTO<T> = {
     data: T[];
 };
+
+export type StepConfiguration = {
+    order: StepsNumbers;
+    key: string;
+    title: string;
+    subtitle: string;
+    component: ReactNode;
+};
+
+export type StepsNumbers = ZeroThroughTwo;
+
+export type StepsConfiguration = Record<StepsNumbers, StepConfiguration>;
+
+export type Directions = 'IN' | 'OUT';

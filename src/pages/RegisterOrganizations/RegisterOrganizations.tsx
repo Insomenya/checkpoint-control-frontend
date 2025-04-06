@@ -113,7 +113,7 @@ export const RegisterOrganizations = () => {
   const getPageCommon = () => {
     return (
       <Text kind="h4" gutterBottom>
-        Регистрирровать организации
+        Регистрировать организации
       </Text>
     );
   };
