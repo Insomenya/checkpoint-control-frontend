@@ -1,16 +1,11 @@
-import { AddUserFormData, addUserSchema } from "@/features/addUser/schemas/addUserSchema";
 import { Directions, LabelValue } from "@/models/common";
-import { useGetCheckpointsQuery } from "@api/checkpoints/checkpointsApi";
 import { useGetOrganizationsQuery } from "@api/organizations/organizationsApi";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ComboBoxField, InputField } from "@shared/common/atoms";
-import { getDefaultValues, getDirectionName, getNameInitials } from "@shared/common/utils";
-import { Avatar, Box, Button, CircularProgress, Container, createUseStyles, Divider, Dropzone, LabelControl, Switch, Text } from "@v-uik/base";
-import { Paperclip, Plus } from "@v-uik/icons";
+import { ComboBoxField } from "@shared/common/atoms";
+import { getDefaultValues, getDirectionName } from "@shared/common/utils";
+import { Box, CircularProgress, Container, createUseStyles, LabelControl, Switch, Text } from "@v-uik/base";
 import { ChangeEvent, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { DIRECTIONS } from "../constants";
-import { OrganizationFormData } from "@/features/organizations/schemas/organizationSchema";
 import { OrganizationsStepFormData, organizationsStepSchema } from "../schemas/organizationsStepSchema";
 
 const useStyles = createUseStyles((theme) => ({
