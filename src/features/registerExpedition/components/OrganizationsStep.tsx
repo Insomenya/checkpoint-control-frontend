@@ -2,12 +2,15 @@ import { LabelValue } from "@/models/common";
 import { useGetOrganizationsQuery } from "@api/organizations/organizationsApi";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ComboBoxField } from "@shared/common/atoms";
-import { getDefaultValues, getDirectionName } from "@shared/common/utils";
+import { getDirectionName } from "@shared/common/utils";
 import { Box, CircularProgress, Container, createUseStyles, LabelControl, Switch, Text } from "@v-uik/base";
-import { ChangeEvent, useMemo, useState } from "react";
+import { ChangeEvent, useMemo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { OrganizationsStepFormData, organizationsStepSchema } from "../schemas/organizationsStepSchema";
-import { ExpeditionDirections } from "@/models/expeditions";
+import { useAppDispatch, useAppSelector } from "@store/store";
+import { organizationsStepSet, stepError, stepValid } from "@store/expedition/expedition.slice";
+import { STEP_INDECIES, StepName } from "../constants";
+import { selectOrganizationsStep } from "@store/expedition/expedition.selectors";
 
 const useStyles = createUseStyles((theme) => ({
     container: {
@@ -58,14 +61,19 @@ const useStyles = createUseStyles((theme) => ({
 }));
 
 export const OrganizationsStep = () => {
+    const classes = useStyles();
+    const dispatch = useAppDispatch();
+    const organizationsStep = useAppSelector(selectOrganizationsStep);
+    const { data: organizations, isSuccess: isOrganizationsLoaded } = useGetOrganizationsQuery();
+
     const form = useForm<OrganizationsStepFormData>({
         resolver: zodResolver(organizationsStepSchema),
-        defaultValues: getDefaultValues(organizationsStepSchema),
+        defaultValues: {
+            receiver_id: organizationsStep.receiver_id?.toString() ?? '',
+            sender_id: organizationsStep.sender_id?.toString() ?? '',
+        },
     });
-
-    const classes = useStyles();
-    const { data: organizations, isSuccess: isOrganizationsLoaded } = useGetOrganizationsQuery();
-    const [direction, setDirection] = useState('IN');
+    const { trigger, getValues } = form;
 
     const organizationsOptions: LabelValue[] | null = useMemo(() => {
         if (isOrganizationsLoaded) {
@@ -80,10 +88,29 @@ export const OrganizationsStep = () => {
         return null;
     }, [isOrganizationsLoaded]);
 
+    const handleDataChange = async () => {
+        const isValid = await trigger();
+        const formValues = getValues();
+
+        if (isValid) {
+            dispatch(stepValid(STEP_INDECIES[StepName.organizations]));
+        } else {
+            dispatch(stepError(STEP_INDECIES[StepName.organizations]));
+        }
+
+        dispatch(organizationsStepSet({
+            direction: organizationsStep.direction,
+            sender_id: parseInt(formValues.sender_id ?? 0) || undefined,
+            receiver_id: parseInt(formValues.receiver_id ?? 0) || undefined,
+        }));
+    }
+
     const handleDirectionChange = (event: ChangeEvent<HTMLInputElement>) => {
-        
-        setDirection(event.target.checked ? 'OUT' : 'IN');
-        console.log(direction)
+        dispatch(organizationsStepSet({
+            direction: event.target.checked ? 'OUT' : 'IN',
+            sender_id: organizationsStep.sender_id,
+            receiver_id: organizationsStep.receiver_id,
+        }));
     };
 
     return (    
@@ -97,26 +124,28 @@ export const OrganizationsStep = () => {
                             }}
                             name="direction"
                             labelPlacement="top"
-                            checked={direction === 'OUT'}
+                            checked={organizationsStep.direction === 'OUT'}
                             control={<Switch />}
                             label="Направление"
                             onChange={handleDirectionChange}
                         />
                         <Text kind="bodyLg">
-                            {getDirectionName(direction as ExpeditionDirections)}
+                            {getDirectionName(organizationsStep.direction!)}
                         </Text>
                     </Box>
                     {isOrganizationsLoaded && organizationsOptions != null ? (
                         <>
                             <ComboBoxField
                                 label="Отправитель"
-                                name="sender"
+                                name="sender_id"
                                 options={organizationsOptions}
+                                onChange={handleDataChange}
                             />
                             <ComboBoxField
                                 label="Получатель"
-                                name="receiver"
+                                name="receiver_id"
                                 options={organizationsOptions}
+                                onChange={handleDataChange}
                             />
                         </>
                     ) : (

@@ -1,4 +1,4 @@
-import { Expedition, Invoice, InvoiceGoodEntry } from "@/models/expeditions";
+import { Expedition, Invoice, InvoiceGoodEntry, OrganizationsStep } from "@/models/expeditions";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { StepStatus, ZeroThroughTwo } from "@/models/common";
 
@@ -25,13 +25,14 @@ const initialState: ExpeditionState = {
         end_date: '-',
         invoices: []
     },
-    stepStatuses: ['pending', 'error', 'pending']
+    stepStatuses: ['pending', 'pending', 'pending']
 };
 
 type AddInvoiceAction = PayloadAction<Partial<Invoice>>;
 type AddGoodAction = PayloadAction<InvoiceGoodEntry>;
 type StepErrorAction = PayloadAction<ZeroThroughTwo>;
 type StepValidAction = PayloadAction<ZeroThroughTwo>;
+type OrganizationsStepSetAction = PayloadAction<Partial<OrganizationsStep>>;
 
 export const expeditionSlice = createSlice({
     name: 'expedition',
@@ -53,10 +54,15 @@ export const expeditionSlice = createSlice({
         stepValid(state, action: StepValidAction) {
             state.stepStatuses[action.payload] = 'valid';
         },
+        organizationsStepSet(state, action: OrganizationsStepSetAction) {
+            state.newExpedition.direction = action.payload.direction;
+            state.newExpedition.sender_id = action.payload.sender_id;
+            state.newExpedition.receiver_id = action.payload.receiver_id;
+        },
         expeditionCleared(state) {
             state.newExpedition = initialState.newExpedition;
         },
     },
 });
 
-export const { invoiceAdded, goodAdded, expeditionCleared, stepError, stepValid } = expeditionSlice.actions;
+export const { invoiceAdded, goodAdded, expeditionCleared, stepError, stepValid, organizationsStepSet } = expeditionSlice.actions;

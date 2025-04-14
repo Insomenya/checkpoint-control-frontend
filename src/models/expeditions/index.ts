@@ -31,3 +31,5 @@ export type InvoiceGoodEntry = {
     good_id: number;
     quantity: number;
 }
+
+export type OrganizationsStep = Pick<Expedition, 'direction' | 'sender_id' | 'receiver_id'>;
