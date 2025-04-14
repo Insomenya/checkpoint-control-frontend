@@ -4,13 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ComboBoxField } from "@shared/common/atoms";
 import { getDirectionName } from "@shared/common/utils";
 import { Box, CircularProgress, Container, createUseStyles, LabelControl, Switch, Text } from "@v-uik/base";
-import { ChangeEvent, useMemo } from "react";
+import { ChangeEvent, useEffect, useMemo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { OrganizationsStepFormData, organizationsStepSchema } from "../schemas/organizationsStepSchema";
 import { useAppDispatch, useAppSelector } from "@store/store";
-import { organizationsStepSet, stepError, stepValid } from "@store/expedition/expedition.slice";
+import { currentStepSet, organizationsStepSet, stepError, stepValid } from "@store/expedition/expedition.slice";
 import { STEP_INDECIES, StepName } from "../constants";
-import { selectOrganizationsStep } from "@store/expedition/expedition.selectors";
+import { selectNewStep, selectOrganizationsStep, selectStepStatus } from "@store/expedition/expedition.selectors";
 
 const useStyles = createUseStyles((theme) => ({
     container: {
@@ -24,24 +24,6 @@ const useStyles = createUseStyles((theme) => ({
         gap: theme.spacing(2),
         width: 350,
         alignItems: 'flex-start'
-    },
-    preview: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'space-around',
-        gap: theme.spacing(2),
-        width: 250,
-    },
-    dividerVertical: {
-        padding: [theme.spacing(2), 0],
-        paddingRight: theme.spacing(1),
-        marginLeft: theme.spacing(1),
-        borderBottom: 0,
-    },
-    dividerHorizontal: {
-        paddingTop: theme.spacing(2),
-        marginBottom: theme.spacing(2)
     },
     centerProgress: {
         display: 'flex',
@@ -64,6 +46,8 @@ export const OrganizationsStep = () => {
     const classes = useStyles();
     const dispatch = useAppDispatch();
     const organizationsStep = useAppSelector(selectOrganizationsStep);
+    const newStep = useAppSelector(selectNewStep);
+    const organizationsStepStatus = useAppSelector(selectStepStatus(STEP_INDECIES[StepName.organizations]));
     const { data: organizations, isSuccess: isOrganizationsLoaded } = useGetOrganizationsQuery();
 
     const form = useForm<OrganizationsStepFormData>({
@@ -88,22 +72,32 @@ export const OrganizationsStep = () => {
         return null;
     }, [isOrganizationsLoaded]);
 
-    const handleDataChange = async () => {
+    const validate = async  () => {
         const isValid = await trigger();
-        const formValues = getValues();
 
-        if (isValid) {
+        if (isValid && organizationsStepStatus === 'leaving') {
             dispatch(stepValid(STEP_INDECIES[StepName.organizations]));
         } else {
             dispatch(stepError(STEP_INDECIES[StepName.organizations]));
         }
+    };
 
-        dispatch(organizationsStepSet({
-            direction: organizationsStep.direction,
-            sender_id: parseInt(formValues.sender_id ?? 0) || undefined,
-            receiver_id: parseInt(formValues.receiver_id ?? 0) || undefined,
-        }));
-    }
+    useEffect(() => {
+        if (organizationsStepStatus === 'leaving') {
+            validate();
+            const formValues = getValues();
+
+            dispatch(organizationsStepSet({
+                direction: organizationsStep.direction,
+                sender_id: parseInt(formValues.sender_id ?? 0) || undefined,
+                receiver_id: parseInt(formValues.receiver_id ?? 0) || undefined,
+            }));
+
+            dispatch(currentStepSet(newStep));
+        } else if (organizationsStepStatus === 'error') {
+            validate();
+        }
+    }, [organizationsStepStatus]);
 
     const handleDirectionChange = (event: ChangeEvent<HTMLInputElement>) => {
         dispatch(organizationsStepSet({
@@ -139,13 +133,11 @@ export const OrganizationsStep = () => {
                                 label="Отправитель"
                                 name="sender_id"
                                 options={organizationsOptions}
-                                onChange={handleDataChange}
                             />
                             <ComboBoxField
                                 label="Получатель"
                                 name="receiver_id"
                                 options={organizationsOptions}
-                                onChange={handleDataChange}
                             />
                         </>
                     ) : (

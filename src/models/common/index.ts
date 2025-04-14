@@ -57,4 +57,4 @@ export type StepsNumbers = ZeroThroughTwo;
 
 export type StepsConfiguration = Record<StepsNumbers, StepConfiguration>;
 
-export type StepStatus = 'pending' | 'error' | 'valid';
+export type StepStatus = 'leaving' | 'pending' | 'error' | 'valid';

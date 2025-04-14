@@ -2,8 +2,9 @@ import { STEPS_CONFIGURATION } from "@/features/registerExpedition/components";
 import { INVALID_STEPS_MESSAGE, MAX_STEPS } from "@/features/registerExpedition/constants";
 import { StepConfiguration, StepsNumbers } from "@/models/common";
 import { TooltipWrapper } from "@shared/common/organisms";
-import { selectStepStatuses } from "@store/expedition/expedition.selectors";
-import { useAppSelector } from "@store/store";
+import { selectCurrentStep, selectStepStatuses } from "@store/expedition/expedition.selectors";
+import { currentStepSet, newStepSet, stepLeft } from "@store/expedition/expedition.slice";
+import { useAppDispatch, useAppSelector } from "@store/store";
 import { Box, Button, Card, createUseStyles, Step, Stepper, Text, Tooltip } from "@v-uik/base";
 import { useMemo, useState } from "react";
 
@@ -30,20 +31,23 @@ const useStyles = createUseStyles((theme) => ({
 
 export const RegisterExpedition = () => {
     const classes = useStyles();
-    const [currentStep, setCurrentStep] = useState<StepsNumbers>(0);
+    const currentStep = useAppSelector(selectCurrentStep);
     const stepStatuses = useAppSelector(selectStepStatuses);
+    const dispatch = useAppDispatch();
 
     const hasErrors = useMemo(() => stepStatuses.some((status) => status === 'error'), [stepStatuses]);
 
     const handleStepForward = () => {
         if (currentStep !== MAX_STEPS - 1) {
-            setCurrentStep((step):StepsNumbers => (step + 1) as StepsNumbers);
+            dispatch(newStepSet((currentStep + 1) as StepsNumbers));
+            dispatch(stepLeft(currentStep));
         }
     };
 
     const handleStepBackward = () => {
         if (currentStep > 0) {
-            setCurrentStep((step):StepsNumbers => (step - 1) as StepsNumbers);
+            dispatch(newStepSet((currentStep - 1) as StepsNumbers));
+            dispatch(stepLeft(currentStep));
         }
     };
 

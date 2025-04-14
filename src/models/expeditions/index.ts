@@ -33,3 +33,5 @@ export type InvoiceGoodEntry = {
 }
 
 export type OrganizationsStep = Pick<Expedition, 'direction' | 'sender_id' | 'receiver_id'>;
+
+export type InfoStep = Pick<Expedition, 'name' | 'type' | 'full_name' | 'phone_number' | 'license_plate' | 'vehicle_model'>;
