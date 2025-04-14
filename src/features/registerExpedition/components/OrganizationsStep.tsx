@@ -1,4 +1,4 @@
-import { Directions, LabelValue } from "@/models/common";
+import { LabelValue } from "@/models/common";
 import { useGetOrganizationsQuery } from "@api/organizations/organizationsApi";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ComboBoxField } from "@shared/common/atoms";
@@ -7,6 +7,7 @@ import { Box, CircularProgress, Container, createUseStyles, LabelControl, Switch
 import { ChangeEvent, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { OrganizationsStepFormData, organizationsStepSchema } from "../schemas/organizationsStepSchema";
+import { ExpeditionDirections } from "@/models/expeditions";
 
 const useStyles = createUseStyles((theme) => ({
     container: {
@@ -102,7 +103,7 @@ export const OrganizationsStep = () => {
                             onChange={handleDirectionChange}
                         />
                         <Text kind="bodyLg">
-                            {getDirectionName(direction as Directions)}
+                            {getDirectionName(direction as ExpeditionDirections)}
                         </Text>
                     </Box>
                     {isOrganizationsLoaded && organizationsOptions != null ? (

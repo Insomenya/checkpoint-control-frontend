@@ -3,6 +3,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { commonSlice } from "./common/common.slice";
 import { authSlice } from "./auth/auth.slice";
+import { expeditionSlice } from "./expedition/expedition.slice";
 
 const reducers = {};
 
@@ -11,7 +12,8 @@ const createRootReducer = () =>
         ...reducers,
         [baseApi.reducerPath]: baseApi.reducer,
         [commonSlice.reducerPath]: commonSlice.reducer,
-        [authSlice.reducerPath]: authSlice.reducer
+        [authSlice.reducerPath]: authSlice.reducer,
+        [expeditionSlice.reducerPath]: expeditionSlice.reducer,
     });
 
 export const store = configureStore({

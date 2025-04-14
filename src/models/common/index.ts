@@ -21,7 +21,7 @@ export type UserRoles = 'operator' | 'logistician' | 'admin';
 
 type OneThroughThree = 1 | 2 | 3;
 
-type ZeroThroughTwo = 0 | 1 | 2;
+export type ZeroThroughTwo = 0 | 1 | 2;
 
 export type ZoneValues = OneThroughThree;
 
@@ -57,4 +57,4 @@ export type StepsNumbers = ZeroThroughTwo;
 
 export type StepsConfiguration = Record<StepsNumbers, StepConfiguration>;
 
-export type Directions = 'IN' | 'OUT';
+export type StepStatus = 'pending' | 'error' | 'valid';

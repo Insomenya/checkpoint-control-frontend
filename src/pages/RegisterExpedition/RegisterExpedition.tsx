@@ -1,8 +1,11 @@
 import { STEPS_CONFIGURATION } from "@/features/registerExpedition/components";
-import { MAX_STEPS } from "@/features/registerExpedition/constants";
+import { INVALID_STEPS_MESSAGE, MAX_STEPS } from "@/features/registerExpedition/constants";
 import { StepConfiguration, StepsNumbers } from "@/models/common";
-import { Box, Button, Card, createUseStyles, Step, Stepper, Text } from "@v-uik/base";
-import { useState } from "react";
+import { TooltipWrapper } from "@shared/common/organisms";
+import { selectStepStatuses } from "@store/expedition/expedition.selectors";
+import { useAppSelector } from "@store/store";
+import { Box, Button, Card, createUseStyles, Step, Stepper, Text, Tooltip } from "@v-uik/base";
+import { useMemo, useState } from "react";
 
 const useStyles = createUseStyles((theme) => ({
     contentContainer: {
@@ -17,7 +20,8 @@ const useStyles = createUseStyles((theme) => ({
     },
     cardActions: {
         display: 'flex',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        marginTop: theme.spacing(8),
     },
     stepRoot: {
         minWidth: 150
@@ -27,7 +31,9 @@ const useStyles = createUseStyles((theme) => ({
 export const RegisterExpedition = () => {
     const classes = useStyles();
     const [currentStep, setCurrentStep] = useState<StepsNumbers>(0);
-    const [errorStepsArray, setErrorStepsArray] = useState<StepsNumbers[]>([0]);
+    const stepStatuses = useAppSelector(selectStepStatuses);
+
+    const hasErrors = useMemo(() => stepStatuses.some((status) => status === 'error'), [stepStatuses]);
 
     const handleStepForward = () => {
         if (currentStep !== MAX_STEPS - 1) {
@@ -56,7 +62,7 @@ export const RegisterExpedition = () => {
                                 }}
                                 key={step.key}
                                 index={step.order}
-                                error={errorStepsArray.indexOf(step.order) > -1}
+                                error={stepStatuses[step.order] === 'error'}
                             >
                                 {step.title}
                             </Step>
@@ -75,15 +81,25 @@ export const RegisterExpedition = () => {
                                 kind="outlined"
                                 color="secondary"
                                 onClick={handleStepBackward}
+                                disabled={currentStep === 0}
                             >
                                 Назад
                             </Button>
-                            <Button
-                                size="sm"
-                                onClick={handleStepForward}
+                            <TooltipWrapper
+                                tooltip={INVALID_STEPS_MESSAGE}
+                                tooltipNeeded={currentStep === 2 && hasErrors}
+                                dropdownProps={{
+                                    placement: 'bottom-start'
+                                }}
                             >
-                                Далее
-                            </Button>
+                                <Button
+                                    size="sm"
+                                    onClick={handleStepForward}
+                                    color={currentStep === 2 && hasErrors ? 'secondary' : 'primary'}
+                                >
+                                    {currentStep == 2 ? 'Завершить' : 'Далее'}
+                                </Button>
+                            </TooltipWrapper>
                         </Box>
                     }
                 >

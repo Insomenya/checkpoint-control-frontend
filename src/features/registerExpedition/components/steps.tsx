@@ -1,14 +1,14 @@
 import { StepsConfiguration } from "@/models/common";
-import { InvoiceStep } from "./invoiceStep";
-import { InfoStep } from "./infoStep";
-import { OrganizationsStep } from "./organizationsStep";
+import { InvoiceStep } from "./InvoiceStep";
+import { InfoStep } from "./InfoStep";
+import { OrganizationsStep } from "./OrganizationsStep";
 
 export const STEPS_CONFIGURATION: StepsConfiguration = {
     0: {
         order: 0,
         key: 'register_expedition_step_1',
         title: 'Данные организаций',
-        subtitle: 'Выберите направление и импортера/экспортера',
+        subtitle: 'Выберите направление, отправителя и получателя',
         component: <OrganizationsStep />
     },
     1: {
@@ -22,7 +22,7 @@ export const STEPS_CONFIGURATION: StepsConfiguration = {
         order: 2,
         key: 'register_expedition_step_3',
         title: 'Накладные',
-        subtitle: 'Зарегистрируйте накладные',
+        subtitle: 'Добавьте накладные',
         component: <InvoiceStep />
     },
 };
