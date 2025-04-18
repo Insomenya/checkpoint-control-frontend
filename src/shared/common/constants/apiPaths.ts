@@ -1,21 +1,39 @@
 export const API_PATHS = {
-    ROOT: 'api',
+    ROOT: import.meta.env.VITE_NEEDS_MIRAGE ? 'api' : import.meta.env.VITE_API_HOST,
     AUTH: {
-        LOGIN: '/auth/jwt/create',
-        REFRESH_TOKEN: '/auth/jwt/refresh',
-        VERIFY_TOKEN: '/auth/jwt/verify',
-        GET_USER_DATA: '/auth/details'
-    },
-    GOODS: {
-        ROOT: '/goods',
-    },
-    ORGANIZATIONS: {
-        ROOT: '/orgs'
-    },
-    USERS: {
-        ROOT: '/users',
+        ROOT: '/auth',
+        CREATE: '/jwt/create',
+        REFRESH: '/jwt/refresh',
+        VERIFY: '/jwt/verify',
+        DETAILS: '/details',
+        SETPASS: '/setpass',
+        STATS: '/stats',
+        USERS: '/users',
+        SIGNUP: '/signup',
     },
     CHECKPOINTS: {
         ROOT: '/checkpoints',
     },
+    CONFIRM: {
+        ROOT: '/confirm',
+    },
+    CONFIRMED: {
+        ROOT: '/confirmed',
+        CHECKPOINT: '/checkpoint',
+        ZONE: '/zone',
+    },
+    EXPEDITION: {
+        ROOT: '/expedition',
+        STATUS: '/status',
+    },
+    EXPEDITIONS: {
+        ROOT: '/expeditions',
+        BRIEF: '/brief',
+    },
+    GOODS: {
+        ROOT: '/goods',
+    },
+    ORGS: {
+        ROOT: '/orgs',
+    }
 };

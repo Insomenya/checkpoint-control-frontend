@@ -6,12 +6,10 @@ import { Box, Button, createUseStyles, notification } from '@v-uik/base';
 import { ErrorDescription, InputField } from '@shared/common/atoms';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ROUTER_PATHS } from '@shared/common/constants';
-import { useAppDispatch, useAppSelector } from '@store/store';
+import { useAppDispatch } from '@store/store';
 import { loginSuccess } from '@store/auth/auth.slice';
 import { isErrorResponse } from '@shared/common/utils';
 import { PasswordField } from '@shared/common/atoms/form';
-import { verifyKeySet } from '@store/common/common.slice';
-import { selectVerifyKey } from '@store/common/common.selectors';
 
 const useStyles = createUseStyles((theme) => ({
   loginForm: {
@@ -37,8 +35,6 @@ export const LoginForm = () => {
   const { handleSubmit } = form;
   const classes = useStyles();
   const [login, { isLoading }] = useLoginMutation();
-  const location = useLocation();
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const onSubmit = (data: LoginFormData) => {
@@ -47,7 +43,6 @@ export const LoginForm = () => {
       .then((payload) => {
         dispatch(loginSuccess(payload));
         window.location.replace(ROUTER_PATHS.ROOT);
-        // navigate(ROUTER_PATHS.ROOT);
       })
       .catch((error) => {
         if (isErrorResponse(error)) {

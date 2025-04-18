@@ -1,53 +1,49 @@
-import { PostLoginResponseDTO, User } from "@/models/auth";
+import { GetUserDataResponseDTO, PostLoginResponseDTO, PostRefreshTokenResponseDTO, User } from "@/models/auth";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type AuthState = {
-    token: string | null;
-    refreshToken: string | null;
+    access: string | null;
+    refresh: string | null;
     user: User | null;
 };
 
 const initialState: AuthState = {
-    token: localStorage.getItem('token'),
-    refreshToken: localStorage.getItem('refreshToken'),
+    access: localStorage.getItem('access'),
+    refresh: localStorage.getItem('refresh'),
     user: null,
 };
 
-type TokenUpdatedDTO = Omit<AuthState, 'user'>;
-type UserDataSetDTO = Pick<AuthState, 'user'>;
-
 type LoginSuccessAction = PayloadAction<PostLoginResponseDTO>;
-type TokenUpdatedAction = PayloadAction<TokenUpdatedDTO>;
-type UserDataSetAction = PayloadAction<UserDataSetDTO>;
+type TokenUpdatedAction = PayloadAction<PostRefreshTokenResponseDTO>;
+type UserDataSetAction = PayloadAction<GetUserDataResponseDTO>;
 
 export const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
         loginSuccess(state, action: LoginSuccessAction) {
-            state.token = action.payload.token;
-            state.refreshToken = action.payload.refreshToken;
-            localStorage.setItem('token', action.payload.token);
-            localStorage.setItem('refreshToken', action.payload.refreshToken);
+            state.access = action.payload.access;
+            state.refresh = action.payload.refresh;
+            localStorage.setItem('access', action.payload.access);
+            localStorage.setItem('refresh', action.payload.refresh);
         },
         tokenUpdated(state, action: TokenUpdatedAction) {
-            if (action.payload.token && action.payload.refreshToken) {
-                state.token = action.payload.token;
-                state.refreshToken = action.payload.refreshToken;
-                localStorage.setItem('token', action.payload.token);
-                localStorage.setItem('refreshToken', action.payload.refreshToken);
+            if (action.payload.access && action.payload.refresh) {
+                state.access = action.payload.access;
+                state.refresh = action.payload.refresh;
+                localStorage.setItem('access', action.payload.access);
+                localStorage.setItem('refresh', action.payload.refresh);
             }
         },
         userDataSet(state, action: UserDataSetAction) {
-            state.user = action.payload.user;
+            state.user = action.payload;
         },
         logout(state) {
             state.user = null;
-            state.token = null;
-            state.refreshToken = null;
-            localStorage.removeItem('token');
-            localStorage.removeItem('refreshToken');
-            localStorage.removeItem('user');
+            state.access = null;
+            state.refresh = null;
+            localStorage.removeItem('access');
+            localStorage.removeItem('refresh');
         },
     },
 });

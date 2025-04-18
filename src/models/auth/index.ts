@@ -1,17 +1,22 @@
 import { UserRoles } from "../common";
 
+export type CheckpointMinimal = {
+    id: number;
+    name: string;
+}
+
 export type User = {
     id: number;
     role: UserRoles;
+    role_display?: string;
     username: string;
     fullName?: string;
-    checkpoint_id?: number;
+    checkpoint?: CheckpointMinimal;
 };
 
 export type PostLoginResponseDTO = {
-    token: string;
-    refreshToken: string;
-    user: User;
+    access: string;
+    refresh: string;
 };
 
 export type PostLoginRequestDTO = {
@@ -20,16 +25,16 @@ export type PostLoginRequestDTO = {
 };
 
 export type PostRefreshTokenRequestDTO = {
-    refreshToken: string;
+    refresh: string;
 };
 
 export type PostRefreshTokenResponseDTO = {
-    token: string;
-    refreshToken: string;
+    refresh: string;
+    access: string;
 };
 
 export type PostVerifyTokenDTO = {
     token: string;
 }
 
-export type GetUserDataResponseDTO = Pick<PostLoginResponseDTO, 'user'>;
+export type GetUserDataResponseDTO = User;
