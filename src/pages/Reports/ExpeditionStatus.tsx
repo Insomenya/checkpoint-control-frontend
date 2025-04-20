@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useAppSelector } from '@store/store';
 import { selectUser } from '@store/auth/auth.selectors';
 import { useGetExpeditionStatusQuery } from '@api/expeditions/expeditionsApi';
-import { LogistSearchForm } from '@/features/expeditionStatus/components';
+import { LogistSearchForm, ExpeditionStatusReport } from '@/features/expeditionStatus/components';
 import { MESSAGES, DIRECTION_OPTIONS } from '@/features/expeditionStatus/constants';
 import { PageFallback } from '@shared/common/molecules';
 import { ExpeditionList, ConfirmationCard } from '@shared/business/molecules';
@@ -25,7 +25,10 @@ const useStyles = createUseStyles((theme) => ({
     flex: '1 1 70%'
   },
   confirmationColumn: {
-    flex: '1 1 30%'
+    flex: '1 1 30%',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(2)
   },
   loadingContainer: {
     display: 'flex',
@@ -59,13 +62,6 @@ export const ExpeditionStatus = () => {
       setExpeditionId(Number(expeditionIdParam));
     }
   }, [expeditionIdParam]);
-
-  useEffect(() => {
-    if (expeditionStatus) {
-      console.log('Expedition Status Data:', expeditionStatus);
-      console.log('Last Confirmation:', expeditionStatus.last_confirmation);
-    }
-  }, [expeditionStatus]);
 
   const handleExpeditionSearch = (id: number) => {
     setExpeditionId(id);
@@ -111,6 +107,12 @@ export const ExpeditionStatus = () => {
                 confirmation={expeditionStatus?.last_confirmation || null} 
                 isLoading={isLoading}
               />
+              {expeditionStatus && (
+                <ExpeditionStatusReport 
+                  expedition={expeditionStatus} 
+                  confirmation={expeditionStatus.last_confirmation} 
+                />
+              )}
             </Box>
           </Box>
         )}
@@ -143,6 +145,12 @@ export const ExpeditionStatus = () => {
                 confirmation={expeditionStatus?.last_confirmation || null} 
                 isLoading={isLoading}
               />
+              {expeditionStatus && (
+                <ExpeditionStatusReport 
+                  expedition={expeditionStatus} 
+                  confirmation={expeditionStatus.last_confirmation} 
+                />
+              )}
             </Box>
           </Box>
         )}
