@@ -2,16 +2,14 @@ import { FC, useCallback, useMemo, useState } from 'react';
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 (pdfMake as any).vfs = pdfFonts.vfs;
-import { utils as XLSXUtils, writeFile as XLSXWriteFile } from 'xlsx';
 import { Box, Button, ColumnProps, createUseStyles, Input, notification, RecordDataSource, SortOrderProp, Table, TableEventType, TablePagination, TablePaginationType } from '@v-uik/base';
 import { CustomFilterDropdown, ErrorDescription } from '../atoms';
-import { CustomFiltersConfig, CustomFilter } from '@/models/common';
+import { CustomFiltersConfig } from '@/models/common';
 import { ICON_SIZE, Messages, MESSAGES } from '@shared/common/constants';
 import { ButtonModalBundle, ModalProps } from './ButtonModalBundle';
 import { Edit, Filter, PlaylistAdd, Printer, TableExport, Trash } from '@v-uik/icons';
-import { format } from 'date-fns';
-import { DateFormat, TableEditabilityOptions } from '@/models/common';
-import { Alignment } from 'pdfmake/interfaces';
+import { TableEditabilityOptions } from '@/models/common';
+import { exportToPDF, exportToExcel } from '@shared/common/utils';
 
 const useStyles = createUseStyles((theme) => ({
   container: {
@@ -128,46 +126,7 @@ export const AppTable = <T extends object> ({
 
   const handleExportToPDF = () => {
     if (items.length) {
-    const headers = columns.map((col) => col.title);
-    const data = items.map((item) => {
-      const docDataItem: any[] = [];
-
-      columns.forEach((col) => {
-        docDataItem.push(item[col.key as keyof T]);
-      });
-
-      return docDataItem;
-    });
-
-    const docDefinition = {
-      content: [
-        {
-          alignment: 'right' as Alignment,
-          columns: [
-            {
-              text: ''
-            },
-            {
-              text: format(new Date(), DateFormat.RuDateOnly)
-            },
-          ]
-        },
-        '\n\n',
-        {
-          text: fileName,
-          style: 'header',
-        },
-        {
-          table: {
-            headerRows: 1,
-            widths: ['*', '*', '*', '*'],
-            body: [headers, ...data],
-          },
-        },
-      ],
-    };
-
-    pdfMake.createPdf(docDefinition).download(`${fileName}.pdf`);
+      exportToPDF(fileName, columns, items);
     } else {
       notification.error(
         <ErrorDescription>{messages.NO_DATA}</ErrorDescription>,
@@ -181,19 +140,7 @@ export const AppTable = <T extends object> ({
 
   const handleExportToExcel = () => {
     if (items.length) {
-      const worksheetData = items.map((item) => {
-        const worksheetDataItem: any[] = [];
-
-        columns.forEach((col) => {
-          worksheetDataItem.push(item[col.key as keyof T]);
-        });
-
-        return worksheetDataItem;
-      });
-      const worksheet = XLSXUtils.aoa_to_sheet([[...columns.map((col) => col.title)], ...worksheetData]);
-      const workbook = XLSXUtils.book_new();
-      XLSXUtils.book_append_sheet(workbook, worksheet, fileName);
-      XLSXWriteFile(workbook, `${fileName}.xlsx`);
+      exportToExcel(fileName, columns, items);
     } else {
       notification.error(
         <ErrorDescription>{messages.NO_DATA}</ErrorDescription>,
@@ -256,7 +203,6 @@ export const AppTable = <T extends object> ({
   }, [columns, editable]);
 
   const filteredItems = useMemo(() => {
-    // First apply custom filters
     let filtered = items;
     
     if (customFilters?.filters && customFilters.filters.length > 0) {
@@ -264,13 +210,17 @@ export const AppTable = <T extends object> ({
         return customFilters.filters.every(customFilter => {
           const filterValue = customFilterValues[String(customFilter.key)];
           
-          // If no filter value is selected, include all items
           if (!filterValue) {
             return true;
           }
           
-          const itemValue = String(item[customFilter.key]);
-          return itemValue === filterValue;
+          const itemValue = item[customFilter.key];
+          
+          if (itemValue === undefined || itemValue === null) {
+            return false;
+          }
+          
+          return String(itemValue).toLowerCase() === filterValue.toLowerCase();
         });
       });
     }

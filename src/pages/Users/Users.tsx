@@ -62,7 +62,7 @@ export const Users = () => {
       <AppTable<UserDTO>
         items={usersData}
         columns={columns}
-        fileName="Users"
+        fileName="Пользователи"
         messages={MESSAGES}
         customFilters={USERS_CUSTOM_FILTERS}
       />

@@ -162,7 +162,7 @@ export const Checkpoints = () => {
       <AppTable<Checkpoint>
         items={data}
         columns={getColumns(classes.textCell)}
-        fileName="Checkpoints"
+        fileName="Список КПП"
         ModalComponent={CheckpointModal}
         onAdd={handleAddCheckpoint}
         onDelete={handleDeleteCheckpoint}

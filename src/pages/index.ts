@@ -13,3 +13,4 @@ export { AddUser } from './AddUser/AddUser';
 export { Users } from './Users/Users';
 export { SetPassword } from './SetPassword/SetPassword';
 export { Dashboard } from './Dashboard/Dashboard';
+export { ExpeditionList } from './ExpeditionList/ExpeditionList';

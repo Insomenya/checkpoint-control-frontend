@@ -3,6 +3,7 @@ export const ROUTER_PATHS = {
     ABOUT: '',
     LOGIN: 'login',
     REGISTER_EXPEDITION: 'expedition',
+    EXPEDITION_LIST: 'expeditions',
     REGISTER_GOODS: 'goods',
     REGISTER_ORGANIZATION: 'org',
     CONFIRMATION: 'confirmation',
@@ -13,7 +14,7 @@ export const ROUTER_PATHS = {
     },
     ADD_USER: 'user',
     USERS: 'users',
-    CHECKPOINT_ZONE_LINK: 'checkpoints',
+    CHECKPOINTS: 'checkpoints',
     SET_PASSWORD: 'auth/setpass',
     DASHBOARD: 'dashboard'
 };

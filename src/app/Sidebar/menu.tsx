@@ -1,6 +1,6 @@
 import { MenuItemInfo, UserRoles } from "@/models/common";
 import { ROUTER_PATHS } from "@shared/common/constants";
-import { Archive, Box, BuildingFactory2, Dashboard, DeviceDesktop, Truck, UserPlus, Users, ZoomCheck } from "@v-uik/icons";
+import { Archive, Box, BuildingFactory2, Dashboard, DeviceDesktop, Truck, UserPlus, Users, ZoomCheck, List } from "@v-uik/icons";
 
 export const MENU: Record<UserRoles, MenuItemInfo[]> = {
     operator: [
@@ -47,6 +47,12 @@ export const MENU: Record<UserRoles, MenuItemInfo[]> = {
             icon: <Truck />,
             label: 'Создать экспедицию',
             path: ROUTER_PATHS.REGISTER_EXPEDITION,
+        },
+        {
+            type: 'regular',
+            icon: <List />,
+            label: 'Список экспедиций',
+            path: ROUTER_PATHS.EXPEDITION_LIST,
         },
         {
             type: 'regular',
@@ -102,7 +108,7 @@ export const MENU: Record<UserRoles, MenuItemInfo[]> = {
             type: 'regular',
             icon: <DeviceDesktop />,
             label: 'Настройка КПП',
-            path: ROUTER_PATHS.CHECKPOINT_ZONE_LINK,
+            path: ROUTER_PATHS.CHECKPOINTS,
         },
     ],
 };

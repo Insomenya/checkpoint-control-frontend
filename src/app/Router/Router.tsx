@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Harness } from "../Harness/Harness";
-import { About, AddUser, Checkpoints, Confirmation, Dashboard, ExpeditionStatus, FilteredReport, Login, RegisterExpedition, RegisterGoods, RegisterOrganizations, SetPassword, Users } from "@/pages";
+import { About, AddUser, Checkpoints, Confirmation, Dashboard, ExpeditionList, ExpeditionStatus, FilteredReport, Login, RegisterExpedition, RegisterGoods, RegisterOrganizations, SetPassword, Users } from "@/pages";
 import { ROUTER_PATHS } from "@shared/common/constants";
 import ProtectedRoute from "./ProtectedRoute";
 import { Verify } from "../Verify/Verify";
@@ -29,6 +29,12 @@ export const Router = () => {
                                 element={<ProtectedRoute roles={['logistician']} />}
                             >
                                 <Route index element={<RegisterExpedition />} />
+                            </Route>
+                            <Route
+                                path={ROUTER_PATHS.EXPEDITION_LIST}
+                                element={<ProtectedRoute roles={['logistician']} />}
+                            >
+                                <Route index element={<ExpeditionList />} />
                             </Route>
                             <Route
                                 path={ROUTER_PATHS.REGISTER_GOODS}
@@ -73,7 +79,7 @@ export const Router = () => {
                                 <Route index element={<Users />} />
                             </Route>
                             <Route
-                                path={ROUTER_PATHS.CHECKPOINT_ZONE_LINK}
+                                path={ROUTER_PATHS.CHECKPOINTS}
                                 element={<ProtectedRoute roles={['admin']} />}
                             >
                                 <Route index element={<Checkpoints />} />

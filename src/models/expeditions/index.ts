@@ -67,7 +67,7 @@ export type CreateExpeditionRequestDTO = {
     invoices: CreateInvoiceItem[];
 };
 
-export type CreateExpeditionResponseDTO = {
+export type ExpeditionDTO = {
     id: number;
     name: string;
     direction: string;
@@ -88,6 +88,8 @@ export type CreateExpeditionResponseDTO = {
     end_date: string;
     invoices: InvoiceItem[];
 };
+
+export type CreateExpeditionResponseDTO = ExpeditionDTO;
 
 export type ExpeditionDetailsResponseDTO = CreateExpeditionResponseDTO;
 

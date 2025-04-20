@@ -148,7 +148,7 @@ export const RegisterOrganizations = () => {
       <AppTable<Organization>
         items={data}
         columns={getColumns()}
-        fileName="Organizations"
+        fileName="Список организаций"
         ModalComponent={OrganizationModal}
         onAdd={handleAddOrganization}
         onDelete={handleDeleteOrganization}
