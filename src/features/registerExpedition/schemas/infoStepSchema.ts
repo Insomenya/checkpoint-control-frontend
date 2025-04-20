@@ -14,7 +14,7 @@ export const infoStepSchema = z.object({
         }
     }).default(''),
     full_name: z.string().min(1, 'Введите имя ответственного').default(''),
-    phone_number: z.string().min(1, 'Введите контактный номер').regex(phoneRegex, 'Введите номер в формате "+7-ххх-ххх-хххх"').default(''),
+    phone_number: z.string().min(1, 'Введите контактный номер').regex(phoneRegex, 'Введите номер в формате "+7(XXX)XXX-XX-XX"').default(''),
     license_plate: z.string().optional().default(''),
     vehicle_model: z.string().optional().default(''),
 }).superRefine((data, ctx) => {

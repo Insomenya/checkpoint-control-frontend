@@ -15,9 +15,9 @@ export const getColumns = (): ColumnProps<Organization>[] => [
         sortable: true
     },
     {
-        key: 'contactPhone',
-        dataIndex: 'contactPhone',
+        key: 'contact_phone',
+        dataIndex: 'contact_phone',
         title: 'Контактный номер',
         sortable: true
-    },
+    }
 ];

@@ -1,5 +1,5 @@
-import { useGetGoodsQuery, useAddGoodMutation, useUpdateGoodMutation, useDeleteGoodMutation } from '@api/goods/goodsApi';
-import { Good } from '../../models/goods';
+import { useGetGoodsQuery, useCreateGoodMutation, useUpdateGoodMutation, useDeleteGoodMutation } from '@api/goods/goodsApi';
+import { Good, GoodIdParam } from '../../models/goods';
 import { CircularProgress, Container, createUseStyles, notification, Text } from '@v-uik/base';
 import { PageFallback } from '@shared/common/molecules';
 import { FAILED_TO_LOAD_MESSAGE, MESSAGES } from '@/features/goods/constants';
@@ -19,12 +19,12 @@ const useStyles = createUseStyles((theme) => ({
 export const RegisterGoods = () => {
   const { data, isLoading, isUninitialized, isError, refetch } = useGetGoodsQuery();
   const classes = useStyles();
-  const [addGood] = useAddGoodMutation();
+  const [createGood] = useCreateGoodMutation();
   const [updateGood] = useUpdateGoodMutation();
   const [deleteGood] = useDeleteGoodMutation();
 
   const handleAddGood = (good: Good) => {
-    addGood(good)
+    createGood(good)
       .unwrap()
       .then(() => {
         notification.success(
@@ -53,61 +53,67 @@ export const RegisterGoods = () => {
   };
 
   const handleUpdateGood = (good: Good) => {
-    updateGood(good)
-      .unwrap()
-      .then(() => {
-        notification.success(
-          <ErrorDescription>{MESSAGES.UPDATED}</ErrorDescription>,
-          {
-            direction: 'vertical',
-            title: 'Операция успешна'
-          }
-        );
-      })
-      .catch((error) => {
-        if (import.meta.env.VITE_NEEDS_MIRAGE) {
-          console.log(error.error);
-        }
-
-        if (isErrorResponse(error)) {
-          notification.error(
-            <ErrorDescription>{error.data.message}</ErrorDescription>,
+    if (typeof good.id === 'number') {
+      const { id, ...updateData } = good;
+      updateGood({ id, ...updateData })
+        .unwrap()
+        .then(() => {
+          notification.success(
+            <ErrorDescription>{MESSAGES.UPDATED}</ErrorDescription>,
             {
               direction: 'vertical',
-              title: 'Ошибка операции'
+              title: 'Операция успешна'
             }
-          )
-        }
-      });
+          );
+        })
+        .catch((error) => {
+          if (import.meta.env.VITE_NEEDS_MIRAGE) {
+            console.log(error.error);
+          }
+
+          if (isErrorResponse(error)) {
+            notification.error(
+              <ErrorDescription>{error.data.message}</ErrorDescription>,
+              {
+                direction: 'vertical',
+                title: 'Ошибка операции'
+              }
+            )
+          }
+        });
+    }
   };
 
   const handleDeleteGood = (good: Good) => {
-    deleteGood({ id: good.id })
-      .unwrap()
-      .then(() => {
-        notification.success(
-          <ErrorDescription>{MESSAGES.DELETED}</ErrorDescription>,
-          {
-            direction: 'vertical',
-            title: 'Операция успешна'
-          }
-        );
-      })
-      .catch((error) => {
-        if (import.meta.env.VITE_NEEDS_MIRAGE) {
-          console.log(error.error);
-        }
-
-        if (isErrorResponse(error)) {
-          notification.error(
-            <ErrorDescription>{error.data.message}</ErrorDescription>,
+    if (typeof good.id === 'number') {
+      const idParam: GoodIdParam = { id: good.id };
+      deleteGood(idParam)
+        .unwrap()
+        .then(() => {
+          notification.success(
+            <ErrorDescription>{MESSAGES.DELETED}</ErrorDescription>,
             {
               direction: 'vertical',
-              title: 'Ошибка операции'
+              title: 'Операция успешна'
             }
-          )
-        }
-      });
+          );
+        })
+        .catch((error) => {
+          if (import.meta.env.VITE_NEEDS_MIRAGE) {
+            console.log(error.error);
+          }
+
+          if (isErrorResponse(error)) {
+            notification.error(
+              <ErrorDescription>{error.data.message}</ErrorDescription>,
+              {
+                direction: 'vertical',
+                title: 'Ошибка операции'
+              }
+            )
+          }
+        });
+    }
   };
 
   const getPageCommon = () => {
@@ -127,7 +133,7 @@ export const RegisterGoods = () => {
         </Container>
       </>
     );
-  } else if (isError || data?.data == null) {
+  } else if (isError || !data) {
     return (
       <>
         {getPageCommon()}
@@ -140,7 +146,7 @@ export const RegisterGoods = () => {
     <>
       {getPageCommon()}
       <AppTable<Good>
-        items={data.data}
+        items={data}
         columns={getColumns()}
         fileName="Goods"
         ModalComponent={GoodModal}

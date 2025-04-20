@@ -12,14 +12,17 @@ export const getColumns = (textCellClassName: string): ColumnProps<Checkpoint>[]
         sortable: true
     },
     {
-        key: 'zone',
-        dataIndex: 'zone',
+        key: 'zone_id',
+        dataIndex: 'zone_id',
         title: 'Принадлежит к зоне',
         sortable: true,
         renderCellContent: ({ row }) => {
+            if (row.zone_name) {
+                return <Box className={textCellClassName}>{row.zone_name}</Box>;
+            }
+            
             let zoneName = '';
-
-            switch(row.zone) {
+            switch(row.zone_id) {
                 case 1:
                     zoneName = ZONE_NAMES.KPP;
                     break;
@@ -31,7 +34,7 @@ export const getColumns = (textCellClassName: string): ColumnProps<Checkpoint>[]
                     break;
             }
 
-            return <Box className={textCellClassName}>{zoneName}</Box>
+            return <Box className={textCellClassName}>{zoneName}</Box>;
         }
     },
 ];

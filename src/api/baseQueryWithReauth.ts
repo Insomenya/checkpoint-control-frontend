@@ -30,7 +30,7 @@ export const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, Fetch
     if (refresh) {
       const refreshResult = await baseQuery(
         {
-          url: API_PATHS.AUTH.REFRESH,
+          url: `${API_PATHS.AUTH.ROOT}${API_PATHS.AUTH.REFRESH}`,
           method: 'POST',
           body: { refresh } as PostRefreshTokenRequestDTO,
         },
@@ -39,7 +39,11 @@ export const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, Fetch
       );
 
       if (refreshResult.data) {
-        api.dispatch(tokenUpdated(refreshResult.data as PostRefreshTokenResponseDTO));
+        const responseData = refreshResult.data as PostRefreshTokenResponseDTO;
+        api.dispatch(tokenUpdated({
+          access: responseData.access,
+          refresh: refresh
+        }));
         result = await baseQuery(args, api, extraOptions);
       } else {
         api.dispatch(logout());

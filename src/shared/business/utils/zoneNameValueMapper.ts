@@ -10,11 +10,9 @@ export const zoneNameValueMapper = (zoneName: string): ZoneValues | null => {
     }
 };
 
-export const zoneValueNameMapper = (value: ZoneValues): string => {
-    switch(value) {
-        case ZONES[Zone.kpp]: return ZONE_NAMES[Zone.kpp];
-        case ZONES[Zone.bp]: return ZONE_NAMES[Zone.bp];
-        case ZONES[Zone.warehouse]: return ZONE_NAMES[Zone.warehouse];
-        default: return '';
-    }
+export const zoneValueNameMapper = (value: number): string => {
+    if (value === ZONES[Zone.kpp]) return ZONE_NAMES[Zone.kpp];
+    if (value === ZONES[Zone.bp]) return ZONE_NAMES[Zone.bp];
+    if (value === ZONES[Zone.warehouse]) return ZONE_NAMES[Zone.warehouse];
+    return '';
 };

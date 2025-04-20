@@ -4,14 +4,23 @@ export type Organization = {
     id?: number;
     name: string;
     address: string;
-    contactPhone: string;
-    isOwn: boolean;
+    contact_phone: string;
 }
 
-export type GetOrganizationsResponseDTO = GetResponseDTO<Organization>;
+export type GetOrganizationsResponseDTO = Organization[];
 
-export type PostAddOrganizationRequestDTO = Omit<Organization, 'id'>;
+export type GetOrganizationByIdResponseDTO = Organization;
 
-export type PutEditOrganizationRequestDTO = Organization;
+export type CreateOrganizationRequestDTO = Omit<Organization, 'id'>;
 
-export type DeleteOrganizationRequestDTO = Pick<Organization, 'id'>;
+export type CreateOrganizationResponseDTO = Organization;
+
+export type UpdateOrganizationRequestDTO = Omit<Organization, 'id'>;
+
+export type UpdateOrganizationResponseDTO = Organization;
+
+export type PatchOrganizationRequestDTO = Partial<Omit<Organization, 'id'>>;
+
+export type OrganizationIdParam = {
+    id: number;
+};

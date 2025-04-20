@@ -16,18 +16,10 @@ export const getColumns = (): ColumnProps<Good>[] => [
         sortable: true
     },
     {
-        key: 'quantity',
-        dataIndex: 'quantity',
-        title: 'Количество',
-        width: 100,
-        align: 'right',
-        sortable: true
-    },
-    {
-        key: 'unitOfMeasurement',
-        dataIndex: 'unitOfMeasurement',
-        title: 'ЕИ',
-        width: 50,
+        key: 'unit_of_measurement_display',
+        dataIndex: 'unit_of_measurement_display',
+        title: 'Единица измерения',
+        width: 150,
         sortable: true
     }
 ];

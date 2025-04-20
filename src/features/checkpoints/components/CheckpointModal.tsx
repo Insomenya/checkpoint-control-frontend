@@ -38,14 +38,20 @@ export const CheckpointModal = ({ options, isOpen, onAccept, onReject }: Props) 
     const initialValues = getDefaultValues(checkpointSchema);
     const form = useForm<CheckpointFormData>({
         resolver: zodResolver(checkpointSchema),
-        defaultValues: isEditing ? {...options.item, zone: zoneValueNameMapper(options.item!.zone)} : initialValues,
+        defaultValues: isEditing ? {
+            ...options.item, 
+            zone: zoneValueNameMapper(options.item!.zone_id)
+        } : initialValues,
     });
     const { handleSubmit, reset } = form;
     const classes = useStyles();
 
     useEffect(() => {
         if (isOpen) {
-            reset(isEditing ? {...options.item, zone: zoneValueNameMapper(options.item!.zone)} : initialValues);
+            reset(isEditing ? {
+                ...options.item, 
+                zone: zoneValueNameMapper(options.item!.zone_id)
+            } : initialValues);
         }
     }, [isOpen]);
 
@@ -53,13 +59,13 @@ export const CheckpointModal = ({ options, isOpen, onAccept, onReject }: Props) 
         if (isEditing) {
             onAccept?.({
                 ...data,
-                zone: zoneNameValueMapper(data.zone) ?? ZONES[Zone.kpp],
+                zone_id: zoneNameValueMapper(data.zone) ?? ZONES[Zone.kpp],
                 id: options.item?.id
             });
         } else {
             onAccept?.({
                 ...data,
-                zone: zoneNameValueMapper(data.zone) ?? ZONES[Zone.kpp]
+                zone_id: zoneNameValueMapper(data.zone) ?? ZONES[Zone.kpp]
             });
         }
 

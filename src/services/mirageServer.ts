@@ -28,10 +28,7 @@ export function makeServer({ environment = 'development' } = {}) {
         description() {
           return faker.commerce.productDescription();
         },
-        quantity() {
-          return faker.number.float({ min: 1, max: 1000, fractionDigits: 2});
-        },
-        unitOfMeasurement() {
+        unit_of_measurement() {
           return faker.helpers.arrayElement(['шт', 'кг', 'л', 'м']);
         },
       }),
@@ -43,11 +40,8 @@ export function makeServer({ environment = 'development' } = {}) {
         address() {
           return faker.location.streetAddress({ useFullAddress: true })
         },
-        contactPhone() {
+        contact_phone() {
           return randexp(phoneRegex)
-        },
-        isOwn() {
-          return false
         },
       }),
 
@@ -55,7 +49,7 @@ export function makeServer({ environment = 'development' } = {}) {
         name() {
           return faker.hacker.abbreviation() + faker.number.int({ min: 1, max: 20 });
         },
-        zone() {
+        zone_id() {
           return faker.helpers.arrayElement([1, 2, 3]);
         },
       }),
@@ -76,7 +70,7 @@ export function makeServer({ environment = 'development' } = {}) {
         username: 'operator',
         role: 'operator',
         fullName: 'Светлана Быстрорук',
-        checkpoint_id: 1,
+        checkpoint: { id: 1, name: 'КПП-1' }
       });
 
       server.create('user', {
@@ -90,7 +84,7 @@ export function makeServer({ environment = 'development' } = {}) {
       this.namespace = API_PATHS.ROOT;
 
       // Заглушка для входа
-      this.post(API_PATHS.AUTH.LOGIN, (_schema, request) => {
+      this.post(`${API_PATHS.AUTH.ROOT}${API_PATHS.AUTH.CREATE}`, (_schema, request) => {
         const { username, password } = JSON.parse(request.requestBody);
 
         if (password === 'password') {
@@ -114,7 +108,7 @@ export function makeServer({ environment = 'development' } = {}) {
       });
 
       // Обновить jwt токен
-      this.post(API_PATHS.AUTH.REFRESH_TOKEN, (_schema, request) => {
+      this.post(`${API_PATHS.AUTH.ROOT}${API_PATHS.AUTH.REFRESH}`, (_schema, request) => {
         const { refreshToken } = JSON.parse(request.requestBody);
         const result = refreshToken.match(/fake-(.*)-refresh-token/);
 
@@ -131,7 +125,7 @@ export function makeServer({ environment = 'development' } = {}) {
       });
 
       // Проверить jwt токен
-      this.post(API_PATHS.AUTH.VERIFY_TOKEN, (_schema, request) => {
+      this.post(`${API_PATHS.AUTH.ROOT}${API_PATHS.AUTH.VERIFY}`, (_schema, request) => {
         const { token } = JSON.parse(request.requestBody);
       
         if (token.test(/fake-(.*)-token/)) {
@@ -144,7 +138,7 @@ export function makeServer({ environment = 'development' } = {}) {
       });
 
       // Получение данных пользователя
-      this.get(API_PATHS.AUTH.GET_USER_DATA, (_schema, request) => {
+      this.get(`${API_PATHS.AUTH.ROOT}${API_PATHS.AUTH.DETAILS}`, (_schema, request) => {
         const authorization = request.requestHeaders.authorization;
         const result = authorization.match(/fake-(.*)-token/);
 
@@ -201,20 +195,20 @@ export function makeServer({ environment = 'development' } = {}) {
       });
 
       // GET /api/orgs
-      this.get(API_PATHS.ORGANIZATIONS.ROOT, (schema) => {
+      this.get(API_PATHS.ORGS.ROOT, (schema) => {
         let data = schema.all('organization').models as Organization[];
 
         return new Response(200, {}, { data });
       });
 
       // POST /api/orgs
-      this.post(API_PATHS.ORGANIZATIONS.ROOT, (schema, request) => {
+      this.post(API_PATHS.ORGS.ROOT, (schema, request) => {
         const attrs = JSON.parse(request.requestBody);
         return schema.create('organization', attrs);
       });
 
       // PUT /api/orgs/:id
-      this.put(`${API_PATHS.ORGANIZATIONS.ROOT}/:id`, (schema, request) => {
+      this.put(`${API_PATHS.ORGS.ROOT}/:id`, (schema, request) => {
         const id = request.params.id;
         const attrs = JSON.parse(request.requestBody) as Partial<Organization>;
         const organization = schema.find('organization', id);
@@ -228,7 +222,7 @@ export function makeServer({ environment = 'development' } = {}) {
       });
 
       // DELETE /api/orgs/:id
-      this.del(`${API_PATHS.ORGANIZATIONS.ROOT}/:id`, (schema, request) => {
+      this.del(`${API_PATHS.ORGS.ROOT}/:id`, (schema, request) => {
         const id = request.params.id;
         const organization = schema.find('organization', id);
         organization?.destroy();
@@ -270,25 +264,23 @@ export function makeServer({ environment = 'development' } = {}) {
         return new Response(204);
       });
 
-      // GET /api/users
-      this.get(API_PATHS.USERS.ROOT, (schema) => {
+      // GET /api/auth/users
+      this.get(`${API_PATHS.AUTH.ROOT}${API_PATHS.AUTH.USERS}`, (schema) => {
         let data = schema.all('user').models as User[];
 
         return new Response(200, {}, { data });
       });
 
-      // POST /api/users
-      this.post(API_PATHS.USERS.ROOT, (schema, request) => {
+      // POST /api/auth/signup
+      this.post(`${API_PATHS.AUTH.ROOT}${API_PATHS.AUTH.SIGNUP}`, (schema, request) => {
         const attrs = JSON.parse(request.requestBody);
         return schema.create('user', attrs);
       });
 
-      // DELETE /api/users/:id
-      this.del(`${API_PATHS.USERS.ROOT}/:id`, (schema, request) => {
-        const id = request.params.id;
-        const user = schema.find('user', id);
-        user?.destroy();
-        return new Response(204);
+      // POST /api/auth/setpass/:token
+      this.post(`${API_PATHS.AUTH.ROOT}${API_PATHS.AUTH.SETPASS}/:token`, (_schema, request) => {
+        const { password } = JSON.parse(request.requestBody);
+        return new Response(200, {}, { message: 'Пароль успешно установлен' });
       });
     },
   });

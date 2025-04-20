@@ -1,29 +1,54 @@
 import { baseApi } from '../baseApi';
 import { API_PATHS } from '@shared/common/constants';
-import { DeleteUserRequestDTO, GetUsersResponseDTO, PostAddUserRequestDTO } from '@/models/users';
+import { 
+  GetUsersResponseDTO, 
+  SignupUserRequestDTO, 
+  SignupUserResponseDTO,
+  SetPasswordRequestDTO,
+  SetPasswordResponseDTO,
+  GetUserStatsResponseDTO
+} from '@/models/users';
 
 const usersApiSlice = baseApi.enhanceEndpoints({addTagTypes: ['Users']}).injectEndpoints({
   endpoints: (builder) => ({
     getUsers: builder.query<GetUsersResponseDTO, void>({
-      query: () => API_PATHS.USERS.ROOT,
+      query: () => ({
+        url: `${API_PATHS.AUTH.ROOT}${API_PATHS.AUTH.USERS}`,
+        method: 'GET'
+      }),
       providesTags: ['Users'],
     }),
-    addUser: builder.mutation<void, PostAddUserRequestDTO>({
-      query: (body) => ({
-        url: API_PATHS.USERS.ROOT,
+    
+    getUserStats: builder.query<GetUserStatsResponseDTO, void>({
+      query: () => ({
+        url: `${API_PATHS.AUTH.ROOT}${API_PATHS.AUTH.STATS}`,
+        method: 'GET'
+      }),
+      providesTags: ['Users'],
+    }),
+    
+    signupUser: builder.mutation<SignupUserResponseDTO, SignupUserRequestDTO>({
+      query: (userData) => ({
+        url: `${API_PATHS.AUTH.ROOT}${API_PATHS.AUTH.SIGNUP}`,
         method: 'POST',
-        body,
+        body: userData,
       }),
       invalidatesTags: ['Users'],
     }),
-    deleteUser: builder.mutation<void, DeleteUserRequestDTO>({
-      query: ({ id }) => ({
-        url: `${API_PATHS.USERS.ROOT}/${id}`,
-        method: 'DELETE',
+    
+    setPassword: builder.mutation<SetPasswordResponseDTO, { token: string, data: SetPasswordRequestDTO }>({
+      query: ({ token, data }) => ({
+        url: `${API_PATHS.AUTH.ROOT}${API_PATHS.AUTH.SETPASS}/${token}`,
+        method: 'POST',
+        body: data,
       }),
-      invalidatesTags: ['Users'],
     }),
   }),
 });
 
-export const { useGetUsersQuery, useAddUserMutation, useDeleteUserMutation } = usersApiSlice;
+export const { 
+  useGetUsersQuery, 
+  useGetUserStatsQuery,
+  useSignupUserMutation, 
+  useSetPasswordMutation 
+} = usersApiSlice;

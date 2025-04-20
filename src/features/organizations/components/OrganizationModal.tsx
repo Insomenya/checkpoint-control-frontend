@@ -4,7 +4,7 @@ import { ModalProps } from "@shared/common/organisms/ButtonModalBundle";
 import { Box, Button, createUseStyles, Modal, ModalBody, ModalFooter, ModalHeader } from "@v-uik/base";
 import { FormProvider, useForm } from "react-hook-form";
 import { InputField } from "@shared/common/atoms";
-import { getDefaultValues } from "@shared/common/utils";
+import { formatPhoneNumber, getDefaultValues } from "@shared/common/utils";
 import { useEffect } from "react";
 import { Organization } from "@/models/organizations";
 import { OrganizationFormData, organizationSchema } from "../schemas/organizationSchema";
@@ -31,7 +31,7 @@ export const OrganizationModal = ({ options, isOpen, onAccept, onReject }: Props
         resolver: zodResolver(organizationSchema),
         defaultValues: isEditing ? options.item ?? initialValues : initialValues,
     });
-    const { handleSubmit, reset } = form;
+    const { handleSubmit, reset, setValue, trigger } = form;
     const classes = useStyles();
 
     useEffect(() => {
@@ -45,19 +45,23 @@ export const OrganizationModal = ({ options, isOpen, onAccept, onReject }: Props
             onAccept?.({
                 ...data,
                 id: options.item?.id,
-                isOwn: options.item?.isOwn ?? false,
             });
         } else {
             onAccept?.({
                 ...data,
-                isOwn: false,
             });
         }
 
         reset();
     });
     
-    // todo можно сделать CommonModal и передавать туда только form
+    const handlePhoneOnBlur = (value: string | null) => {
+        if (value === null) return;
+        const formattedValue = formatPhoneNumber(value);
+        setValue('contact_phone', formattedValue);
+        trigger('contact_phone');
+    };
+    
     return (
         <Modal onClose={onReject} open={isOpen} keepMounted={false} width={640}>
             <FormProvider {...form} >
@@ -78,8 +82,9 @@ export const OrganizationModal = ({ options, isOpen, onAccept, onReject }: Props
                         />
                         <InputField
                             label="Контактный номер"
-                            name="contactPhone"
-                            placeholder="Введите контактный номер"
+                            name="contact_phone"
+                            placeholder="Введите в формате +7(XXX)XXX-XX-XX"
+                            onBlur={handlePhoneOnBlur}
                         />
                     </Box>
                 </ModalBody>

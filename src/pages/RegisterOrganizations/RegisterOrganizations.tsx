@@ -3,8 +3,8 @@ import { PageFallback } from '@shared/common/molecules';
 import { AppTable } from '@shared/common/organisms';
 import { ErrorDescription } from '@shared/common/atoms';
 import { isErrorResponse } from '@shared/common/utils';
-import { useAddOrganizationMutation, useDeleteOrganizationMutation, useGetOrganizationsQuery, useUpdateOrganizationMutation } from '@api/organizations/organizationsApi';
-import { Organization } from '@/models/organizations';
+import { useCreateOrganizationMutation, useDeleteOrganizationMutation, useGetOrganizationsQuery, useUpdateOrganizationMutation } from '@api/organizations/organizationsApi';
+import { Organization, OrganizationIdParam } from '@/models/organizations';
 import { FAILED_TO_LOAD_MESSAGE, MESSAGES } from '@/features/organizations/constants';
 import { getColumns, OrganizationModal } from '@/features/organizations/components';
 
@@ -19,12 +19,12 @@ const useStyles = createUseStyles((theme) => ({
 export const RegisterOrganizations = () => {
   const { data, isLoading, isUninitialized, isError, refetch } = useGetOrganizationsQuery();
   const classes = useStyles();
-  const [addOrganization] = useAddOrganizationMutation();
+  const [createOrganization] = useCreateOrganizationMutation();
   const [updateOrganization] = useUpdateOrganizationMutation();
   const [deleteOrganization] = useDeleteOrganizationMutation();
 
   const handleAddOrganization = (organization: Organization) => {
-    addOrganization(organization)
+    createOrganization(organization)
       .unwrap()
       .then(() => {
         notification.success(
@@ -53,61 +53,67 @@ export const RegisterOrganizations = () => {
   };
 
   const handleUpdateOrganization = (organization: Organization) => {
-    updateOrganization(organization)
-      .unwrap()
-      .then(() => {
-        notification.success(
-          <ErrorDescription>{MESSAGES.UPDATED}</ErrorDescription>,
-          {
-            direction: 'vertical',
-            title: 'Операция успешна'
-          }
-        );
-      })
-      .catch((error) => {
-        if (import.meta.env.VITE_NEEDS_MIRAGE) {
-          console.log(error.error);
-        }
-
-        if (isErrorResponse(error)) {
-          notification.error(
-            <ErrorDescription>{error.data.message}</ErrorDescription>,
+    if (typeof organization.id === 'number') {
+      const { id, ...updateData } = organization;
+      updateOrganization({ id, ...updateData })
+        .unwrap()
+        .then(() => {
+          notification.success(
+            <ErrorDescription>{MESSAGES.UPDATED}</ErrorDescription>,
             {
               direction: 'vertical',
-              title: 'Ошибка операции'
+              title: 'Операция успешна'
             }
-          )
-        }
-      });
+          );
+        })
+        .catch((error) => {
+          if (import.meta.env.VITE_NEEDS_MIRAGE) {
+            console.log(error.error);
+          }
+
+          if (isErrorResponse(error)) {
+            notification.error(
+              <ErrorDescription>{error.data.message}</ErrorDescription>,
+              {
+                direction: 'vertical',
+                title: 'Ошибка операции'
+              }
+            )
+          }
+        });
+    }
   };
 
   const handleDeleteOrganization = (organization: Organization) => {
-    deleteOrganization({ id: organization.id })
-      .unwrap()
-      .then(() => {
-        notification.success(
-          <ErrorDescription>{MESSAGES.DELETED}</ErrorDescription>,
-          {
-            direction: 'vertical',
-            title: 'Операция успешна'
-          }
-        );
-      })
-      .catch((error) => {
-        if (import.meta.env.VITE_NEEDS_MIRAGE) {
-          console.log(error.error);
-        }
-
-        if (isErrorResponse(error)) {
-          notification.error(
-            <ErrorDescription>{error.data.message}</ErrorDescription>,
+    if (typeof organization.id === 'number') {
+      const idParam: OrganizationIdParam = { id: organization.id };
+      deleteOrganization(idParam)
+        .unwrap()
+        .then(() => {
+          notification.success(
+            <ErrorDescription>{MESSAGES.DELETED}</ErrorDescription>,
             {
               direction: 'vertical',
-              title: 'Ошибка операции'
+              title: 'Операция успешна'
             }
-          )
-        }
-      });
+          );
+        })
+        .catch((error) => {
+          if (import.meta.env.VITE_NEEDS_MIRAGE) {
+            console.log(error.error);
+          }
+
+          if (isErrorResponse(error)) {
+            notification.error(
+              <ErrorDescription>{error.data.message}</ErrorDescription>,
+              {
+                direction: 'vertical',
+                title: 'Ошибка операции'
+              }
+            )
+          }
+        });
+    }
   };
 
   const getPageCommon = () => {
@@ -127,7 +133,7 @@ export const RegisterOrganizations = () => {
         </Container>
       </>
     );
-  } else if (isError || data?.data == null) {
+  } else if (isError || !data) {
     return (
       <>
         {getPageCommon()}
@@ -140,7 +146,7 @@ export const RegisterOrganizations = () => {
     <>
       {getPageCommon()}
       <AppTable<Organization>
-        items={data.data}
+        items={data}
         columns={getColumns()}
         fileName="Organizations"
         ModalComponent={OrganizationModal}

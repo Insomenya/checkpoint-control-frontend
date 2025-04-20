@@ -1,11 +1,11 @@
-import { Good } from "@/models/goods";
+import { Good, UnitOfMeasurement as GoodUnitOfMeasurement } from "@/models/goods";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ModalOptions } from "@shared/common/organisms/AppTable";
 import { ModalProps } from "@shared/common/organisms/ButtonModalBundle";
 import { Box, Button, createUseStyles, Modal, ModalBody, ModalFooter, ModalHeader } from "@v-uik/base";
 import { GoodFormData, goodSchema } from "../schemas";
 import { FormProvider, useForm } from "react-hook-form";
-import { ComboBoxField, InputField, InputNumberField } from "@shared/common/atoms";
+import { ComboBoxField, InputField } from "@shared/common/atoms";
 import { LabelValue } from "@/models/common";
 import { UnitOfMeasurement, UNITS_OF_MEASUREMENT } from "../constants";
 import { getDefaultValues } from "@shared/common/utils";
@@ -50,13 +50,18 @@ export const GoodModal = ({ options, isOpen, onAccept, onReject }: Props) => {
     }, [isOpen]);
 
     const handleFormSubmit = handleSubmit((data: GoodFormData) => {
+        const goodData: Good = {
+            ...data,
+            unit_of_measurement: data.unit_of_measurement as GoodUnitOfMeasurement,
+        };
+        
         if (isEditing) {
             onAccept?.({
-                ...data,
+                ...goodData,
                 id: options.item?.id
             });
         } else {
-            onAccept?.(data);
+            onAccept?.(goodData);
         }
 
         reset();
@@ -80,15 +85,11 @@ export const GoodModal = ({ options, isOpen, onAccept, onReject }: Props) => {
                             name="description"
                             placeholder="Введите описание"
                         />
-                        <InputNumberField
-                            label="Количество"
-                            name="quantity"
-                            placeholder="Введите количество"
-                        />
                         <ComboBoxField
                             label="Единица измерения"
-                            name="unitOfMeasurement"
+                            name="unit_of_measurement"
                             options={UNITS_OF_MEASUREMENT_OPTIONS}
+                            placeholder="Выберите единицу измерения"
                         />
                     </Box>
                 </ModalBody>

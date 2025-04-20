@@ -1,5 +1,5 @@
 export const API_PATHS = {
-    ROOT: import.meta.env.VITE_NEEDS_MIRAGE ? 'api' : import.meta.env.VITE_API_HOST,
+    ROOT: import.meta.env.VITE_NEEDS_MIRAGE === 'true' ? 'api' : import.meta.env.VITE_API_HOST,
     AUTH: {
         ROOT: '/auth',
         CREATE: '/jwt/create',

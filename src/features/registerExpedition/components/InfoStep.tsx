@@ -1,7 +1,7 @@
 import { LabelValue } from "@/models/common";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ComboBoxField, InputField } from "@shared/common/atoms";
-import { getDefaultValues } from "@shared/common/utils";
+import { formatPhoneNumber, getDefaultValues } from "@shared/common/utils";
 import { Box, createUseStyles, Divider, Text } from "@v-uik/base";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -69,7 +69,7 @@ export const InfoStep = () => {
             vehicle_model: infoStep.vehicle_model ?? initialValues.vehicle_model,
         },
     });
-    const { trigger, getValues, watch } = form;
+    const { trigger, getValues, watch, setValue } = form;
     const watchType = watch('type');
 
     const validate = async () => {
@@ -102,9 +102,11 @@ export const InfoStep = () => {
         }
     }, [infoStepStatus]);
 
-    const handlePhoneOnBlur = async () => {
-        console.log('fired')
-        await trigger('phone_number');
+    const handlePhoneOnBlur = (value: string | null) => {
+        if (value === null) return;
+        const formattedValue = formatPhoneNumber(value);
+        setValue('phone_number', formattedValue);
+        trigger('phone_number');
     };
 
     return (    
@@ -142,7 +144,7 @@ export const InfoStep = () => {
                             <InputField
                                 label="Контактный номер"
                                 name="phone_number"
-                                placeholder="Введите контактный номер"
+                                placeholder="Введите в формате +7(XXX)XXX-XX-XX"
                                 onBlur={handlePhoneOnBlur}
                             />
                         </Box>

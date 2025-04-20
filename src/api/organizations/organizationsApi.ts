@@ -1,32 +1,64 @@
 import { baseApi } from '../baseApi';
-import { DeleteOrganizationRequestDTO, GetOrganizationsResponseDTO, PostAddOrganizationRequestDTO, PutEditOrganizationRequestDTO } from '@/models/organizations';
+import { 
+  GetOrganizationsResponseDTO, 
+  GetOrganizationByIdResponseDTO,
+  CreateOrganizationRequestDTO, 
+  CreateOrganizationResponseDTO,
+  UpdateOrganizationRequestDTO,
+  UpdateOrganizationResponseDTO,
+  PatchOrganizationRequestDTO,
+  OrganizationIdParam
+} from '@/models/organizations';
 import { API_PATHS } from '@shared/common/constants';
 
 const organizationsApiSlice = baseApi.enhanceEndpoints({addTagTypes: ['Organizations']}).injectEndpoints({
   endpoints: (builder) => ({
     getOrganizations: builder.query<GetOrganizationsResponseDTO, void>({
-      query: () => API_PATHS.ORGANIZATIONS.ROOT,
+      query: () => ({
+        url: `${API_PATHS.ORGS.ROOT}/`,
+        method: 'GET'
+      }),
       providesTags: ['Organizations'],
     }),
-    addOrganization: builder.mutation<void, PostAddOrganizationRequestDTO>({
-      query: (body) => ({
-        url: API_PATHS.ORGANIZATIONS.ROOT,
+    
+    getOrganizationById: builder.query<GetOrganizationByIdResponseDTO, number>({
+      query: (id) => ({
+        url: `${API_PATHS.ORGS.ROOT}/${id}/`,
+        method: 'GET'
+      }),
+      providesTags: ['Organizations'],
+    }),
+    
+    createOrganization: builder.mutation<CreateOrganizationResponseDTO, CreateOrganizationRequestDTO>({
+      query: (organizationData) => ({
+        url: `${API_PATHS.ORGS.ROOT}/`,
         method: 'POST',
-        body,
+        body: organizationData,
       }),
       invalidatesTags: ['Organizations'],
     }),
-    updateOrganization: builder.mutation<void, PutEditOrganizationRequestDTO>({
-      query: (body) => ({
-        url: `${API_PATHS.ORGANIZATIONS.ROOT}/${body.id}`,
+    
+    updateOrganization: builder.mutation<UpdateOrganizationResponseDTO, UpdateOrganizationRequestDTO & OrganizationIdParam>({
+      query: ({ id, ...organizationData }) => ({
+        url: `${API_PATHS.ORGS.ROOT}/${id}/`,
         method: 'PUT',
-        body,
+        body: organizationData,
       }),
       invalidatesTags: ['Organizations'],
     }),
-    deleteOrganization: builder.mutation<void, DeleteOrganizationRequestDTO>({
+    
+    patchOrganization: builder.mutation<UpdateOrganizationResponseDTO, PatchOrganizationRequestDTO & OrganizationIdParam>({
+      query: ({ id, ...organizationData }) => ({
+        url: `${API_PATHS.ORGS.ROOT}/${id}/`,
+        method: 'PATCH',
+        body: organizationData,
+      }),
+      invalidatesTags: ['Organizations'],
+    }),
+    
+    deleteOrganization: builder.mutation<void, OrganizationIdParam>({
       query: ({ id }) => ({
-        url: `${API_PATHS.ORGANIZATIONS.ROOT}/${id}`,
+        url: `${API_PATHS.ORGS.ROOT}/${id}/`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Organizations'],
@@ -34,4 +66,11 @@ const organizationsApiSlice = baseApi.enhanceEndpoints({addTagTypes: ['Organizat
   }),
 });
 
-export const { useGetOrganizationsQuery, useAddOrganizationMutation, useUpdateOrganizationMutation, useDeleteOrganizationMutation } = organizationsApiSlice;
+export const { 
+  useGetOrganizationsQuery, 
+  useGetOrganizationByIdQuery,
+  useCreateOrganizationMutation, 
+  useUpdateOrganizationMutation, 
+  usePatchOrganizationMutation,
+  useDeleteOrganizationMutation 
+} = organizationsApiSlice;

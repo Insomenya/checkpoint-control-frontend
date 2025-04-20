@@ -3,8 +3,8 @@ import { PageFallback } from '@shared/common/molecules';
 import { AppTable } from '@shared/common/organisms';
 import { ErrorDescription } from '@shared/common/atoms';
 import { isErrorResponse } from '@shared/common/utils';
-import { useAddCheckpointMutation, useDeleteCheckpointMutation, useGetCheckpointsQuery, useUpdateCheckpointMutation } from '@api/checkpoints/checkpointsApi';
-import { Checkpoint } from '@/models/checkpoints';
+import { useCreateCheckpointMutation, useDeleteCheckpointMutation, useGetCheckpointsQuery, useUpdateCheckpointMutation } from '@api/checkpoints/checkpointsApi';
+import { Checkpoint, CreateCheckpointRequestDTO } from '@/models/checkpoints';
 import { FAILED_TO_LOAD_MESSAGE, MESSAGES } from '@/features/checkpoints/constants';
 import { CheckpointModal, getColumns } from '@/features/checkpoints/components';
 
@@ -15,23 +15,28 @@ const useStyles = createUseStyles((theme) => ({
     marginTop: theme.spacing(10)
   },
   textCell: {
-    padding: [theme.spacing(3.5), theme.spacing(4)]
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   }
 }));
 
 export const Checkpoints = () => {
   const { data, isLoading, isUninitialized, isError, refetch } = useGetCheckpointsQuery();
   const classes = useStyles();
-  const [addCheckpoint] = useAddCheckpointMutation();
+  const [createCheckpoint] = useCreateCheckpointMutation();
   const [updateCheckpoint] = useUpdateCheckpointMutation();
   const [deleteCheckpoint] = useDeleteCheckpointMutation();
 
   const handleAddCheckpoint = (checkpoint: Checkpoint) => {
-    addCheckpoint(checkpoint)
+    createCheckpoint({
+      name: checkpoint.name,
+      zone_id: checkpoint.zone_id
+    })
       .unwrap()
       .then(() => {
         notification.success(
-          <ErrorDescription>{ MESSAGES.ADDED}</ErrorDescription>,
+          <ErrorDescription>{MESSAGES.ADDED}</ErrorDescription>,
           {
             direction: 'vertical',
             title: 'Операция успешна'
@@ -56,7 +61,15 @@ export const Checkpoints = () => {
   };
 
   const handleUpdateCheckpoint = (checkpoint: Checkpoint) => {
-    updateCheckpoint(checkpoint)
+    if (checkpoint.id === undefined) {
+      return;
+    }
+
+    updateCheckpoint({
+      id: checkpoint.id,
+      name: checkpoint.name,
+      zone_id: checkpoint.zone_id
+    })
       .unwrap()
       .then(() => {
         notification.success(
@@ -85,6 +98,10 @@ export const Checkpoints = () => {
   };
 
   const handleDeleteCheckpoint = (checkpoint: Checkpoint) => {
+    if (checkpoint.id === undefined) {
+      return;
+    }
+
     deleteCheckpoint({ id: checkpoint.id })
       .unwrap()
       .then(() => {
@@ -130,7 +147,7 @@ export const Checkpoints = () => {
         </Container>
       </>
     );
-  } else if (isError || data?.data == null) {
+  } else if (isError || !data) {
     return (
       <>
         {getPageCommon()}
@@ -143,7 +160,7 @@ export const Checkpoints = () => {
     <>
       {getPageCommon()}
       <AppTable<Checkpoint>
-        items={data.data}
+        items={data}
         columns={getColumns(classes.textCell)}
         fileName="Checkpoints"
         ModalComponent={CheckpointModal}
@@ -151,6 +168,8 @@ export const Checkpoints = () => {
         onDelete={handleDeleteCheckpoint}
         onUpdate={handleUpdateCheckpoint}
         messages={MESSAGES}
+        pdfExportable
+        excelExportable
         editable="ced"
       />
     </>

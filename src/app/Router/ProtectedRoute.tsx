@@ -8,11 +8,11 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ roles }: ProtectedRouteProps) => {
-  const { token, user } = useSelector((state: RootState) => state.auth);
+  const { access, user } = useSelector((state: RootState) => state.auth);
   const location = useLocation();
 
   // Если пользователь не авторизован, перенаправляем на страницу входа
-  if (!token) {
+  if (!access) {
     return <Navigate to={ROUTER_PATHS.ROOT + ROUTER_PATHS.LOGIN} state={{ from: location }} replace />;
   }
 

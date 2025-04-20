@@ -100,7 +100,7 @@ export const AddUser = () => {
 
     const checkpointOptions: LabelValue[] | null = useMemo(() => {
         if (isCheckpointsLoaded) {
-            return checkpoints.data.map((checkpoint) => {
+            return checkpoints.map((checkpoint) => {
                 return ({
                     label: checkpoint.name,
                     value: checkpoint.id?.toString() ?? ''
@@ -109,7 +109,7 @@ export const AddUser = () => {
         }
 
         return null;
-    }, [isCheckpointsLoaded]);
+    }, [isCheckpointsLoaded, checkpoints]);
 
     const handleRoleChange = (value: string) => {
         setIsOperator(value === 'operator')

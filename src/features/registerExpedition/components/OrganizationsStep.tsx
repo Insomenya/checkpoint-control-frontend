@@ -60,8 +60,8 @@ export const OrganizationsStep = () => {
     const { trigger, getValues } = form;
 
     const organizationsOptions: LabelValue[] | null = useMemo(() => {
-        if (isOrganizationsLoaded) {
-            return organizations.data.map((organization) => {
+        if (isOrganizationsLoaded && organizations) {
+            return organizations.map((organization) => {
                 return ({
                     label: organization.name,
                     value: organization.id?.toString() ?? ''
@@ -70,7 +70,7 @@ export const OrganizationsStep = () => {
         }
 
         return null;
-    }, [isOrganizationsLoaded]);
+    }, [isOrganizationsLoaded, organizations]);
 
     const validate = async  () => {
         const isValid = await trigger();

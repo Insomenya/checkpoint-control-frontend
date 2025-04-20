@@ -1,14 +1,12 @@
-import { CircularProgress, Container, createUseStyles, notification, Text } from '@v-uik/base';
+import { CircularProgress, Container, createUseStyles, Text } from '@v-uik/base';
 import { PageFallback } from '@shared/common/molecules';
 import { AppTable } from '@shared/common/organisms';
-import { ErrorDescription } from '@shared/common/atoms';
 import { isErrorResponse } from '@shared/common/utils';
-import { useGetCheckpointsQuery } from '@api/checkpoints/checkpointsApi';
 import { FAILED_TO_LOAD_MESSAGE, MESSAGES } from '@/features/users/constants';
-import { useDeleteUserMutation, useGetUsersQuery } from '@api/users/usersApi';
-import { User } from '@/models/auth';
+import { useGetUsersQuery } from '@api/users/usersApi';
 import { getColumns } from '@/features/users/components';
 import { useMemo } from 'react';
+import { UserDTO } from '@/models/users';
 
 const useStyles = createUseStyles((theme) => ({
   container: {
@@ -18,58 +16,19 @@ const useStyles = createUseStyles((theme) => ({
   },
   textCell: {
     padding: [theme.spacing(3.5), theme.spacing(4)]
-  },
-  headerCell: {
-    display: 'flex',
-    gap: theme.spacing(2),
-    alignItems: 'center'
-  },
+  }
 }));
 
 export const Users = () => {
-  const { data: checkpointsData, isSuccess: isCheckpointsLoaded } = useGetCheckpointsQuery();
   const { data: usersData, isLoading: isUsersLoading, isUninitialized: isUsersUninitialized, isError: usersHasErrorState, refetch: refetchUsers } = useGetUsersQuery();
 
   const classes = useStyles();
-  const [deleteUser] = useDeleteUserMutation();
 
   const columns = useMemo(() => {
     return getColumns({
-        textCellClassName: classes.textCell,
-        headerCellClassName: classes.headerCell,
-        isCheckpointsLoaded,
-        checkpoints: checkpointsData?.data,
+        textCellClassName: classes.textCell
     });
-  }, [isCheckpointsLoaded]);
-
-  const handleDeleteUser = (user: User) => {
-    deleteUser({ id: user.id })
-      .unwrap()
-      .then(() => {
-        notification.success(
-          <ErrorDescription>{MESSAGES.DELETED}</ErrorDescription>,
-          {
-            direction: 'vertical',
-            title: 'Операция успешна'
-          }
-        );
-      })
-      .catch((error) => {
-        if (import.meta.env.VITE_NEEDS_MIRAGE) {
-          console.log(error.error);
-        }
-
-        if (isErrorResponse(error)) {
-          notification.error(
-            <ErrorDescription>{error.data.message}</ErrorDescription>,
-            {
-              direction: 'vertical',
-              title: 'Ошибка операции'
-            }
-          )
-        }
-      });
-  };
+  }, [classes.textCell]);
 
   const getPageCommon = () => {
     return (
@@ -88,7 +47,7 @@ export const Users = () => {
         </Container>
       </>
     );
-  } else if (usersHasErrorState || usersData?.data == null) {
+  } else if (usersHasErrorState || !usersData) {
     return (
       <>
         {getPageCommon()}
@@ -100,13 +59,11 @@ export const Users = () => {
   return (
     <>
       {getPageCommon()}
-      <AppTable<User>
-        items={usersData.data}
+      <AppTable<UserDTO>
+        items={usersData}
         columns={columns}
-        fileName="Checkpoints"
-        onDelete={handleDeleteUser}
+        fileName="Users"
         messages={MESSAGES}
-        editable="d"
       />
     </>
   );

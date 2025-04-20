@@ -6,7 +6,7 @@ const authApiSlice = baseApi.enhanceEndpoints({addTagTypes: ['User']}).injectEnd
   endpoints: (builder) => ({
     login: builder.mutation<PostLoginResponseDTO, PostLoginRequestDTO>({
       query: (credentials) => ({
-        url: API_PATHS.AUTH.CREATE,
+        url: `${API_PATHS.AUTH.ROOT}${API_PATHS.AUTH.CREATE}`,
         method: 'POST',
         body: credentials,
       }),
@@ -14,7 +14,7 @@ const authApiSlice = baseApi.enhanceEndpoints({addTagTypes: ['User']}).injectEnd
     }),
     refreshToken: builder.mutation<PostRefreshTokenResponseDTO, PostRefreshTokenRequestDTO>({
       query: (body) => ({
-        url: API_PATHS.AUTH.REFRESH,
+        url: `${API_PATHS.AUTH.ROOT}${API_PATHS.AUTH.REFRESH}`,
         method: 'POST',
         body,
       }),
@@ -22,14 +22,14 @@ const authApiSlice = baseApi.enhanceEndpoints({addTagTypes: ['User']}).injectEnd
     }),
     verifyToken: builder.mutation<PostVerifyTokenDTO, PostVerifyTokenDTO>({
       query: (body) => ({
-        url: API_PATHS.AUTH.VERIFY,
+        url: `${API_PATHS.AUTH.ROOT}${API_PATHS.AUTH.VERIFY}`,
         method: 'POST',
-        body,
+        body: { token: body.token },
       }),
     }),
     getUserData: builder.query<GetUserDataResponseDTO, null>({
       query: () => ({
-        url: API_PATHS.AUTH.DETAILS,
+        url: `${API_PATHS.AUTH.ROOT}${API_PATHS.AUTH.DETAILS}`,
         method: 'GET'
       }),
       providesTags: ['User']
