@@ -1,0 +1,1 @@
+export { UserCreatedModal } from './UserCreatedModal';

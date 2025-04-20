@@ -1,13 +1,17 @@
-import { AddUserFormData, addUserSchema } from "@/features/addUser/schemas/addUserSchema";
+import { AddUserFormData, addUserBaseSchema, addUserSchema } from "@/features/addUser/schemas/addUserSchema";
+import { UserCreatedModal } from "@/features/addUser/components";
 import { LabelValue } from "@/models/common";
 import { useGetCheckpointsQuery } from "@api/checkpoints/checkpointsApi";
+import { useSignupUserMutation } from "@api/users/usersApi";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ComboBoxField, InputField } from "@shared/common/atoms";
-import { getDefaultValues, getNameInitials } from "@shared/common/utils";
-import { Avatar, Box, Button, CircularProgress, Container, createUseStyles, Divider, Dropzone, Text } from "@v-uik/base";
-import { Paperclip, Plus } from "@v-uik/icons";
-import { useMemo, useState } from "react";
+import { ROUTER_PATHS } from "@shared/common/constants";
+import { getDefaultValues, getNameInitials, isErrorResponse } from "@shared/common/utils";
+import { Avatar, Box, Button, CircularProgress, Container, createUseStyles, Divider, Dropzone, Input, Modal, ModalBody, ModalFooter, ModalHeader, notification, Text } from "@v-uik/base";
+import { Copy, Paperclip, Plus, UsersGroup } from "@v-uik/icons";
+import { useCallback, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = createUseStyles((theme) => ({
     container: {
@@ -77,7 +81,27 @@ const useStyles = createUseStyles((theme) => ({
         justifyContent: 'flex-end',
         alignItems: 'center',
         marginTop: theme.spacing(4)
-    }
+    },
+    modalContent: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: theme.spacing(4),
+    },
+    linkContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: theme.spacing(2),
+    },
+    linkInput: {
+        flex: 1,
+    },
+    copyButton: {
+        marginLeft: theme.spacing(1),
+    },
+    modalFooter: {
+        display: 'flex',
+        justifyContent: 'space-between',
+    },
 }));
 
 const ROLES_OPTIONS: LabelValue[] = [
@@ -89,14 +113,18 @@ const ROLES_OPTIONS: LabelValue[] = [
 export const AddUser = () => {
     const form = useForm<AddUserFormData>({
         resolver: zodResolver(addUserSchema),
-        defaultValues: getDefaultValues(addUserSchema),
+        defaultValues: getDefaultValues(addUserBaseSchema),
     });
-    const { watch } = form;
+    const { watch, reset } = form;
     const watchFullName = watch('fullName', '');
     const watchRole = watch('role', '');
     const classes = useStyles();
+    const navigate = useNavigate();
     const { data: checkpoints, isSuccess: isCheckpointsLoaded } = useGetCheckpointsQuery();
+    const [signupUser, { isLoading }] = useSignupUserMutation();
     const [isOperator, setIsOperator] = useState(false);
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+    const [signupLink, setSignupLink] = useState('');
 
     const checkpointOptions: LabelValue[] | null = useMemo(() => {
         if (isCheckpointsLoaded) {
@@ -113,6 +141,43 @@ export const AddUser = () => {
 
     const handleRoleChange = (value: string) => {
         setIsOperator(value === 'operator')
+    };
+
+    const handleModalClose = () => {
+        setIsSuccessModalOpen(false);
+        reset();
+    };
+
+    const handleAddUser = useCallback(() => {
+        form.handleSubmit((data) => {
+            const userData = {
+                username: data.username,
+                role: data.role,
+                ...(isOperator && data.checkpoint_id ? { checkpoint_id: parseInt(data.checkpoint_id) } : {})
+            };
+
+            signupUser(userData)
+                .unwrap()
+                .then((response) => {
+                    setSignupLink(response.signup_link);
+                    setIsSuccessModalOpen(true);
+                })
+                .catch((error) => {
+                    if (isErrorResponse(error)) {
+                        notification.error(error.data.message || 'Произошла ошибка при создании пользователя', {
+                            title: 'Ошибка создания пользователя'
+                        });
+                    } else {
+                        notification.error('Произошла ошибка при создании пользователя', {
+                            title: 'Ошибка'
+                        });
+                    }
+                });
+        })();
+    }, [form, isOperator, signupUser]);
+
+    const goToUsersList = () => {
+        navigate(ROUTER_PATHS.USERS);
     };
 
     return (
@@ -187,8 +252,17 @@ export const AddUser = () => {
                 </Box>
             </Box>
             <Box className={classes.actions}>
-                <Button><Plus className={classes.uploadIcon} /> Добавить</Button>
+                <Button onClick={handleAddUser} disabled={isLoading}>
+                    {isLoading ? <CircularProgress size="sm" color="white" /> : <Plus className={classes.uploadIcon} />}
+                    Добавить
+                </Button>
             </Box>
+
+            <UserCreatedModal 
+                isOpen={isSuccessModalOpen}
+                onClose={handleModalClose}
+                signupLink={signupLink}
+            />
         </>
     );
 };
