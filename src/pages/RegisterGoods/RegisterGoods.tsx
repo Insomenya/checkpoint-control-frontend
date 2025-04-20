@@ -2,7 +2,7 @@ import { useGetGoodsQuery, useCreateGoodMutation, useUpdateGoodMutation, useDele
 import { Good, GoodIdParam } from '../../models/goods';
 import { CircularProgress, Container, createUseStyles, notification, Text } from '@v-uik/base';
 import { PageFallback } from '@shared/common/molecules';
-import { FAILED_TO_LOAD_MESSAGE, MESSAGES } from '@/features/goods/constants';
+import { FAILED_TO_LOAD_MESSAGE, MESSAGES, GOODS_CUSTOM_FILTERS } from '@/features/goods/constants';
 import { AppTable } from '@shared/common/organisms';
 import { GoodModal, getColumns } from '@/features/goods/components';
 import { ErrorDescription } from '@shared/common/atoms';
@@ -157,6 +157,7 @@ export const RegisterGoods = () => {
         pdfExportable
         excelExportable
         editable="ced"
+        customFilters={GOODS_CUSTOM_FILTERS}
       />
     </>
   );

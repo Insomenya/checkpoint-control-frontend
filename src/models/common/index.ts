@@ -58,3 +58,5 @@ export type StepsNumbers = ZeroThroughTwo;
 export type StepsConfiguration = Record<StepsNumbers, StepConfiguration>;
 
 export type StepStatus = 'leaving' | 'pending' | 'error' | 'valid';
+
+export * from './customFilter';

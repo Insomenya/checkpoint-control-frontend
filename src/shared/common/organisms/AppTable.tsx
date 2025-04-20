@@ -4,7 +4,8 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 (pdfMake as any).vfs = pdfFonts.vfs;
 import { utils as XLSXUtils, writeFile as XLSXWriteFile } from 'xlsx';
 import { Box, Button, ColumnProps, createUseStyles, Input, notification, RecordDataSource, SortOrderProp, Table, TableEventType, TablePagination, TablePaginationType } from '@v-uik/base';
-import { ErrorDescription } from '../atoms';
+import { CustomFilterDropdown, ErrorDescription } from '../atoms';
+import { CustomFiltersConfig, CustomFilter } from '@/models/common';
 import { ICON_SIZE, Messages, MESSAGES } from '@shared/common/constants';
 import { ButtonModalBundle, ModalProps } from './ButtonModalBundle';
 import { Edit, Filter, PlaylistAdd, Printer, TableExport, Trash } from '@v-uik/icons';
@@ -31,6 +32,11 @@ const useStyles = createUseStyles((theme) => ({
     alignItems: 'center',
     gap: theme.spacing(2),
     justifyContent: 'center'
+  },
+  filtersContainer: {
+    display: 'flex',
+    gap: theme.spacing(2),
+    alignItems: 'flex-end'
   },
   paginationDivider: {
     borderTop: 0
@@ -64,22 +70,46 @@ type AppTableProps<T extends object> = {
     pdfExportable?: boolean;
     excelExportable?: boolean;
     editable?: TableEditabilityOptions;
+    customFilters?: CustomFiltersConfig<T>;
+    hideDefaultFilter?: boolean;
 }
 
-export const AppTable = <T extends object> ({ messages = MESSAGES, fileName, columns, items, ModalComponent, onAdd, onDelete, onUpdate, pdfExportable, excelExportable, editable }: AppTableProps<T>) => {
+export const AppTable = <T extends object> ({ 
+  messages = MESSAGES, 
+  fileName, 
+  columns, 
+  items, 
+  ModalComponent, 
+  onAdd, 
+  onDelete, 
+  onUpdate, 
+  pdfExportable, 
+  excelExportable, 
+  editable,
+  customFilters,
+  hideDefaultFilter = false
+}: AppTableProps<T>) => {
   const classes = useStyles();
   const [orderBy, setOrderBy] = useState<keyof T | undefined>();
-  const [sortOrder, setSortOrder] = useState<SortOrderProp>('none')
+  const [sortOrder, setSortOrder] = useState<SortOrderProp>('none');
   const [filter, setFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [customFilterValues, setCustomFilterValues] = useState<Record<string, string>>({});
 
   const handleFilterChange = (value: string) => {
-    const maxPages = Math.floor(filteredItems.length / itemsPerPage) || 1;
     setFilter(value);
-    if (currentPage > maxPages) {
-      setCurrentPage(maxPages);
-    }
+    
+    setCurrentPage(1);
+  };
+
+  const handleCustomFilterChange = (key: keyof T, value: string) => {
+    setCustomFilterValues(prev => ({
+      ...prev,
+      [String(key)]: value
+    }));
+    
+    setCurrentPage(1);
   };
 
   const handleAdd = (item: T) => {
@@ -223,11 +253,37 @@ export const AppTable = <T extends object> ({ messages = MESSAGES, fileName, col
     return columns;
   }, [columns, editable]);
 
-  const filteredItems = useMemo(() => items.filter((item) =>
-    Object.values(item).some((value) =>
-      value.toString().toLowerCase().includes(filter.toLowerCase())
-    )
-  ), [filter, items]);
+  const filteredItems = useMemo(() => {
+    // First apply custom filters
+    let filtered = items;
+    
+    if (customFilters?.filters && customFilters.filters.length > 0) {
+      filtered = filtered.filter(item => {
+        return customFilters.filters.every(customFilter => {
+          const filterValue = customFilterValues[String(customFilter.key)];
+          
+          // If no filter value is selected, include all items
+          if (!filterValue) {
+            return true;
+          }
+          
+          const itemValue = String(item[customFilter.key]);
+          return itemValue === filterValue;
+        });
+      });
+    }
+    
+    // Then apply text filter if not hidden
+    if (!hideDefaultFilter) {
+      filtered = filtered.filter((item) =>
+        Object.values(item).some((value) =>
+          value && value.toString().toLowerCase().includes(filter.toLowerCase())
+        )
+      );
+    }
+    
+    return filtered;
+  }, [filter, items, customFilters, customFilterValues, hideDefaultFilter]);
 
   const sortedItems = useMemo(() => {
     if (orderBy) {
@@ -257,14 +313,14 @@ export const AppTable = <T extends object> ({ messages = MESSAGES, fileName, col
     }
 
     return filteredItems;
-  }, [sortOrder, orderBy, filter, items]);
+  }, [sortOrder, orderBy, filteredItems]);
 
   const currentTableData = useMemo(() => {
     const firstPageIndex = (currentPage - 1) * itemsPerPage;
     const lastPageIndex = firstPageIndex + itemsPerPage;
 
     return sortedItems.slice(firstPageIndex, lastPageIndex)
-  }, [sortOrder, orderBy, filter, currentPage, itemsPerPage, items]);
+  }, [sortOrder, orderBy, currentPage, itemsPerPage, sortedItems]);
 
   const handleChangeTable = useCallback<(params: TableEventType<RecordDataSource<T>>) => void> ((params) => {
     switch (params.type) {
@@ -280,16 +336,33 @@ export const AppTable = <T extends object> ({ messages = MESSAGES, fileName, col
     }
   }, []);
 
+  // Determine if we should show default filter
+  const showDefaultFilter = !hideDefaultFilter && !(customFilters?.filters?.some(filter => filter.replaceDefaultFilter));
+
   return (
     <Box className={classes.container}>
       <Box className={classes.actions}>
-        <Input
-          label="Фильтр"
-          size="sm"
-          value={filter}
-          onChange={handleFilterChange}
-          suffix={<Filter />}
-        />
+        <Box className={classes.filtersContainer}>
+          {showDefaultFilter && (
+            <Input
+              label="Фильтр"
+              size="sm"
+              value={filter}
+              onChange={handleFilterChange}
+              suffix={<Filter />}
+            />
+          )}
+          
+          {customFilters?.filters && customFilters.filters.map((customFilter, index) => (
+            <CustomFilterDropdown
+              key={`${String(customFilter.key)}-${index}`}
+              filter={customFilter}
+              onChange={handleCustomFilterChange}
+              size="sm"
+            />
+          ))}
+        </Box>
+        
         <Box className={classes.actionsRightSide}>
           {ModalComponent != null && editable && editable.indexOf('c') > -1 ? (
             <ButtonModalBundle

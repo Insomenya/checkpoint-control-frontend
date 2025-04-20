@@ -2,7 +2,7 @@ import { CircularProgress, Container, createUseStyles, Text } from '@v-uik/base'
 import { PageFallback } from '@shared/common/molecules';
 import { AppTable } from '@shared/common/organisms';
 import { isErrorResponse } from '@shared/common/utils';
-import { FAILED_TO_LOAD_MESSAGE, MESSAGES } from '@/features/users/constants';
+import { FAILED_TO_LOAD_MESSAGE, MESSAGES, USERS_CUSTOM_FILTERS } from '@/features/users/constants';
 import { useGetUsersQuery } from '@api/users/usersApi';
 import { getColumns } from '@/features/users/components';
 import { useMemo } from 'react';
@@ -64,6 +64,7 @@ export const Users = () => {
         columns={columns}
         fileName="Users"
         messages={MESSAGES}
+        customFilters={USERS_CUSTOM_FILTERS}
       />
     </>
   );
