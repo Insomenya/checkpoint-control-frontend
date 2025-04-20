@@ -55,6 +55,12 @@ export const InvoiceStep = () => {
 
     useEffect(() => {
         if (invoiceStepStatus === 'leaving') {
+            const currentStep = STEP_INDECIES[StepName.invoices];
+            if (newStep < currentStep) {
+                dispatch(currentStepSet(newStep));
+                return;
+            }
+            
             const isValid = validate();
             
             if (isValid) {
@@ -63,7 +69,7 @@ export const InvoiceStep = () => {
         } else if (invoiceStepStatus === 'error') {
             validate();
         }
-    }, [invoiceStepStatus]);
+    }, [invoiceStepStatus, newStep]);
 
     useEffect(() => {
         validate();
