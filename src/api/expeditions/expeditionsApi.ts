@@ -60,6 +60,22 @@ const expeditionsApiSlice = baseApi.enhanceEndpoints({ addTagTypes: ['Expedition
       }),
       providesTags: ['Expeditions']
     }),
+    
+    getAllExpeditionsStatus: builder.query<ExpeditionStatusResponseDTO[], void>({
+      query: () => ({
+        url: `${API_PATHS.EXPEDITIONS.ROOT}${API_PATHS.EXPEDITION.STATUS}`,
+        method: 'GET',
+      }),
+      providesTags: ['Expeditions']
+    }),
+    
+    getExpeditionsStatusByCheckpoint: builder.query<ExpeditionStatusResponseDTO[], number>({
+      query: (checkpointId) => ({
+        url: `${API_PATHS.EXPEDITIONS.ROOT}${API_PATHS.EXPEDITION.STATUS}/${checkpointId}`,
+        method: 'GET',
+      }),
+      providesTags: ['Expeditions']
+    }),
   }),
 });
 
@@ -69,5 +85,7 @@ export const {
   useGetAllExpeditionsQuery,
   useGetExpeditionsByCheckpointQuery,
   useGetExpeditionBriefByCheckpointQuery,
-  useGetExpeditionStatusQuery
+  useGetExpeditionStatusQuery,
+  useGetAllExpeditionsStatusQuery,
+  useGetExpeditionsStatusByCheckpointQuery
 } = expeditionsApiSlice; 

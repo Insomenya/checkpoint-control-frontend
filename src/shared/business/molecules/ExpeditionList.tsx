@@ -68,7 +68,7 @@ export const ExpeditionList = ({
   errorMessage = 'Не удалось загрузить данные'
 }: Props) => {
   const classes = useStyles();
-  const [direction, setDirection] = useState('');
+  const [direction, setDirection] = useState('IN');
   
   const { data: expeditions, isLoading, isError } = useGetExpeditionsByCheckpointQuery({
     checkpointId,

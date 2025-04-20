@@ -1,0 +1,1 @@
+export { filterExpeditions } from './filterExpeditions'; 

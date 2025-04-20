@@ -105,7 +105,7 @@ export type ConfirmationItem = {
     };
     confirmed_by: number;
     confirmed_by_username: string;
-    zone: number;
+    zone_id: number;
     zone_name: string;
     status: string;
     status_display: string;

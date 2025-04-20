@@ -9,7 +9,6 @@ export const MESSAGES = {
 };
 
 export const DIRECTION_OPTIONS = [
-  { value: '', label: 'Все направления' },
   { value: 'IN', label: 'Въезд' },
   { value: 'OUT', label: 'Выезд' },
 ]; 
