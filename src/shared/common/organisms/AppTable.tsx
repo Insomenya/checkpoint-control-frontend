@@ -25,7 +25,9 @@ const useStyles = createUseStyles((theme) => ({
   actions: {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
+    flexWrap: 'wrap',
+    gap: theme.spacing(4)
   },
   actionsRightSide: {
     display: 'flex',

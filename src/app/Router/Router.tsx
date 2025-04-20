@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Harness } from "../Harness/Harness";
-import { About, AddUser, Checkpoints, Confirmation, ExpeditionStatus, FilteredReport, Login, RegisterExpedition, RegisterGoods, RegisterOrganizations, SetPassword, Users } from "@/pages";
+import { About, AddUser, Checkpoints, Confirmation, Dashboard, ExpeditionStatus, FilteredReport, Login, RegisterExpedition, RegisterGoods, RegisterOrganizations, SetPassword, Users } from "@/pages";
 import { ROUTER_PATHS } from "@shared/common/constants";
 import ProtectedRoute from "./ProtectedRoute";
 import { Verify } from "../Verify/Verify";
@@ -18,6 +18,12 @@ export const Router = () => {
                 <Route element={<ProtectedRoute />}>
                     <Route element={<Verify key={verifyKey} />} >
                         <Route element={<Harness />} path={ROUTER_PATHS.ROOT}>
+                            <Route
+                                path={ROUTER_PATHS.DASHBOARD}
+                                element={<ProtectedRoute />}
+                            >
+                                <Route index element={<Dashboard />} />
+                            </Route>
                             <Route
                                 path={ROUTER_PATHS.REGISTER_EXPEDITION}
                                 element={<ProtectedRoute roles={['logistician']} />}
@@ -44,13 +50,13 @@ export const Router = () => {
                             </Route>
                             <Route
                                 path={ROUTER_PATHS.REPORTS.ROOT + ROUTER_PATHS.REPORTS.SINGLE}
-                                element={<ProtectedRoute roles={['operator']} />}
+                                element={<ProtectedRoute roles={['operator', 'logistician']} />}
                             >
                                 <Route index element={<ExpeditionStatus />} />
                             </Route>
                             <Route
                                 path={ROUTER_PATHS.REPORTS.ROOT + ROUTER_PATHS.REPORTS.FILTER}
-                                element={<ProtectedRoute roles={['operator']} />}
+                                element={<ProtectedRoute roles={['operator', 'logistician']} />}
                             >
                                 <Route index element={<FilteredReport />} />
                             </Route>

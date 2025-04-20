@@ -60,3 +60,8 @@ export type StepsConfiguration = Record<StepsNumbers, StepConfiguration>;
 export type StepStatus = 'leaving' | 'pending' | 'error' | 'valid';
 
 export * from './customFilter';
+
+export type FaqItem = {
+    question: string;
+    answer: string;
+  }; 

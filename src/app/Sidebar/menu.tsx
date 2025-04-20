@@ -1,9 +1,15 @@
 import { MenuItemInfo, UserRoles } from "@/models/common";
 import { ROUTER_PATHS } from "@shared/common/constants";
-import { Archive, Box, BuildingFactory2, DeviceDesktop, Truck, UserPlus, Users, ZoomCheck } from "@v-uik/icons";
+import { Archive, Box, BuildingFactory2, Dashboard, DeviceDesktop, Truck, UserPlus, Users, ZoomCheck } from "@v-uik/icons";
 
 export const MENU: Record<UserRoles, MenuItemInfo[]> = {
     operator: [
+        {
+            type: 'regular',
+            icon: <Dashboard />,
+            label: 'Дашборд',
+            path: ROUTER_PATHS.DASHBOARD,
+        },
         {
             type: 'regular',
             icon: <ZoomCheck />,
@@ -32,6 +38,12 @@ export const MENU: Record<UserRoles, MenuItemInfo[]> = {
     logistician: [
         {
             type: 'regular',
+            icon: <Dashboard />,
+            label: 'Дашборд',
+            path: ROUTER_PATHS.DASHBOARD,
+        },
+        {
+            type: 'regular',
             icon: <Truck />,
             label: 'Создать экспедицию',
             path: ROUTER_PATHS.REGISTER_EXPEDITION,
@@ -48,8 +60,32 @@ export const MENU: Record<UserRoles, MenuItemInfo[]> = {
             label: 'Организации',
             path: ROUTER_PATHS.REGISTER_ORGANIZATION,
         },
+        {
+            type: 'dropdown',
+            icon: <Archive />,
+            label: 'Сводки',
+            path: ROUTER_PATHS.REPORTS.ROOT,
+            options: [
+                {
+                    key: 'dropdown_item_expedition_status',
+                    path: ROUTER_PATHS.REPORTS.SINGLE,
+                    label: 'Статус экспедиции',
+                },
+                {
+                    key: 'dropdown_item_report_filters',
+                    path: ROUTER_PATHS.REPORTS.FILTER,
+                    label: 'Сводка с фильтрами',
+                },
+            ],
+        }
     ],
     admin: [
+        {
+            type: 'regular',
+            icon: <Dashboard />,
+            label: 'Дашборд',
+            path: ROUTER_PATHS.DASHBOARD,
+        },
         {
             type: 'regular',
             icon: <UserPlus />,
