@@ -1,16 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, CircularProgress, Container, createUseStyles, Text } from '@v-uik/base';
+import { useParams } from 'react-router-dom';
 import { useAppSelector } from '@store/store';
 import { selectUser } from '@store/auth/auth.selectors';
 import { useGetExpeditionStatusQuery } from '@api/expeditions/expeditionsApi';
-import { 
-  ExpeditionCard, 
-  LogistSearchForm, 
-  OperatorExpeditionList, 
-  ConfirmationCard 
-} from '@/features/expeditionStatus/components';
-import { MESSAGES } from '@/features/expeditionStatus/constants';
+import { LogistSearchForm } from '@/features/expeditionStatus/components';
+import { MESSAGES, DIRECTION_OPTIONS } from '@/features/expeditionStatus/constants';
 import { PageFallback } from '@shared/common/molecules';
+import { ExpeditionList, ConfirmationCard } from '@shared/business/molecules';
+import { ExpeditionCardSimple } from '@shared/business/organisms';
 
 const useStyles = createUseStyles((theme) => ({
   container: {
@@ -42,7 +40,10 @@ export const ExpeditionStatus = () => {
   const userRole = user?.role;
   const checkpointId = user?.checkpoint?.id;
   
-  const [expeditionId, setExpeditionId] = useState<number | null>(null);
+  const { expeditionId: expeditionIdParam } = useParams<{ expeditionId: string }>();
+  const [expeditionId, setExpeditionId] = useState<number | null>(
+    expeditionIdParam ? Number(expeditionIdParam) : null
+  );
   
   const { 
     data: expeditionStatus, 
@@ -52,6 +53,19 @@ export const ExpeditionStatus = () => {
   } = useGetExpeditionStatusQuery(expeditionId || 0, {
     skip: !expeditionId,
   });
+
+  useEffect(() => {
+    if (expeditionIdParam) {
+      setExpeditionId(Number(expeditionIdParam));
+    }
+  }, [expeditionIdParam]);
+
+  useEffect(() => {
+    if (expeditionStatus) {
+      console.log('Expedition Status Data:', expeditionStatus);
+      console.log('Last Confirmation:', expeditionStatus.last_confirmation);
+    }
+  }, [expeditionStatus]);
 
   const handleExpeditionSearch = (id: number) => {
     setExpeditionId(id);
@@ -68,11 +82,13 @@ export const ExpeditionStatus = () => {
     
     return (
       <>
-        <OperatorExpeditionList 
+        <ExpeditionList 
           checkpointId={checkpointId}
           onSelect={handleExpeditionSearch}
           selectedExpeditionId={expeditionId}
           onClearSelection={handleClearSelection}
+          directionOptions={DIRECTION_OPTIONS}
+          title="Экспедиции для просмотра"
         />
         
         {expeditionId && (
@@ -87,7 +103,7 @@ export const ExpeditionStatus = () => {
               ) : !expeditionStatus ? (
                 <PageFallback message={MESSAGES.EXPEDITION_NOT_FOUND} refetch={refetch} />
               ) : (
-                <ExpeditionCard expedition={expeditionStatus} />
+                <ExpeditionCardSimple expedition={expeditionStatus} />
               )}
             </Box>
             <Box className={classes.confirmationColumn}>
@@ -119,7 +135,7 @@ export const ExpeditionStatus = () => {
               ) : !expeditionStatus ? (
                 <PageFallback message={MESSAGES.EXPEDITION_NOT_FOUND} refetch={refetch} />
               ) : (
-                <ExpeditionCard expedition={expeditionStatus} />
+                <ExpeditionCardSimple expedition={expeditionStatus} />
               )}
             </Box>
             <Box className={classes.confirmationColumn}>

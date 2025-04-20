@@ -53,12 +53,14 @@ export const Router = () => {
                                 element={<ProtectedRoute roles={['operator']} />}
                             >
                                 <Route index element={<Confirmation />} />
+                                <Route path=":expeditionId" element={<Confirmation />} />
                             </Route>
                             <Route
                                 path={ROUTER_PATHS.REPORTS.ROOT + ROUTER_PATHS.REPORTS.SINGLE}
                                 element={<ProtectedRoute roles={['operator', 'logistician']} />}
                             >
                                 <Route index element={<ExpeditionStatus />} />
+                                <Route path=":expeditionId" element={<ExpeditionStatus />} />
                             </Route>
                             <Route
                                 path={ROUTER_PATHS.REPORTS.ROOT + ROUTER_PATHS.REPORTS.FILTER}

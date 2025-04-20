@@ -1,7 +1,8 @@
-import { Badge, Box, Card, clsx, createUseStyles, Text, Underlay } from '@v-uik/base';
+import { Box, Card, clsx, createUseStyles, Divider, Text, Underlay } from '@v-uik/base';
 import { ObjectSummary } from '@shared/common/molecules';
 import { ConfirmationItem } from '@/models/expeditions';
 import { CircularProgressCentered } from '@shared/common/atoms';
+import { AlertCircle } from '@v-uik/icons';
 
 const useStyles = createUseStyles((theme) => ({
   container: {
@@ -19,7 +20,7 @@ const useStyles = createUseStyles((theme) => ({
     backgroundColor: theme.ref.palette.green90,
     color: theme.ref.palette.green50
   },
-  statusRejected: {
+  statusCancelled: {
     backgroundColor: theme.ref.palette.red90,
     color: theme.ref.palette.red50
   },
@@ -33,6 +34,23 @@ const useStyles = createUseStyles((theme) => ({
   },
   summaryVertical: {
     flexDirection: 'column'
+  },
+  infoIcon: {
+    marginBottom: theme.spacing(2),
+    color: theme.ref.palette.blue50
+  },
+  pendingState: {
+    padding: theme.spacing(3),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    backgroundColor: theme.ref.palette.blue90,
+    borderRadius: theme.spacing(1),
+    marginTop: theme.spacing(2)
+  },
+  pendingText: {
+    fontSize: '0.9rem',
+    textAlign: 'center'
   }
 }));
 
@@ -50,8 +68,8 @@ export const ConfirmationCard = ({ confirmation, isLoading }: Props) => {
     switch (status.toLowerCase()) {
       case 'confirmed':
         return classes.statusConfirmed;
-      case 'rejected':
-        return classes.statusRejected;
+      case 'cancelled':
+        return classes.statusCancelled;
       default:
         return classes.statusPending;
     }
@@ -67,8 +85,15 @@ export const ConfirmationCard = ({ confirmation, isLoading }: Props) => {
             <CircularProgressCentered />
           </Box>
         ) : !confirmation ? (
-          <Box className={classes.emptyState}>
-            <Text>Нет данных о подтверждении</Text>
+          <Box className={classes.container}>
+            <Divider />
+            <Box className={classes.pendingState}>
+              <AlertCircle className={classes.infoIcon} />
+              <Text kind="subtitle2">Ожидает подтверждения</Text>
+              <Text className={classes.pendingText} gutterBottom>
+                Экспедиция еще не была подтверждена или отклонена оператором КПП
+              </Text>
+            </Box>
           </Box>
         ) : (
           <>

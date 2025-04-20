@@ -3,7 +3,6 @@ import { ConfirmationItem } from "../expeditions";
 // Модель для создания подтверждения
 export type CreateConfirmationRequestDTO = {
     expedition_id: number;
-    zone_id: number;
     checkpoint_id: number;
     status: string;
 };

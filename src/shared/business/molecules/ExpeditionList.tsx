@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Box, Button, Card, createUseStyles, Select, Text } from '@v-uik/base';
 import { useGetExpeditionsByCheckpointQuery } from '@api/expeditions/expeditionsApi';
-import { DIRECTION_OPTIONS, MESSAGES } from '../constants';
 import { ArrowLeft } from '@v-uik/icons';
 
 const useStyles = createUseStyles((theme) => ({
@@ -40,18 +39,33 @@ const useStyles = createUseStyles((theme) => ({
   }
 }));
 
+type DirectionOption = {
+  value: string;
+  label: string;
+};
+
 type Props = {
   checkpointId: number;
   onSelect: (expeditionId: number) => void;
   selectedExpeditionId: number | null;
   onClearSelection: () => void;
+  directionOptions: DirectionOption[];
+  title?: string;
+  emptyMessage?: string;
+  loadingMessage?: string;
+  errorMessage?: string;
 };
 
-export const OperatorExpeditionList = ({ 
+export const ExpeditionList = ({ 
   checkpointId, 
   onSelect,
   selectedExpeditionId,
-  onClearSelection
+  onClearSelection,
+  directionOptions,
+  title = 'Экспедиции для подтверждения',
+  emptyMessage = 'Нет данных для отображения',
+  loadingMessage = 'Загрузка списка экспедиций...',
+  errorMessage = 'Не удалось загрузить данные'
 }: Props) => {
   const classes = useStyles();
   const [direction, setDirection] = useState('');
@@ -94,12 +108,12 @@ export const OperatorExpeditionList = ({
     <Card>
       <Box className={classes.container}>
         <Box className={classes.headerContainer}>
-          <Text kind="h6">Экспедиции для подтверждения</Text>
+          <Text kind="h6">{title}</Text>
           <Box className={classes.actionsRow}>
             <Select
               label="Направление"
               size="sm"
-              options={DIRECTION_OPTIONS}
+              options={directionOptions}
               value={direction}
               onChange={handleDirectionChange}
               className={classes.selectWidth}
@@ -108,11 +122,11 @@ export const OperatorExpeditionList = ({
         </Box>
 
         {isLoading ? (
-          <Text>Загрузка списка экспедиций...</Text>
+          <Text>{loadingMessage}</Text>
         ) : isError ? (
-          <Text color="error">{MESSAGES.FAILED_TO_LOAD}</Text>
+          <Text color="error">{errorMessage}</Text>
         ) : !expeditions || expeditions.length === 0 ? (
-          <Text>{MESSAGES.NO_DATA}</Text>
+          <Text>{emptyMessage}</Text>
         ) : (
           expeditions.map((expedition) => (
             <Box key={expedition.id} className={classes.listItem}>
