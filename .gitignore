@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+v-uik-docs
+base_instructions.txt
+api_specification.md
