@@ -20,8 +20,22 @@ export const exportToPDF = <T extends object>(
     return;
   }
 
+  const hasIdColumn = columns.some(col => col.key === 'id');
+  const sortedItems = hasIdColumn 
+    ? [...items].sort((a, b) => {
+        const aId = a['id' as keyof T];
+        const bId = b['id' as keyof T];
+        
+        if (typeof aId === 'number' && typeof bId === 'number') {
+          return aId - bId;
+        }
+        
+        return String(aId).localeCompare(String(bId));
+      })
+    : items;
+
   const headers = columns.map((col) => col.title || '');
-  const data = items.map((item) => {
+  const data = sortedItems.map((item) => {
     const docDataItem: any[] = [];
 
     columns.forEach((col) => {
@@ -38,6 +52,14 @@ export const exportToPDF = <T extends object>(
   });
 
   const shouldUseLandscape = columns.length > 4;
+  
+  let fontSize = 10;
+  if (columns.length > 8) {
+    fontSize = 8;
+  }
+  if (columns.length > 10) {
+    fontSize = 7;
+  }
   
   const widths = Array(columns.length).fill('*');
 
@@ -76,7 +98,7 @@ export const exportToPDF = <T extends object>(
       }
     },
     defaultStyle: {
-      fontSize: 10
+      fontSize: fontSize
     }
   };
 
