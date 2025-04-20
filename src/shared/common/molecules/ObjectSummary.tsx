@@ -1,4 +1,4 @@
-import { Box, createUseStyles } from "@v-uik/base";
+import { Box, clsx, createUseStyles } from "@v-uik/base";
 import { LabeledText } from "../atoms";
 
 const useStyles = createUseStyles((theme) => ({
@@ -15,13 +15,14 @@ type SummaryItem = {
 
 type Props = {
     summaryItems: SummaryItem[];
+    className?: string;
 }
 
-export const ObjectSummary = ({ summaryItems }: Props) => {
+export const ObjectSummary = ({ summaryItems, className }: Props) => {
     const classes = useStyles();
 
     return (
-        <Box className={classes.summaryContainer}>
+        <Box className={clsx(classes.summaryContainer, className)}>
             {summaryItems.map(({ label, text }) => (
                 <LabeledText
                     key={label}
