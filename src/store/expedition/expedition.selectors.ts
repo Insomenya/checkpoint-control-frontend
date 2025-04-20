@@ -25,4 +25,10 @@ export const selectInfoStep = createSelector(selectExpeditionSelf, (expedition) 
     phone_number: expedition.newExpedition.phone_number,
     license_plate: expedition.newExpedition.license_plate,
     vehicle_model: expedition.newExpedition.vehicle_model,
+    passport_number: expedition.newExpedition.passport_number,
 }));
+
+export const selectInvoices = createSelector(
+    [selectExpeditionSelf],
+    (expedition) => expedition.newExpedition.invoices
+);

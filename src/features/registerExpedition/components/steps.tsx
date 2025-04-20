@@ -1,5 +1,5 @@
 import { StepsConfiguration } from "@/models/common";
-import { InvoiceStep } from "./InvoiceStep";
+import { InvoiceStep } from "./InvoiceStep/InvoiceStep";
 import { InfoStep } from "./InfoStep";
 import { OrganizationsStep } from "./OrganizationsStep";
 

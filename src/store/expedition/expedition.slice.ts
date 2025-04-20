@@ -1,9 +1,9 @@
-import { Expedition, InfoStep, Invoice, InvoiceGoodEntry, OrganizationsStep } from "@/models/expeditions";
+import { Expedition, InfoStep, InvoiceItem, OrganizationsStep } from "@/models/expeditions";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { StepsNumbers, StepStatus, ZeroThroughTwo } from "@/models/common";
+import { StepsNumbers, StepStatus } from "@/models/common";
 
-type NewInvoiceObject = Partial<Invoice> & {
-    goods: Omit<InvoiceGoodEntry, 'invoice_id'>[];
+type NewInvoiceObject = Partial<InvoiceItem> & {
+    goods: { good_id: number; quantity: number }[];
 };
 
 type NewExpeditionObject = Partial<Expedition> & {
@@ -32,8 +32,9 @@ const initialState: ExpeditionState = {
     newStep: 0,
 };
 
-type AddInvoiceAction = PayloadAction<Partial<Invoice>>;
-type AddGoodAction = PayloadAction<InvoiceGoodEntry>;
+type AddInvoiceAction = PayloadAction<Partial<InvoiceItem>>;
+type AddGoodAction = PayloadAction<{ invoice_id: number; good_id: number; quantity: number }>;
+type DeleteGoodAction = PayloadAction<{ invoice_id: number; good_id: number }>;
 type StepAction = PayloadAction<StepsNumbers>;
 type OrganizationsStepSetAction = PayloadAction<Partial<OrganizationsStep>>;
 type InfoStepSetAction = PayloadAction<Partial<InfoStep>>;
@@ -50,6 +51,15 @@ export const expeditionSlice = createSlice({
 
             if (invoiceToAddGoodTo != null) {
                 invoiceToAddGoodTo.goods.push({ good_id: action.payload.good_id, quantity: action.payload.quantity });
+            }
+        },
+        goodDeleted(state, action: DeleteGoodAction) {
+            const invoiceToRemoveGoodFrom = state.newExpedition.invoices.find((invoice) => invoice.id === action.payload.invoice_id);
+
+            if (invoiceToRemoveGoodFrom != null) {
+                invoiceToRemoveGoodFrom.goods = invoiceToRemoveGoodFrom.goods.filter(
+                    (good) => good.good_id !== action.payload.good_id
+                );
             }
         },
         stepError(state, action: StepAction) {
@@ -79,10 +89,22 @@ export const expeditionSlice = createSlice({
                 ...action.payload
             };
         },
-        expeditionCleared(state) {
-            state.newExpedition = initialState.newExpedition;
+        expeditionCleared() {
+            return initialState;
         },
     },
 });
 
-export const { invoiceAdded, goodAdded, expeditionCleared, stepError, stepValid, stepLeft, organizationsStepSet, infoStepSet, currentStepSet, newStepSet } = expeditionSlice.actions;
+export const { 
+    invoiceAdded, 
+    goodAdded, 
+    goodDeleted, 
+    expeditionCleared, 
+    stepError, 
+    stepValid, 
+    stepLeft, 
+    organizationsStepSet, 
+    infoStepSet, 
+    currentStepSet, 
+    newStepSet 
+} = expeditionSlice.actions;

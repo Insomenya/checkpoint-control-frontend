@@ -1,7 +1,7 @@
 import { LabelValue } from "@/models/common";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ComboBoxField, InputField } from "@shared/common/atoms";
-import { formatPhoneNumber, getDefaultValues } from "@shared/common/utils";
+import { formatPassportNumber, formatPhoneNumber, getDefaultValues } from "@shared/common/utils";
 import { Box, createUseStyles, Divider, Text } from "@v-uik/base";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -67,6 +67,7 @@ export const InfoStep = () => {
             phone_number: infoStep.phone_number ?? initialValues.phone_number,
             license_plate: infoStep.license_plate ?? initialValues.license_plate,
             vehicle_model: infoStep.vehicle_model ?? initialValues.vehicle_model,
+            passport_number: infoStep.passport_number ?? initialValues.passport_number,
         },
     });
     const { trigger, getValues, watch, setValue } = form;
@@ -94,6 +95,7 @@ export const InfoStep = () => {
                 phone_number: formValues.phone_number ?? initialValues.phone_number,
                 license_plate: formValues.license_plate ?? initialValues.license_plate,
                 vehicle_model: formValues.vehicle_model ?? initialValues.vehicle_model,
+                passport_number: formValues.passport_number ?? initialValues.passport_number,
             }));
 
             dispatch(currentStepSet(newStep));
@@ -107,6 +109,13 @@ export const InfoStep = () => {
         const formattedValue = formatPhoneNumber(value);
         setValue('phone_number', formattedValue);
         trigger('phone_number');
+    };
+
+    const handlePassportOnBlur = (value: string | null) => {
+        if (value === null) return;
+        const formattedValue = formatPassportNumber(value);
+        setValue('passport_number', formattedValue);
+        trigger('passport_number');
     };
 
     return (    
@@ -148,8 +157,16 @@ export const InfoStep = () => {
                                 onBlur={handlePhoneOnBlur}
                             />
                         </Box>
+                        <Box className={classes.formRowItem}>
+                            <InputField
+                                label="Паспортные данные"
+                                name="passport_number"
+                                placeholder="Введите в формате XXXX XXXXXX"
+                                onBlur={handlePassportOnBlur}
+                            />
+                        </Box>
                     </Box>
-                    {watchType === 'auto' ? (
+                    {watchType !== 'selfout' ? (
                         <>
                             <Divider className={classes.dividerHorizontal} />
                             <Text kind="titleSm">Транспортное средство:</Text>

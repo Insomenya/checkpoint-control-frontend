@@ -18,6 +18,7 @@ const useStyles = createUseStyles((theme) => ({
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
+    padding: [theme.spacing(2), theme.spacing(4)]
   }
 }));
 

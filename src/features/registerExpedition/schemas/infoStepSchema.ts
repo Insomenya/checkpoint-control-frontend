@@ -1,4 +1,4 @@
-import { phoneRegex } from "@shared/business/utils";
+import { passportRegex, phoneRegex } from "@shared/business/utils";
 import { EXPEDITION_TYPES_ARRAY } from "@shared/common/constants";
 import { z } from "zod";
 
@@ -15,6 +15,7 @@ export const infoStepSchema = z.object({
     }).default(''),
     full_name: z.string().min(1, 'Введите имя ответственного').default(''),
     phone_number: z.string().min(1, 'Введите контактный номер').regex(phoneRegex, 'Введите номер в формате "+7(XXX)XXX-XX-XX"').default(''),
+    passport_number: z.string().min(1, 'Введите паспортные данные').regex(passportRegex, 'Введите паспортные данные в формате "XXXX XXXXXX"').default(''),
     license_plate: z.string().optional().default(''),
     vehicle_model: z.string().optional().default(''),
 }).superRefine((data, ctx) => {
@@ -42,6 +43,7 @@ export const initialValues: InfoStepFormData = {
     type: 'auto',
     full_name: '',
     phone_number: '',
+    passport_number: '',
     license_plate: '',
     vehicle_model: '',
 };

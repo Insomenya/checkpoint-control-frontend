@@ -3,10 +3,16 @@ import { INVALID_STEPS_MESSAGE, MAX_STEPS } from "@/features/registerExpedition/
 import { StepConfiguration, StepsNumbers } from "@/models/common";
 import { TooltipWrapper } from "@shared/common/organisms";
 import { selectCurrentStep, selectStepStatuses } from "@store/expedition/expedition.selectors";
-import { currentStepSet, newStepSet, stepLeft } from "@store/expedition/expedition.slice";
+import { expeditionCleared, newStepSet, stepLeft } from "@store/expedition/expedition.slice";
 import { useAppDispatch, useAppSelector } from "@store/store";
-import { Box, Button, Card, createUseStyles, Step, Stepper, Text, Tooltip } from "@v-uik/base";
-import { useMemo, useState } from "react";
+import { Box, Button, Card, createUseStyles, Step, Stepper, Text, Tooltip, notification } from "@v-uik/base";
+import { useMemo } from "react";
+import { useCreateExpeditionMutation } from "@api/expeditions/expeditionsApi";
+import { isErrorResponse } from "@shared/common/utils";
+import { ErrorDescription } from "@shared/common/atoms";
+import { useNavigate } from "react-router-dom";
+import { ROUTER_PATHS } from "@shared/common/constants";
+import { useGetGoodsQuery } from "@api/goods/goodsApi";
 
 const useStyles = createUseStyles((theme) => ({
     contentContainer: {
@@ -34,13 +40,82 @@ export const RegisterExpedition = () => {
     const currentStep = useAppSelector(selectCurrentStep);
     const stepStatuses = useAppSelector(selectStepStatuses);
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    const [createExpedition, { isLoading: isCreating }] = useCreateExpeditionMutation();
+    const { data: goods = [] } = useGetGoodsQuery();
+    const expedition = useAppSelector(state => state.expedition.newExpedition);
 
     const hasErrors = useMemo(() => stepStatuses.some((status) => status === 'error'), [stepStatuses]);
 
-    const handleStepForward = () => {
+    const handleStepForward = async () => {
         if (currentStep !== MAX_STEPS - 1) {
             dispatch(newStepSet((currentStep + 1) as StepsNumbers));
             dispatch(stepLeft(currentStep));
+        } else {
+            if (!hasErrors) {
+                await handleSubmitExpedition();
+            }
+        }
+    };
+
+    const handleSubmitExpedition = async () => {
+        try {
+            const formattedInvoices = expedition.invoices.map(invoice => ({
+                number: invoice.number || '',
+                cargo_description: invoice.cargo_description || '',
+                goods: invoice.goods.map(good => {
+                    const goodData = goods.find(g => g.id === good.good_id);
+                    if (!goodData) {
+                        throw new Error(`Не удалось найти данные для ТМЦ с ID ${good.good_id}`);
+                    }
+                    return {
+                        name: goodData.name,
+                        description: goodData.description,
+                        unit_of_measurement: goodData.unit_of_measurement,
+                        quantity: good.quantity
+                    };
+                })
+            }));
+            
+            const expeditionData = {
+                name: expedition.name || '',
+                direction: expedition.direction || 'IN',
+                sender_id: expedition.sender_id || 0,
+                receiver_id: expedition.receiver_id || 0,
+                type: expedition.type || 'auto',
+                full_name: expedition.full_name || '',
+                phone_number: expedition.phone_number || '',
+                license_plate: expedition.license_plate || '',
+                vehicle_model: expedition.vehicle_model || '',
+                passport_number: expedition.passport_number || '',
+                invoices: formattedInvoices
+            };
+            
+            await createExpedition(expeditionData).unwrap();
+            
+            dispatch(expeditionCleared());
+            
+            notification.success(
+                <ErrorDescription>Экспедиция успешно создана</ErrorDescription>,
+                { title: 'Успех' }
+            );
+            navigate(`../${ROUTER_PATHS.EXPEDITION_LIST}`, { relative: 'path' });
+        } catch (error) {
+            if (isErrorResponse(error)) {
+                notification.error(
+                    <ErrorDescription>
+                        {error.data?.message || 'Произошла ошибка при создании экспедиции'}
+                    </ErrorDescription>,
+                    { title: 'Ошибка' }
+                );
+            } else {
+                notification.error(
+                    <ErrorDescription>
+                        {error instanceof Error ? error.message : 'Произошла ошибка при создании экспедиции'}
+                    </ErrorDescription>,
+                    { title: 'Ошибка' }
+                );
+            }
         }
     };
 
@@ -100,6 +175,7 @@ export const RegisterExpedition = () => {
                                     size="sm"
                                     onClick={handleStepForward}
                                     color={currentStep === 2 && hasErrors ? 'secondary' : 'primary'}
+                                    disabled={isCreating}
                                 >
                                     {currentStep == 2 ? 'Завершить' : 'Далее'}
                                 </Button>

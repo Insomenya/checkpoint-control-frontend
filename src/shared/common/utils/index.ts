@@ -6,4 +6,5 @@ export { getDefaultValues } from './getDefaultValues';
 export { getDirectionName } from './getDirectionName';
 export { getTypeName } from './getTypeName';
 export { formatPhoneNumber } from './getPhoneFormat';
+export { formatPassportNumber } from './getPassportFormat';
 export { exportToPDF, exportToExcel } from './exportUtils';
