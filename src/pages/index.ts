@@ -11,3 +11,4 @@ export { Confirmation } from './Confirmation/Confirmation';
 export { Checkpoints } from './Checkpoints/Checkpoints';
 export { AddUser } from './AddUser/AddUser';
 export { Users } from './Users/Users';
+export { SetPassword } from './SetPassword/SetPassword';

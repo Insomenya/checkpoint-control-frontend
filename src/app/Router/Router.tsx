@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Harness } from "../Harness/Harness";
-import { About, AddUser, Checkpoints, Confirmation, ExpeditionStatus, FilteredReport, Login, RegisterExpedition, RegisterGoods, RegisterOrganizations, Users } from "@/pages";
+import { About, AddUser, Checkpoints, Confirmation, ExpeditionStatus, FilteredReport, Login, RegisterExpedition, RegisterGoods, RegisterOrganizations, SetPassword, Users } from "@/pages";
 import { ROUTER_PATHS } from "@shared/common/constants";
 import ProtectedRoute from "./ProtectedRoute";
 import { Verify } from "../Verify/Verify";
@@ -14,6 +14,7 @@ export const Router = () => {
         <BrowserRouter>
             <Routes>
                 <Route path={ROUTER_PATHS.LOGIN} element={<Login />} />
+                <Route path={`${ROUTER_PATHS.SET_PASSWORD}/:token`} element={<SetPassword />} />
                 <Route element={<ProtectedRoute />}>
                     <Route element={<Verify key={verifyKey} />} >
                         <Route element={<Harness />} path={ROUTER_PATHS.ROOT}>
