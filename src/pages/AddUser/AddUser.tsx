@@ -164,12 +164,14 @@ export const AddUser = () => {
                 })
                 .catch((error) => {
                     if (isErrorResponse(error)) {
-                        notification.error(error.data.message || 'Произошла ошибка при создании пользователя', {
-                            title: 'Ошибка создания пользователя'
+                        notification.error(error.data?.detail || 'Произошла ошибка при создании пользователя', {
+                            title: 'Ошибка создания пользователя',
+                            direction: 'vertical'
                         });
                     } else {
                         notification.error('Произошла ошибка при создании пользователя', {
-                            title: 'Ошибка'
+                            title: 'Ошибка',
+                            direction: 'vertical'
                         });
                     }
                 });

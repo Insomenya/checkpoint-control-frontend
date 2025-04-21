@@ -135,7 +135,7 @@ export const Confirmation = () => {
     } catch (error) {
       if (isErrorResponse(error)) {
         notification.error(
-          <ErrorDescription>{error.data.message}</ErrorDescription>,
+          <ErrorDescription>{error.data?.detail}</ErrorDescription>,
           {
             direction: 'vertical',
             title: 'Ошибка'
@@ -175,7 +175,7 @@ export const Confirmation = () => {
     } catch (error) {
       if (isErrorResponse(error)) {
         notification.error(
-          <ErrorDescription>{error.data.message}</ErrorDescription>,
+          <ErrorDescription>{error.data?.detail}</ErrorDescription>,
           {
             direction: 'vertical',
             title: 'Ошибка'

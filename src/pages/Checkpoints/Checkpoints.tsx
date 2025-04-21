@@ -50,13 +50,19 @@ export const Checkpoints = () => {
         }
 
         if (isErrorResponse(error)) {
-          notification.error(
-            <ErrorDescription>{error.data.message}</ErrorDescription>,
-            {
-              direction: 'vertical',
-              title: 'Ошибка операции'
-            }
-          )
+            notification.error(
+                <ErrorDescription>
+                    {error?.data.detail || 'Произошла ошибка при выполнении операции'}
+                </ErrorDescription>,
+                { title: 'Ошибка операции', direction: 'vertical' }
+            );
+        } else {
+            notification.error(
+                <ErrorDescription>
+                    {error instanceof Error ? error.message : 'Произошла ошибка при выполнении операции'}
+                </ErrorDescription>,
+                { title: 'Ошибка операции', direction: 'vertical' }
+            );
         }
       });
   };
@@ -87,13 +93,19 @@ export const Checkpoints = () => {
         }
 
         if (isErrorResponse(error)) {
-          notification.error(
-            <ErrorDescription>{error.data.message}</ErrorDescription>,
-            {
-              direction: 'vertical',
-              title: 'Ошибка операции'
-            }
-          )
+            notification.error(
+                <ErrorDescription>
+                    {error?.data.detail || 'Произошла ошибка при выполнении операции'}
+                </ErrorDescription>,
+                { title: 'Ошибка операции', direction: 'vertical' }
+            );
+        } else {
+            notification.error(
+                <ErrorDescription>
+                    {error instanceof Error ? error.message : 'Произошла ошибка при выполнении операции'}
+                </ErrorDescription>,
+                { title: 'Ошибка операции', direction: 'vertical' }
+            );
         }
       });
   };
@@ -121,12 +133,18 @@ export const Checkpoints = () => {
 
         if (isErrorResponse(error)) {
           notification.error(
-            <ErrorDescription>{error.data.message}</ErrorDescription>,
-            {
-              direction: 'vertical',
-              title: 'Ошибка операции'
-            }
-          )
+              <ErrorDescription>
+                  {error?.data.detail || 'Произошла ошибка при выполнении операции'}
+              </ErrorDescription>,
+              { title: 'Ошибка операции', direction: 'vertical' }
+          );
+        } else {
+            notification.error(
+                <ErrorDescription>
+                    {error instanceof Error ? error.message : 'Произошла ошибка при выполнении операции'}
+                </ErrorDescription>,
+                { title: 'Ошибка операции', direction: 'vertical' }
+            );
         }
       });
   };

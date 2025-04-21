@@ -13,7 +13,7 @@ export enum DateFormat {
 export type ErrorResponse = {
     status: number,
     data: {
-        message: string;
+        detail: string;
     }
 };
 

@@ -15,7 +15,9 @@ const App = () => {
         <Provider store={store}>
           <DateLibAdapterProvider dateAdapter={DateFnsAdapter} options={{ locale: ru }}>
             <Router />
-            <NotificationContainer />
+            <NotificationContainer
+              nextNotification
+            />
           </DateLibAdapterProvider>
         </Provider>
       </ErrorBoundary>

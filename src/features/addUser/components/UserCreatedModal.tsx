@@ -40,12 +40,12 @@ export const UserCreatedModal = ({ isOpen, onClose, signupLink }: UserCreatedMod
         navigator.clipboard.writeText(signupLink)
             .then(() => {
                 notification.success('Ссылка скопирована в буфер обмена', {
-                    title: 'Успешно'
+                    title: 'Успешно', direction: 'vertical'
                 });
             })
             .catch(() => {
                 notification.error('Не удалось скопировать ссылку', {
-                    title: 'Ошибка'
+                    title: 'Ошибка', direction: 'vertical'
                 });
             });
     };

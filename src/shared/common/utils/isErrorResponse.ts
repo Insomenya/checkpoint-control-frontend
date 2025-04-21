@@ -10,7 +10,7 @@ export const isErrorResponse = (value: unknown): value is ErrorResponse => {
         'data' in value &&
         typeof value.data === 'object' &&
         value.data !== null &&
-        'message' in value.data &&
-        typeof value.data.message === 'string'
+        'detail' in value.data &&
+        typeof value.data.detail === 'string'
     );
 };

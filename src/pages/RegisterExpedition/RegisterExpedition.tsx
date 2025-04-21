@@ -97,23 +97,23 @@ export const RegisterExpedition = () => {
             
             notification.success(
                 <ErrorDescription>Экспедиция успешно создана</ErrorDescription>,
-                { title: 'Успех' }
+                { title: 'Успех', direction: 'vertical' }
             );
             navigate(`../${ROUTER_PATHS.EXPEDITION_LIST}`, { relative: 'path' });
         } catch (error) {
             if (isErrorResponse(error)) {
                 notification.error(
                     <ErrorDescription>
-                        {error.data?.message || 'Произошла ошибка при создании экспедиции'}
+                        {error?.data.detail || 'Произошла ошибка при создании экспедиции'}
                     </ErrorDescription>,
-                    { title: 'Ошибка' }
+                    { title: 'Ошибка', direction: 'vertical' }
                 );
             } else {
                 notification.error(
                     <ErrorDescription>
                         {error instanceof Error ? error.message : 'Произошла ошибка при создании экспедиции'}
                     </ErrorDescription>,
-                    { title: 'Ошибка' }
+                    { title: 'Ошибка', direction: 'vertical' }
                 );
             }
         }

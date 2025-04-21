@@ -43,6 +43,7 @@ export const LogistSearchForm = ({ onSearch }: Props) => {
           title: 'Ошибка'
         }
       );
+      
       return;
     }
 

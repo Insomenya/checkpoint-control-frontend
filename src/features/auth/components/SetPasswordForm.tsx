@@ -74,13 +74,19 @@ export const SetPasswordForm = ({ token }: SetPasswordFormProps) => {
       })
       .catch((error) => {
         if (isErrorResponse(error)) {
-          notification.error(
-            <ErrorDescription>{error.data.message || 'Ошибка при установке пароля'}</ErrorDescription>,
-            {
-              direction: 'vertical',
-              title: 'Ошибка'
-            }
-          );
+            notification.error(
+                <ErrorDescription>
+                    {error?.data.detail || 'Произошла ошибка при установке пароля'}
+                </ErrorDescription>,
+                { title: 'Ошибка', direction: 'vertical' }
+            );
+        } else {
+            notification.error(
+                <ErrorDescription>
+                    {error instanceof Error ? error.message : 'Произошла ошибка при установке пароля'}
+                </ErrorDescription>,
+                { title: 'Ошибка', direction: 'vertical' }
+            );
         }
       });
   };

@@ -45,14 +45,22 @@ export const LoginForm = () => {
         window.location.replace(ROUTER_PATHS.ROOT);
       })
       .catch((error) => {
+        console.log('some error', error)
         if (isErrorResponse(error)) {
-          notification.error(
-            <ErrorDescription>{error.data.message}</ErrorDescription>,
-            {
-              direction: 'vertical',
-              title: 'Ошибка входа'
-            }
-          )
+          console.log('error is errorResponse ', error)
+            notification.error(
+                <ErrorDescription>
+                    {error?.data.detail || 'Ошибка входа'}
+                </ErrorDescription>,
+                { title: 'Ошибка входа', direction: 'vertical' }
+            );
+        } else {
+            notification.error(
+                <ErrorDescription>
+                    {error instanceof Error ? error.message : 'Ошибка входа'}
+                </ErrorDescription>,
+                { title: 'Ошибка входа', direction: 'vertical' }
+            );
         }
       });
   };
