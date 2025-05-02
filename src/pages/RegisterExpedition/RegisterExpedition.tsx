@@ -5,7 +5,7 @@ import { TooltipWrapper } from "@shared/common/organisms";
 import { selectCurrentStep, selectStepStatuses } from "@store/expedition/expedition.selectors";
 import { expeditionCleared, newStepSet, stepLeft } from "@store/expedition/expedition.slice";
 import { useAppDispatch, useAppSelector } from "@store/store";
-import { Box, Button, Card, createUseStyles, Step, Stepper, Text, Tooltip, notification } from "@v-uik/base";
+import { Box, Button, Card, createUseStyles, Step, Stepper, Text, notification } from "@v-uik/base";
 import { useMemo } from "react";
 import { useCreateExpeditionMutation } from "@api/expeditions/expeditionsApi";
 import { isErrorResponse } from "@shared/common/utils";
